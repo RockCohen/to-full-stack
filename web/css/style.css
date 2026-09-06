@@ -378,3 +378,57 @@ blockquote.spec .src { display: block; margin-top: 6px; font-family: var(--mono)
 .sync-import { flex: 1; min-width: 0; padding: 5px 9px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255, 255, 255, .8); font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); outline: none; }
 .sync-import:focus { border-color: var(--blue); }
 .sync-import::placeholder { text-transform: none; letter-spacing: 0; color: var(--faint); font-family: inherit; }
+
+/* ---------- 移动端:目录收起为一行,展开时才显示章节列表,正文全宽居中 ---------- */
+#nav-toggle { display: none; }
+@media (max-width: 860px) {
+  /* height:auto 放开 html,body{height:100%} 的固定高,否则 flex 收缩会把目录压扁 */
+  body { flex-direction: column; height: auto; }
+  #sidebar {
+    position: static; width: auto; min-width: 0; height: auto; flex-shrink: 0;
+    margin: 12px 12px 0; padding: 12px 14px;
+  }
+  .progress-wrap { margin-bottom: 0; }
+  #nav-toggle {
+    display: block; flex-shrink: 0; margin-left: auto;
+    padding: 3px 12px; border: 1px solid var(--line); border-radius: 999px;
+    background: rgba(255, 255, 255, .8); color: var(--blue);
+    font-size: 12.5px; font-weight: 600; cursor: pointer;
+  }
+  #nav, #sync-box { display: none; }
+  body.nav-open #nav { display: block; margin-top: 14px; }
+  body.nav-open #sync-box { display: block; }
+  #main { padding: 18px 16px 90px; }
+  .hero { padding-top: 2vh; }
+}
+
+/* ---------- 移动端字号:中文阅读舒适度整体上调 ---------- */
+@media (max-width: 860px) {
+  body { font-size: 17px; }
+  #nav-toggle { font-size: 14px; }
+  a.nav-item { font-size: 15px; }
+  .nav-group { font-size: 12px; }
+  .hero .sub { font-size: 17px; }
+  .badge { font-size: 12.5px; }
+  .tab { font-size: 15px; }
+  .warn-box, .steps, .journey div, .fourq div, blockquote.spec,
+  details.primer, p.tip, p.soul, p.punch, .worldview { font-size: 15.5px; }
+  .steps code { font-size: 13.5px; }
+  details.primer summary { font-size: 14px; }
+  .read { font-size: 18px; }
+  .read h3 { font-size: 21px; }
+  .read h4 { font-size: 18px; }
+  .read pre { font-size: 14px; }
+  .read table { font-size: 15px; }
+  .read td:first-child { font-size: 14px; }
+  .fourq b { font-size: 14px; }
+  details.refs { font-size: 15px; }
+  .quiz-title { font-size: 17px; }
+  .quiz-opt, .quiz-area .primary { font-size: 15px; }
+  .quiz-why, .quiz-summary { font-size: 14.5px; }
+  .quiz-code, .quiz-retry { font-size: 13.5px; }
+  #done-btn { font-size: 15px; }
+  .sim-explain { font-size: 15px; }
+  .sim-notes li { font-size: 14.5px; }
+  .sync-hint { font-size: 12.5px; }
+}

@@ -159,6 +159,7 @@ import { QuerySim } from './querysim.js';
   function render() {
     const main = document.getElementById('main');
     const id = route();
+    if (isMobile()) document.body.classList.remove('nav-open');
     renderSidebar();
     renderSyncBox();
     if (!id) { renderHome(main); return; }
@@ -281,6 +282,10 @@ import { QuerySim } from './querysim.js';
     renderSyncBox();
     if (Sync.status === 'ok') renderSidebar();
   }
+  // 移动端(≤860px):目录默认收起,点「☰ 目录」展开;跳转章节后自动收起,让正文居中
+  const isMobile = () => window.matchMedia('(max-width: 860px)').matches;
+  document.getElementById('nav-toggle').onclick = () => document.body.classList.toggle('nav-open');
+
   Sync.init(onSyncChange);
   window.addEventListener('hashchange', render);
   render();
