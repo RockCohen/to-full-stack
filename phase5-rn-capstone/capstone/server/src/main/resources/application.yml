@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: capstone-server
+server:
+  port: 8080
+# 内存库版;上 H2 时取消注释:
+#  datasource:
+#    url: jdbc:h2:mem:orders
+#  jpa:
+#    hibernate:
+#      ddl-auto: update

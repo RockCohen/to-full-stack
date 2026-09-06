@@ -1,0 +1,31 @@
+# M4 · 一键起:server + web(在 capstone/ 目录执行)
+#   docker compose up --build
+#   server → http://localhost:8080/api/orders
+#   web    → http://localhost:5173
+# mobile 不进 compose:RN 用 Expo Go / 模拟器跑(见 mobile/README 说明),
+# 但要能连上 compose 里的 server——手机上用电脑局域网 IP,Expo Web 用 localhost。
+services:
+  server:
+    build: ./server
+    ports:
+      - "8080:8080"
+    environment:
+      # 内存库即可毕业;上真库时换成 datasource 配置
+      SPRING_PROFILES_ACTIVE: demo
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/orders"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
+
+  web:
+    build:
+      context: ./web-client
+      args:
+        # Vite 的 VITE_* 是构建期烘焙进产物的,运行时注入无效——所以用 build args
+        VITE_API_BASE: http://localhost:8080
+    ports:
+      - "5173:80"
+    depends_on:
+      server:
+        condition: service_healthy

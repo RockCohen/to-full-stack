@@ -1,0 +1,33 @@
+{
+  "name": "to-full-stack",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "verify": "node scripts/verify_env.mjs",
+    "lab": "tsx",
+    "tscf": "tsc --noEmit --strict --target es2022 --lib es2022,dom --jsx react-jsx --module esnext --moduleResolution bundler",
+    "lab:promise": "tsx phase0-ts-async/exercises/04_my_promise/tests/run-tests.ts",
+    "lab:store": "tsx phase1-runtime/exercises/04_reactive_store/tests/run-tests.ts",
+    "lab:react": "tsx phase2-react/exercises/04_mini_react/tests/run-tests.ts",
+    "lab:vitest": "vitest run --root phase4-engineering/exercises/03_vitest_lab",
+    "lab:vite:build": "vite build phase4-engineering/exercises/02_vite_lab"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vite": "^8.2.2",
+    "vitest": "^5.0.0"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.102.8",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  }
+}

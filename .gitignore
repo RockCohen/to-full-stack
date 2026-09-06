@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# 工具产物(不入库)
+.mimosa/
+.playwright-mcp/
+.video_agent/

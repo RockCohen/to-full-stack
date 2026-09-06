@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "capstone-mobile",
+    "slug": "capstone-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light"
+  }
+}
