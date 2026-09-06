@@ -4,12 +4,27 @@
 
 ## 打开方式
 
+线上已部署:**https://rockcohen.cc/fullstack/**(入口卡片挂在[个人主页](https://rockcohen.cc))。
+
+本地开发或重新发布:
+
 ```bash
 cd web
 npm install
 npm run dev        # http://localhost:5180(固定端口,避免和 llm-journey 的 5173 撞车)
 npm run build      # 生产构建 → dist/(gzip 约 73KB,可静态托管)
+../scripts/deploy-web.sh   # 构建并发布到 rockcohen.cc/fullstack/(需 root 免密 SSH)
 ```
+
+## 云同步(跨设备找回进度)
+
+侧栏底部的「☁️ 云同步」面板:**开启后生成 12 位同步码,新设备凭码导入即可找回全部进度**。
+开启后打卡/答题自动推送(2.5s 防抖);本地记录永不覆盖,远端只补空缺——断网也不影响学习,恢复后自动续传。
+
+- 合并语义:纯增量只加不删(在 A 设备取消的 ✓ 不会同步到 B 设备,进度数据宁可多记不可丢)
+- 凭据模型:同步码即唯一凭据(≈60bit 熵),服务器无账号体系,码丢了数据即不可达
+- 后端:`server/progress_api.py`(Python 标准库 + SQLite,仿 /opt/comments 评论服务;
+  每 IP 限流、参数绑定、请求体上限),部署用 `../scripts/deploy-progress-api.sh`
 
 ## 章节总表(阶段 0~3 · 12 章;阶段 4/5 以实验卡为主,不再配章节)
 

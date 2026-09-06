@@ -363,3 +363,18 @@ blockquote.spec .src { display: block; margin-top: 6px; font-family: var(--mono)
 .rcard.unreach { opacity: .8; border-style: dashed; }
 .rcard.freed { opacity: .45; border-style: dashed; }
 .rcard.freed .pc-name { text-decoration: line-through; }
+
+/* ---------- 侧栏底部 · 云同步面板 ---------- */
+#sync-box { margin-top: 24px; padding-top: 16px; border-top: 1px dashed rgba(29, 29, 31, .14); }
+.sync-title { font-size: 12.5px; font-weight: 600; color: var(--dim); }
+.sync-title .sync-status { font-weight: 400; color: var(--faint); }
+.sync-title .sync-status.is-err { color: var(--pink); }
+.sync-hint { margin: 6px 0 10px; font-size: 11.5px; line-height: 1.7; color: var(--faint); }
+.sync-row { display: flex; gap: 6px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+.sync-code { flex: 1; min-width: 0; padding: 5px 9px; border-radius: 9px; background: rgba(255, 255, 255, .8); border: 1px solid var(--line); font-family: var(--mono); font-size: 12.5px; letter-spacing: .06em; color: var(--ink); user-select: all; text-align: center; }
+.sync-btn { padding: 5px 12px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255, 255, 255, .8); color: var(--blue); font-size: 12px; font-weight: 600; cursor: pointer; transition: background .15s; }
+.sync-btn:hover { background: #fff; }
+.sync-btn.subtle { margin-top: 8px; color: var(--faint); font-weight: 400; }
+.sync-import { flex: 1; min-width: 0; padding: 5px 9px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255, 255, 255, .8); font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); outline: none; }
+.sync-import:focus { border-color: var(--blue); }
+.sync-import::placeholder { text-transform: none; letter-spacing: 0; color: var(--faint); font-family: inherit; }

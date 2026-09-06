@@ -7,3 +7,6 @@ dist/
 .mimosa/
 .playwright-mcp/
 .video_agent/
+
+# Python 产物(不入库)
+__pycache__/

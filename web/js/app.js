@@ -1,6 +1,7 @@
 // app.js — 课程平台骨架:侧栏路由、双视图(阅读/模拟器)、进度记录
 import { CHAPTERS } from './chapters.js';
 import { Quiz } from './quiz.js';
+import { Sync } from './sync.js';
 import { EventLoopSim } from './eventloopsim.js';
 import { NarrowSim } from './narrowsim.js';
 import { EraseSim } from './erasesim.js';
@@ -20,7 +21,7 @@ import { QuerySim } from './querysim.js';
   const S_MAP = { c00: '场次 S1', c01: '场次 S2', c02: '场次 S3', c03: '场次 S4·S5', c04: '场次 S9', c05: '场次 S11', c06: '场次 S12·S13', c07: '场次 S16', c08: '场次 S17', c09: '场次 S20~S23', c10: '场次 S27', c11: '场次 S28·S29' };
   const store = {
     get done() { return JSON.parse(localStorage.getItem('to-full-stack-progress') || '{}'); },
-    set(k, v) { const d = this.done; if (v) d[k] = 1; else delete d[k]; localStorage.setItem('to-full-stack-progress', JSON.stringify(d)); },
+    set(k, v) { const d = this.done; if (v) d[k] = 1; else delete d[k]; localStorage.setItem('to-full-stack-progress', JSON.stringify(d)); Sync.noteLocalChange(); },
   };
   // 侧栏/路由按 id 排序:c00 → c01 → c02 → c03,编号即学习顺序(与场次顺序一致)
   const ORDERED = [...CHAPTERS].sort((a, b) => a.id.localeCompare(b.id));
@@ -63,10 +64,103 @@ import { QuerySim } from './querysim.js';
 
   function route() { return location.hash.replace(/^#\/?/, ''); }
 
+  // ---------- 侧栏底部 · 云同步面板 ----------
+  function fmtAgo(ts) {
+    if (!ts) return '已开启';
+    const s = Math.round((Date.now() - ts) / 1000);
+    if (s < 60) return '刚刚同步';
+    if (s < 3600) return Math.floor(s / 60) + ' 分钟前同步';
+    if (s < 86400) return Math.floor(s / 3600) + ' 小时前同步';
+    return Math.floor(s / 86400) + ' 天前同步';
+  }
+
+  function statusText() {
+    if (Sync.status === 'syncing') return '同步中…';
+    if (Sync.status === 'pending') return '待同步…';
+    if (Sync.status === 'error') return Sync.errMsg;
+    return fmtAgo(Sync.lastAt());
+  }
+
+  function tryImport(imp) {
+    const err = Sync.enable(imp.value);
+    imp.value = '';
+    imp.placeholder = err || '输入已有同步码';
+  }
+
+  function renderSyncBox() {
+    const box = document.getElementById('sync-box');
+    if (!box) return;
+    box.innerHTML = '';
+    const code = Sync.getCode();
+
+    const title = document.createElement('div');
+    title.className = 'sync-title';
+    box.appendChild(title);
+
+    if (!code) {
+      title.textContent = '☁️ 云同步未开启';
+      const hint = document.createElement('p');
+      hint.className = 'sync-hint';
+      hint.textContent = '进度现只存本机浏览器。开启后生成 12 位同步码,在任何设备凭码即可找回进度。';
+      const row = document.createElement('div');
+      row.className = 'sync-row';
+      const on = document.createElement('button');
+      on.className = 'sync-btn';
+      on.textContent = '开启云同步';
+      on.onclick = () => Sync.enable();
+      const imp = document.createElement('input');
+      imp.className = 'sync-import';
+      imp.placeholder = '输入已有同步码';
+      imp.maxLength = 12;
+      imp.spellcheck = false;
+      imp.onkeydown = (e) => { if (e.key === 'Enter') tryImport(imp); };
+      const impBtn = document.createElement('button');
+      impBtn.className = 'sync-btn';
+      impBtn.textContent = '导入';
+      impBtn.onclick = () => tryImport(imp);
+      row.append(on, imp, impBtn);
+      box.append(hint, row);
+      return;
+    }
+
+    title.textContent = '☁️ 云同步 · ';
+    const st = document.createElement('span');
+    st.className = 'sync-status' + (Sync.status === 'error' ? ' is-err' : '');
+    st.textContent = statusText();
+    title.appendChild(st);
+
+    const row = document.createElement('div');
+    row.className = 'sync-row';
+    const codeEl = document.createElement('code');
+    codeEl.className = 'sync-code';
+    codeEl.textContent = code.replace(/^(.{4})(.{4})/, '$1 $2 ');
+    codeEl.title = '在新设备输入此码即可找回进度';
+    const copy = document.createElement('button');
+    copy.className = 'sync-btn';
+    copy.textContent = '复制';
+    copy.onclick = () => {
+      navigator.clipboard.writeText(code).then(() => {
+        copy.textContent = '已复制';
+        setTimeout(() => { copy.textContent = '复制'; }, 1500);
+      });
+    };
+    row.append(codeEl, copy);
+
+    const off = document.createElement('button');
+    off.className = 'sync-btn subtle';
+    off.textContent = '解除本机绑定';
+    off.onclick = () => {
+      if (confirm('解除后本机不再自动同步(服务器进度保留,凭同步码可找回)。确定解除?')) Sync.disable();
+    };
+
+    box.append(row, off);
+  }
+
   function render() {
     const main = document.getElementById('main');
     const id = route();
     renderSidebar();
+    renderSyncBox();
     if (!id) { renderHome(main); return; }
     const ch = ORDERED.find((c) => c.id === id);
     if (!ch) { renderHome(main); return; }
@@ -182,6 +276,12 @@ import { QuerySim } from './querysim.js';
     return parts.join('　');
   }
 
+  // 同步状态变化:刷新面板;远端数据合入后连侧栏 ✓ 一起刷新(导入/启动拉取后立即可见)
+  function onSyncChange() {
+    renderSyncBox();
+    if (Sync.status === 'ok') renderSidebar();
+  }
+  Sync.init(onSyncChange);
   window.addEventListener('hashchange', render);
   render();
 })();
