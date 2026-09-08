@@ -40,8 +40,10 @@ to-full-stack/
 ├── package.json             # 工具链:pnpm + tsx + tsc (+ vite/vitest/react-query)
 ├── scripts/verify_env.mjs   # 环境自检
 ├── notes/
-│   ├── 不变量量表.md         # ⭐ 四条不变量,每场打卡一格
+│   ├── 不变量量表.md         # ⭐ 四条不变量,每场打卡一格(打卡须写"这次多了什么")
+│   ├── 螺旋地图.md           # 概念脊柱/遭遇史/六阶段螺旋契约/假螺旋自检(教师侧规划)
 │   └── 杂记.md
+├── .zcode/skills/fullstack-tutor/  # 🤖 AI 助教契约技能包(⓪契约+①~⑧卡,ZCode 自动加载)
 ├── web/                     # 🌐 互动课程平台(阅读视图+模拟器视图,阶段 0~3 共 12 章)
 │   └── README.md
 ├── phase0-ts-async/         # 阶段 0:TS 与异步(材料就绪)
@@ -62,6 +64,7 @@ to-full-stack/
 1. `pnpm install && pnpm verify` —— 六项全 ✅；
 2. （可选预热）`cd web && npm install && npm run dev`，把 c00 的收窄模拟器玩一遍；
 3. 打开 [phase0-ts-async/AI助学手册.md](phase0-ts-async/AI助学手册.md)，把 [tutor/prompts.md](phase0-ts-async/tutor/prompts.md) 的 ⓪ 号契约卡贴给 AI，说"开始 S1"。
+   （ZCode 用户更省事：本仓库装了 [.zcode/skills/fullstack-tutor](./.zcode/skills/fullstack-tutor/SKILL.md)，AI 自动带契约，说"开始 S1"即可。）
 
 ## 工具链暗号表（10 秒除魅，别让魔法留到明天）
 
