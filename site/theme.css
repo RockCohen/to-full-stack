@@ -1,6 +1,6 @@
 /* ============================================================
    rockcohen.cc 设计系统 · 共享主题
-   版本: 1.0（2026-09-12）
+   版本: 1.1（2026-09-12）
    门禁文档: STYLE-GATE.md（改动本文件必须同步更新门禁文档与版本号）
    用法: <link rel="stylesheet" href="theme.css">
    ============================================================ */
@@ -66,6 +66,27 @@ body::before{
   border-radius:var(--radius);
   box-shadow:var(--shadow-glass);
 }
+
+/* ── 品牌条容器（吸顶毛玻璃，v1.1 新增） ──
+   用法:
+   <nav class="brandbar"><div class="brandbar-inner">
+     <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+     <div class="links"><a href="...">…</a></div>
+   </div></nav>                                                             */
+.brandbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(250,251,252,.6);
+  backdrop-filter:blur(20px) saturate(1.5);
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);
+  border-bottom:1px solid var(--line);
+}
+.brandbar-inner{
+  max-width:var(--maxw);margin:0 auto;padding:13px 24px;
+  display:flex;align-items:center;gap:22px;flex-wrap:wrap;
+}
+.brandbar .links{margin-left:auto;display:flex;gap:20px;font-size:14px}
+.brandbar .links a{color:var(--ink-2);text-decoration:none;transition:color .15s}
+.brandbar .links a:hover{color:var(--accent)}
 
 /* ── 品牌导航条（全站统一） ── */
 .nav-brand{font-weight:700;font-size:15px;letter-spacing:.02em;color:var(--ink);text-decoration:none}
