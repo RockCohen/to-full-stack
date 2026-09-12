@@ -148,6 +148,85 @@ code{font-family:var(--mono);font-size:.88em;background:#efece4;border-radius:6p
 .eqcls .blk{border:1.5px solid var(--accent);border-radius:10px;padding:6px 12px;
   font-family:var(--mono);font-size:14px;background:var(--accent-soft);color:var(--accent)}
 
+/* walk 审判庭 */
+.wseq{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+.wchip{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;
+  font-family:var(--mono);font-size:14.5px;transition:.15s;text-align:left}
+.wchip:hover{border-color:var(--accent);color:var(--accent)}
+.wchip.done{opacity:.55;cursor:default}
+.wbucket{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}
+.wb{border:2px dashed var(--line);border-radius:12px;padding:10px 12px;min-height:88px;background:#fff}
+.wb.over{border-color:var(--amber);background:var(--amber-soft)}
+.wb h5{margin:0 0 6px;font-size:13.5px;color:var(--muted);font-family:var(--sans)}
+.wb .dropped{display:inline-block;margin:3px 4px 0 0;border-radius:7px;padding:2px 8px;font-family:var(--mono);font-size:12.5px;
+  background:var(--accent-soft);color:var(--accent);cursor:pointer}
+.wb.good{border-color:var(--good);border-style:solid;background:var(--good-soft)}
+.wb.badb{border-color:var(--bad);border-style:solid;background:var(--bad-soft)}
+
+/* 闭包引擎 */
+.closure{display:flex;gap:26px;flex-wrap:wrap;justify-content:center;align-items:flex-start}
+.closure .side{min-width:230px}
+.cap{font-size:13px;color:var(--muted);text-align:center;margin-bottom:4px}
+
+/* 拓扑排序 */
+.topo-wrap{display:flex;gap:20px;flex-wrap:wrap}
+.topo-wrap .panel{flex:1;min-width:240px}
+.pool{display:flex;gap:8px;flex-wrap:wrap;min-height:46px}
+.garment{border:1.5px solid var(--accent);border-radius:9px;background:#fff;color:var(--accent);
+  padding:6px 14px;font-size:14px;transition:.15s}
+.garment:hover{background:var(--accent-soft)}
+.garment:disabled{opacity:.3;cursor:not-allowed;border-color:var(--line)}
+.orderline{margin-top:12px;font-size:15px;line-height:2.2}
+.orderline .picked{display:inline-block;background:var(--good-soft);border:1px solid #bcd9c6;border-radius:7px;
+  padding:2px 10px;margin:2px 4px 2px 0;font-size:13.5px}
+.orderline .pos{font-family:var(--mono);font-size:11px;color:var(--amber);margin-right:2px}
+
+/* 同构机 */
+.iso{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.iso{grid-template-columns:1fr}}
+.iso .col{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+.iso .col h5{margin:0 0 8px;font-size:14px;color:var(--accent);font-family:var(--sans)}
+.iso .row{font-family:var(--mono);font-size:14px;padding:5px 8px;border-radius:8px;cursor:pointer;transition:.15s}
+.iso .row:hover{background:var(--amber-soft)}
+.iso .row.hl{background:var(--amber-soft);outline:1.5px solid var(--amber)}
+
+/* 类型终审 */
+.typegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.tcard{border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px;text-align:center}
+.tcard .rname{font-family:var(--serif);font-size:18px}
+.tcard .rsub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.tbtns{display:flex;gap:6px;justify-content:center;margin-top:9px;flex-wrap:wrap}
+.tbtn{border:1.2px solid var(--line);background:#fff;border-radius:999px;font-size:12.5px;padding:3px 11px;transition:.15s}
+.tbtn:hover{border-color:var(--accent);color:var(--accent)}
+.tcard.okc{border-color:var(--good);background:var(--good-soft)}
+.tcard.noc{border-color:var(--bad);background:var(--bad-soft)}
+
+/* 复合解题器 */
+.pairline{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.pair{font-family:var(--mono);font-size:14px;border:1.5px solid var(--line);background:#fff;
+  border-radius:9px;padding:5px 12px;cursor:pointer;transition:.15s;user-select:none}
+.pair:hover{border-color:var(--accent)}
+.pair.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.pair.right{border-color:var(--good);background:var(--good-soft);color:var(--good)}
+.pair.wrongp{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+
+/* 习题 10.15 */
+.hchain{font-family:var(--mono);font-size:15px;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:10px 14px;margin:8px 0;line-height:2}
+.ansrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.ansrow input{width:76px;border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;
+  font-size:16px;font-family:var(--mono);text-align:center}
+.ansrow input:focus{outline:none;border-color:var(--accent)}
+
+/* 习题实战区 */
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+
 .quiz-item{margin:18px 0}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
 .result-box.show{display:block;animation:fadein .5s}
@@ -181,9 +260,9 @@ footer p{margin:6px 0}
     <span class="badge">数学之旅 · CHAPTER 10</span>
     <h1>有向图与偏序</h1>
     <div class="en">Directed Graphs &amp; Partial Orders</div>
-    <p class="lead">有向图 = 加了方向的二元关系，网页链接、课程先修、任务调度全是它。本章你会用矩阵幂数 walk、给穿衣流程做并行调度（critical path 只要 4 步）、还要在性质矩阵里鉴定六种关系。</p>
+    <p class="lead">有向图 = 加了方向的二元关系，网页链接、课程先修、任务调度全是它。本章你会把 walk 截成 path、用矩阵幂数 walk、给穿衣流程做拓扑排序与并行调度（critical path 只要 4 步）、把偏序同构成集合包含，还要在性质矩阵里鉴定四种关系。</p>
     <div class="meta">
-      <span>⏱ 约 45 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 367–425 页</span>
+      <span>⏱ 约 60 分钟</span><span>🧩 12 个互动装置</span><span>📖 原书第 367–424 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch09.html">上一章：数论</a></div>
@@ -193,10 +272,12 @@ footer p{margin:6px 0}
 <div class="layout">
 <nav id="toc" aria-label="章节目录">
   <div class="toc-title">本章路线图</div>
-  <a href="#s1"><span class="toc-num">10.1</span>度数与 walk</a>
-  <a href="#s2"><span class="toc-num">10.3</span>邻接矩阵幂</a>
-  <a href="#s3"><span class="toc-num">10.5</span>DAG 调度</a>
-  <a href="#s4"><span class="toc-num">10.6</span>偏序与等价关系</a>
+  <a href="#s1"><span class="toc-num">10.1–2</span>度数 · walk 与 path</a>
+  <a href="#s2"><span class="toc-num">10.3–4</span>矩阵幂 · walk 关系</a>
+  <a href="#s3"><span class="toc-num">10.5</span>DAG · 调度与拓扑排序</a>
+  <a href="#s4"><span class="toc-num">10.6–7</span>偏序 · 集合包含</a>
+  <a href="#s5"><span class="toc-num">10.8–10</span>线性序 · 积序 · 等价</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -206,8 +287,22 @@ footer p{margin:6px 0}
 <section class="ch" id="s1">
   <div class="ch-head reveal"><span class="no">10.1</span><h2>有向图：度数、walk 与 path</h2><span class="en">Vertex Degrees · Walks &amp; Paths</span></div>
   <div class="reveal">
-    <p><span class="term">有向图（digraph）</span>= 二元关系换上视觉外衣：点叫<b>顶点</b>，关系对 ⟨u→v⟩ 叫<b>有向边</b>（u 是尾、v 是头）。每个顶点有<span class="term">入度 indeg</span> 与<span class="term">出度 outdeg</span>，且两者总和恒相等（握手引理 10.1.2——都等于边数）。</p>
-    <p><b>walk</b> 是沿着箭头走的顶点-边交替序列，<b>path</b> 是不重复访问顶点的 walk；起点终点相同的 walk 叫<b>闭合 walk</b>，中间顶点互异的叫<b>圈（cycle）</b>。基本定理 10.2.3：<b>最短的 walk 必是 path</b>——同一顶点走两次，删掉中间的环只会更短（良序原理保证最小反例存在，删除即矛盾）。距离 dist(u,v) 定义为最短 path 长度，满足三角不等式。</p>
+    <p><span class="term">有向图（digraph）</span>= 二元关系换上视觉外衣：点叫<b>顶点</b>，关系对 ⟨u→v⟩ 叫<b>有向边</b>（u 是尾、v 是头）。每个顶点有<span class="term">入度 indeg</span> 与<span class="term">出度 outdeg</span>；全图所有顶点的入度之和与出度之和恒相等，都等于边数（握手引理 10.1.2）。</p>
+    <p><b>walk</b> 是沿着箭头走的顶点-边交替序列（如原书式 10.1 在整除图上走的 1 → 2 → 4 → 12 → 12 → 12），<b>path</b> 是不重复访问顶点的 walk；起点终点相同的 walk 叫<b>闭合 walk</b>；长度为正、除首尾外顶点互异的闭合 walk 叫<b>圈（cycle）</b>——单个顶点是长度 0 的闭合 walk，不算圈。原书 371 页在 4 节点图 H 上给了七个判例——abd 是 path、⟨a→b⟩⟨b→d⟩ 是同一条 path 的边序列写法、abcbd 只是 walk、dcbcbd 是闭合 walk、bdcb 是圈、(b→c)(c→b) 是长 2 圈，而 (c→b)(b→a)(a→d) 压根不是 walk（逆行违规）。基本定理 10.2.3：<b>最短的 walk 必是 path</b>——同一顶点走两次，删掉中间的环只会更短（良序原理保证从 u 到 v 的 walk 中存在最短者；若它重复经过某顶点，删掉中间一段得到更短的 walk，与最短性矛盾）。距离 dist(u,v) 定义为最短 path 长度，满足三角不等式（引理 10.2.5）；原书习题 10.3 正是让你证"取等 ⟺ x 在 u 到 v 的最短 path 上"。</p>
+  </div>
+
+  <!-- 互动⑤ walk 审判庭 -->
+  <div class="widget reveal" id="w-judge">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🧑‍⚖️ walk 审判庭：七个序列各是什么身份？</h4>
+    <p class="wdesc">图 H 边集：a→b, a→d, b→c, b→d, c→b, d→c。把下面七个序列拖入（或点选后点格子放入）正确的身份桶——分类全部照抄原书 10.2 节的判例。</p>
+    <div class="wseq" id="wj-pool"></div>
+    <div class="wbucket" id="wj-buckets"></div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" id="wj-check">宣判</button>
+      <button class="btn ghost" id="wj-reset">重摆</button>
+    </div>
+    <div class="fb" id="wj-fb"></div>
   </div>
 </section>
 
@@ -220,9 +315,9 @@ footer p{margin:6px 0}
 
   <!-- 互动① 邻接矩阵幂 -->
   <div class="widget reveal" id="w-mx">
-    <span class="pill">互动 ①</span>
+    <span class="pill">互动 ②</span>
     <h4 class="wtitle">🔢 矩阵幂计数器：图 H（原书 Figure 10.1）</h4>
-    <p class="wdesc">边：a→b, a→d, b→c, b→d, c→c, d→c。切换幂次，看矩阵如何"数出"walk。</p>
+    <p class="wdesc">边：a→b, a→d, b→c, b→d, c→b, d→c。切换幂次，看矩阵如何"数出"walk。</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
       <button class="btn on" data-k="1">k = 1</button>
       <button class="btn" data-k="2">k = 2</button>
@@ -230,6 +325,50 @@ footer p{margin:6px 0}
     </div>
     <table class="mx" id="mx-table"></table>
     <div class="mx-legend" id="mx-note"></div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub" id="s2b"><span class="tag">10.4</span>walk 关系与传递闭包</h3>
+    <p>把"是否存在 walk"本身看成一个关系：<span class="term">walk 关系 G*</span>（u G* v ⟺ 有 walk 从 u 到 v）与<span class="term">正 walk 关系 G⁺</span>（要求长度 > 0）。关系复合 Gⁿ 恰是"长度 n walk"关系（习题 10.11），而每个 path 长度 ≤ |V|−1，于是（原书式 10.9）：</p>
+    <div class="eq">G* = G⁰ ∪ G¹ ∪ G² ∪ … ∪ G<sup>|V|−1</sup></div>
+    <p>这就是<b>可达性</b>：不必走无穷多步，把前 n 个幂取并即可（还可重复平方加速）。10.5 节的先修课关系也靠它：修课资格由 D⁺ 判定，若 D⁺ 出圈（有闭合 walk）你就永远毕不了业——所以先修图必须是 DAG。</p>
+  </div>
+
+  <!-- 互动⑥ 闭包引擎 -->
+  <div class="widget reveal" id="w-closure">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">🌊 闭包引擎：G⁺ 逐层涨潮</h4>
+    <p class="wdesc">仍是图 H。逐次点击，把 A、A²、A³…的"足迹"并进累积矩阵——亮格 = 这一步新打开的可达对。留意 c→b→c 这类往返让中途顶点可达自己。</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+      <button class="btn primary" id="cl-step">再并一层 Aᵏ</button>
+      <button class="btn ghost" id="cl-reset">从 A⁰ 重来</button>
+      <span class="small muted" id="cl-k"></span>
+    </div>
+    <div class="closure">
+      <div class="side">
+        <div class="cap">累积正 walk 关系 G⁺（布尔并）</div>
+        <table class="mx" id="cl-acc"></table>
+      </div>
+      <div class="side">
+        <div class="cap">本层 Aᵏ（计数）</div>
+        <table class="mx" id="cl-pow"></table>
+      </div>
+    </div>
+    <div class="mx-legend" id="cl-note"></div>
+  </div>
+
+  <!-- 互动⑥b 距离查找 -->
+  <div class="widget reveal" id="w-dist">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">📏 距离查找器：首个非零幂 = dist</h4>
+    <p class="wdesc">10.3.1 的算法：从 k=1 找起，第一个让 (Aᴳ)ᵏᵤᵥ 非零的 k 就是 dist(u,v)。选一对顶点试水——有的格子永远等不来非零。</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <select id="ds-u" style="font-family:var(--mono);padding:7px 10px;border-radius:9px;border:1.5px solid var(--line);font-size:15px"></select>
+      <span class="math" style="font-size:18px">→</span>
+      <select id="ds-v" style="font-family:var(--mono);padding:7px 10px;border-radius:9px;border:1.5px solid var(--line);font-size:15px"></select>
+      <button class="btn primary" id="ds-go">查距离</button>
+    </div>
+    <div class="mx-legend" id="ds-note" style="margin-top:12px;font-size:15px"></div>
   </div>
 </section>
 
@@ -242,7 +381,7 @@ footer p{margin:6px 0}
 
   <!-- 互动② 穿衣并行调度器 -->
   <div class="widget reveal" id="w-sched">
-    <span class="pill">互动 ②</span>
+    <span class="pill">互动 ⑤</span>
     <h4 class="wtitle">👔 穿衣并行调度器：你能几步穿完？</h4>
     <p class="wdesc">每一分钟，你可以<b>同时</b>穿上所有"前置已完成"的衣物。点选本分钟要穿的衣物，然后进入下一分钟。目标：用最少分钟穿完 10 件。</p>
     <div class="sched-wrap">
@@ -263,39 +402,150 @@ footer p{margin:6px 0}
   </div>
 
   <div class="reveal">
+    <h3 class="sub"><span class="tag">10.5.1</span>拓扑排序：一次穿一件</h3>
+    <p><span class="term">拓扑排序</span>（Definition 10.5.2）= 把全部顶点排成一列，每个顶点都在它可达的顶点之前。构造法（原书正文）：反复从当前 <b>minimal 元素</b>（没有未完成前驱的顶点）里任选一个放进队尾——原书 Figure 10.8 就这样得到两个不同的合法解。定理 10.5.4：<b>每个有限 DAG 都有拓扑排序</b>——"早上能穿好衣服"的数学证明。</p>
+  </div>
+
+  <!-- 互动⑦ 拓扑排序挑战 -->
+  <div class="widget reveal" id="w-topo">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🧵 拓扑排序挑战：一次穿一件，别违反先修</h4>
+    <p class="wdesc">同一件穿衣 DAG。每一步<b>只能</b>从"当前 minimal 池"里挑一件（它的全部前驱都已入列）。排完 10 件即出合法拓扑序——你的序列会与原书 Figure 10.8 的两个官方解对照。</p>
+    <div class="topo-wrap">
+      <div class="panel">
+        <div class="small muted">当前 minimal 池（前驱已全部入列）：</div>
+        <div class="pool" id="tp-pool"></div>
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn ghost" id="tp-reset">重来</button>
+          <button class="btn ghost" id="tp-show">🤖 示范一个官方解</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="orderline" id="tp-line"><span class="small muted">（尚未开始——从左侧挑第一件）</span></div>
+      </div>
+    </div>
+    <div class="fb" id="tp-fb"></div>
+  </div>
+
+  <div class="reveal">
     <div class="box thm">
-      <span class="label">Dilworth 引理 10.5.12</span>
+      <span class="label">推论 10.5.11（Dilworth）</span>
       <p style="margin:4px 0">n 个顶点的 DAG 若最长链只有 t，则顶点可划分成 t 个<span class="term">反链（antichain，两两不可达）</span>。推论 10.5.13：任何 n 元偏序集必有大小 ≥ √n 的链<b>或</b>大小 ≥ √n 的反链。</p>
     </div>
   </div>
 </section>
 
-<!-- ================= 10.6 偏序 ================= -->
+<!-- ================= 10.6 偏序 + 10.7 集合包含 ================= -->
 <section class="ch" id="s4">
-  <div class="ch-head reveal"><span class="no">10.6</span><h2>偏序与等价关系</h2><span class="en">Partial Orders &amp; Equivalence Relations</span></div>
+  <div class="ch-head reveal"><span class="no">10.6–7</span><h2>偏序、集合包含与类型鉴定</h2><span class="en">Partial Orders · Set Containment</span></div>
   <div class="reveal">
-    <p>DAG 的 walk 关系自带三条性质：<b>传递</b>（能走到就能一直走到）、<b>反自反</b>（DAG 无圈 ⇒ 走不回自己）、由此得 <b>asymmetric</b>。满足传递 + 反自反（等价地：传递 + asymmetric）的关系叫<span class="term">严格偏序（strict partial order）</span>——定理 10.6.8 说它恰是某个 DAG 的正 walk 关系。加上自反（等价地：把 asymmetric 放宽为 antisymmetric）就是<span class="term">弱偏序</span>：≤、⊆、整除关系 | 全是。每个弱偏序都同构于某个集合族上的 ⊆（定理 10.7.3）——偏序"长得都像集合包含"。</p>
-    <p>而<span class="term">等价关系</span>（自反 + 对称 + 传递）则是划分的另一面：≡ (mod n) 的等价类恰好把整数切成 n 块（定理 10.10.4）。</p>
+    <p>DAG 的 walk 关系自带三条性质：<b>传递</b>（引理 10.6.2，walk 合并即传递）、<b>反自反</b>（DAG 无圈 ⇒ 走不回自己）、由此得 <b>asymmetric</b>（推论 10.6.10）。满足传递 + 反自反（等价地：传递 + asymmetric，推论 10.6.11）的关系叫<span class="term">严格偏序（strict partial order）</span>——定理 10.6.8 说它恰是某个 DAG 的正 walk 关系。把 asymmetric 放宽为 antisymmetric（允许自反）再加自反，就是<span class="term">弱偏序</span>（Definition 10.6.13）：≤、⊆、整除 | 全是；推论 10.6.15：弱偏序 ⟺ 某个 DAG 的 walk 关系。原书练习还提示两个"平凡"判例：恒等关系 Id_D 是弱偏序，空关系是严格偏序。</p>
+    <p>10.8 节给偏序"排队"：<b>线性序</b> = 任意两个不同元素都可比较（≤、&lt; 是；⊆、先修关系不是）。10.9 节的<span class="term">积序</span>按分量比较：原书 Example 10.9.2 的"更年轻且更矮"积序 Y 上，Dilworth 引理保证 101 个学生里必有 11 人"越大越高"（链）或 11 人"越小越高"（反链）。</p>
   </div>
 
   <!-- 互动③ 性质矩阵 -->
   <div class="widget reveal" id="w-pm">
-    <span class="pill">互动 ③</span>
+    <span class="pill">互动 ⑦</span>
     <h4 class="wtitle">🔬 关系性质鉴定矩阵</h4>
-    <p class="wdesc">点击格子切换 ✓ / ✗，标出四个关系在四条性质上的表现。全部标对后表格亮绿。</p>
+    <p class="wdesc">点击格子切换 ✓ / ✗，标出四个关系在四条性质上的表现（10.11 节总结表的节选）。全部标对后表格亮绿。</p>
     <div style="overflow-x:auto"><table class="pmx" id="pm-table"></table></div>
     <div style="margin-top:10px"><button class="btn primary" id="pm-check">判定</button></div>
     <div class="fb" id="pm-fb"></div>
   </div>
 
+  <!-- 互动⑨ 关系类型终审 -->
+  <div class="widget reveal" id="w-type">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">🏛️ 关系类型终审： strict / weak / 等价 / 皆非？</h4>
+    <p class="wdesc">六个具体关系，各判一个类型。判据：严格偏序 = 传递+反自反；弱偏序 = 传递+自反+反对称；等价关系 = 自反+对称+传递。全部来自原书正文与例题。</p>
+    <div class="typegrid" id="ty-grid"></div>
+    <div style="margin-top:12px"><button class="btn primary" id="ty-check">终审</button> <button class="btn ghost" id="ty-reset">重来</button></div>
+    <div class="fb" id="ty-fb"></div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub" id="s4b"><span class="tag">10.7</span>用集合包含画偏序（10.7）</h3>
+    <p>公理抽象，但"满足公理的东西长什么样"最好有图。定理 10.7.3：<b>每个弱偏序都同构于某集合族上的 ⊆</b>（严格偏序则同构于 ⊂）——偏序"长得都像集合包含"。构造法：把元素 a 映到它的"下闭包"{b : b ≤ a}。原书用整除关系 {1,3,4,6,8,12} 演示：3 | 12 ⟺ {1,3} ⊆ {1,3,4,6,12}。</p>
+  </div>
+
+  <!-- 互动⑧ 同构机 -->
+  <div class="widget reveal" id="w-iso">
+    <span class="pill">互动 ⑨</span>
+    <h4 class="wtitle">🪞 偏序 ↔ 集合包含 同构机（原书 10.7 例）</h4>
+    <p class="wdesc">左栏是整除关系（点一个数，高亮它整除的所有数），右栏是对应的因数集与 ⊆。同一行 = 同一元素的两种化身；试试找出左右两栏里"同一条边"。</p>
+    <div class="iso">
+      <div class="col">
+        <h5>| 整除关系 on {1,3,4,6,8,12}</h5>
+        <div id="iso-div"></div>
+      </div>
+      <div class="col">
+        <h5>⊆ 包含关系 on 因数集族</h5>
+        <div id="iso-set"></div>
+      </div>
+    </div>
+    <div class="mx-legend" id="iso-note" style="margin-top:10px">点左栏任意数 x：高亮 3 | 12 这类"整除对"；右栏同步点亮 {1,3} ⊆ {1,3,4,6,12}。</div>
+  </div>
+</section>
+
+<!-- ================= 10.8–10.10 等价关系 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">10.10</span><h2>等价关系：划分的另一面</h2><span class="en">Equivalence Relations</span></div>
+  <div class="reveal">
+    <p><span class="term">等价关系</span>（自反 + 对称 + 传递）是偏序的"镜像亲戚"：偏序把元素排成层级，等价关系把元素捏成团块。任何全函数 f 都自带等价关系 ≡_f（a ≡_f a′ ⟺ f(a) = f(a′)，Definition 10.10.2），≡ (mod n) 正是 f = 余数函数的特例。等价类 [a]ᴿ 把集合切成两两不交的块，反过来任何划分也生成一个等价关系——<b>"等价关系 ⟺ 划分"</b>（定理 10.10.4）：≡ (mod 5) 的五个块 {…,−5,0,5,10,…}、{…,−4,1,6,11,…}……把整数切成五段，正对应第九章的"mod 5 五个世界"。</p>
+  </div>
+
   <!-- 互动④ 等价类划分 -->
   <div class="widget reveal" id="w-eq">
-    <span class="pill">互动 ④</span>
+    <span class="pill">互动 ⑩</span>
     <h4 class="wtitle">🧩 等价类划分器：x ≡ y (mod n)</h4>
     <input type="range" id="eq-n" min="2" max="8" value="5" />
     <div class="small muted">n = <b id="eq-nv" style="font-family:var(--mono)">5</b> —— 整数被切成 n 块等价类：</div>
     <div class="eqcls" id="eq-classes"></div>
-    <div class="small muted">每一块就是一个等价类 [k]ᵣ —— 等价关系 ⟺ 划分（定理 10.10.4）。第九章的"mod n 三个世界"在这里正式成型。</div>
+    <div class="small muted">每一块就是一个等价类 [k]ᵣ —— 等价关系 ⟺ 划分（定理 10.10.4）。第九章的"mod n 世界"在这里正式成型。</div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Practice Problems, Playable</span></div>
+  <div class="reveal">
+    <p>两道原书 Practice Problem 做成解题器：先自己算，再点选核查。</p>
+  </div>
+
+  <!-- 习题 10.9 复合解题器 -->
+  <div class="widget reveal" id="w-comp">
+    <span class="pill">互动 ⑪</span>
+    <h4 class="wtitle">🧮 习题 10.9：关系复合解题器</h4>
+    <p class="wdesc">原书设定：A = {1,2,3}，B = {4,5,6}，R ⊆ A×B = {(1,4),(1,5),(2,5),(3,6)}，S ⊆ B×B = {(4,5),(4,6),(5,4)}。复合规则 a (S∘R) c ⟺ ∃b：aRb 且 bSc。三小问逐关点选——被选中的对会高亮，选满后判定。</p>
+    <div id="cp-q" style="font-weight:600;margin-bottom:4px"></div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 2px">
+      <span class="small muted" style="align-self:center">R =</span>
+      <span class="pair" style="cursor:default;border-style:dashed">{(1,4),(1,5),(2,5),(3,6)}</span>
+      <span class="small muted" style="align-self:center">S =</span>
+      <span class="pair" style="cursor:default;border-style:dashed">{(4,5),(4,6),(5,4)}</span>
+    </div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 10px">
+      <span class="small muted" style="align-self:center">候选（A∪B×A∪B 全对 12 个里有效的）：</span>
+    </div>
+    <div class="pairline" id="cp-cands"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+      <button class="btn primary" id="cp-check">判定本题</button>
+      <button class="btn ghost" id="cp-next">下一小问 →</button>
+    </div>
+    <div class="fb" id="cp-fb"></div>
+  </div>
+
+  <!-- 习题 10.15 三问 -->
+  <div class="widget reveal" id="w-h15">
+    <span class="pill">互动 ⑫</span>
+    <h4 class="wtitle">🏗️ 习题 10.15：任务 DAG {A…H} 三连问</h4>
+    <p class="wdesc">原书边集：A→D，B→E，B→F，C→F，D→E，E→G，F→H（S→T 表示 S 必须先于 T）。每题填数字，判定后给证。</p>
+    <div class="hchain">A ─→ D ─→ E ─→ G&nbsp;&nbsp;·&nbsp;&nbsp;B ─→ E&nbsp;&nbsp;·&nbsp;&nbsp;B ─→ F ─→ H&nbsp;&nbsp;·&nbsp;&nbsp;C ─→ F</div>
+    <div class="ansrow"><b>(a)</b> 最长链的大小 = <input id="h15a" type="number" min="1" max="8" /> <span class="small muted">（链 = 两两可比的顶点集，如 B,E,G）</span></div>
+    <div class="ansrow"><b>(b)</b> 最长反链的大小 = <input id="h15b" type="number" min="1" max="8" /> <span class="small muted">（反链 = 两两不可比）</span></div>
+    <div class="ansrow"><b>(c)</b> 每任务 1 分钟、无限台机器，最短并行时间 = <input id="h15c" type="number" min="1" max="8" /> <span class="small muted">（分钟）</span></div>
+    <div style="margin-top:10px"><button class="btn primary" id="h15-check">三问全判</button></div>
+    <div class="fb" id="h15-fb"></div>
   </div>
 </section>
 
@@ -303,7 +553,7 @@ footer p{margin:6px 0}
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 10.1–10.10 全部小节。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -326,7 +576,7 @@ footer p{margin:6px 0}
     <details class="egg">
       <summary>德布鲁因序列与鸡群之王（原书习题 10.5 / 10.13）</summary>
       <div class="body">
-        <p><b>10.5</b>：把全部 8 个 3-bit 串拼成一条尽量短的循环串（00010111，长 10）——这就是 de Bruijn 序列，2-bit 版本的图已在原书 Figure 10.10。<b>10.13 鸡群之王</b>：出度最大的鸡必然"virtual peck"所有其他鸡（King Chicken Theorem）——竞赛图（tournament digraph）的入门礼。</p>
+        <p><b>10.5</b>：把全部 8 个 3-bit 串作为连续 3 位窗口塞进一条尽量短的线性串——<b>0001011100</b>（长 10 = 2³ + 2，恰为最小：8 个窗口 000,001,010,101,011,111,110,100 一个不缺）。这就是 de Bruijn 序列 B(2,3) 的线性化；2-bit 版本的图已在原书 Figure 10.10，习题 10.7 解释了为什么"每边恰走一次"的 Euler 型路径必然存在。<b>10.13 鸡群之王</b>：出度最大的鸡必然"virtual peck"所有其他鸡（King Chicken Theorem）——竞赛图（tournament digraph）的入门礼。</p>
       </div>
     </details>
     <details class="egg">
@@ -346,7 +596,7 @@ footer p{margin:6px 0}
 <footer>
   <div class="wrap" style="padding:0">
     <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
-    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 10 章 = 第 367–425 页）。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 10 章 = 第 367–424 页）。</p>
     <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch09.html">上一章：数论</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
   </div>
 </footer>
@@ -358,8 +608,9 @@ footer p{margin:6px 0}
   <div class="panel">
     <button class="close" id="toc-close">×</button>
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
-    <a href="#s1">10.1 · 度数与 walk</a><a href="#s2">10.3 · 邻接矩阵幂</a><a href="#s3">10.5 · DAG 调度</a>
-    <a href="#s4">10.6 · 偏序与等价关系</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#s1">10.1–2 · 度数 · walk 与 path</a><a href="#s2">10.3–4 · 矩阵幂 · walk 关系</a><a href="#s3">10.5 · DAG 调度</a>
+    <a href="#s4">10.6–7 · 偏序 · 集合包含</a><a href="#s5">10.8–10 · 线性 · 积 · 等价</a><a href="#sp">⚔️ · 习题实战</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -395,14 +646,14 @@ $("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
 ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
 $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
 
-/* ---------- 互动① 邻接矩阵幂 ---------- */
+/* ---------- 互动② 邻接矩阵幂 ---------- */
 (() => {
   const names = ["a","b","c","d"];
-  // a→b, a→d, b→c, b→d, c→c, d→c（原书 Figure 10.1 / AH）
+  // a→b, a→d, b→c, b→d, c→b, d→c（原书 Figure 10.1 / A_H，书页 374）
   const A = [
     [0,1,0,1],
     [0,0,1,1],
-    [0,0,1,0],
+    [0,1,0,0],
     [0,0,1,0],
   ];
   function mul(P, Q){
@@ -437,9 +688,9 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
       tbl.appendChild(tr);
     });
     const notes = {
-      1: "k=1：就是邻接矩阵本身——每条边是一条长度 1 的 walk。",
-      2: "k=2：注意 a→c 格 = 2！两条长度 2 的 walk：a→b→c 与 a→d→c（原书正文同款验证）。b→b 也是 1（b→c→c）。",
-      3: "k=3：a→c = 4 条。一般地 (Aᴳ)ᵏ 就是长度 k walk 计数矩阵（推论 10.3.3），最短路径可从最小的 k 找起。",
+      1: "k=1：就是邻接矩阵本身——每条边是一条长度 1 的 walk。c→b 这条回边让图 H 能'绕圈'。",
+      2: "k=2：a→c 格 = 2！两条长度 2 的 walk：a→b→c 与 a→d→c（原书正文同款验证）。b→b = 1 走的是 b→c→b，d→b、c→d、c→c（c→b→c）也各有一条。",
+      3: "k=3：a→b = 2 条（a→b→c→b 与 a→d→c→b）。一般地 (Aᴳ)ᵏ 就是长度 k walk 计数矩阵（推论 10.3.3），最短路径可从最小的 k 找起。",
     };
     $("#mx-note").textContent = notes[k] || "";
     $$("#w-mx .btn").forEach(b => b.classList.toggle("on", +b.dataset.k === k));
@@ -448,19 +699,16 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   render();
 })();
 
-/* ---------- 互动② 穿衣并行调度器 ---------- */
+/* ---------- 互动⑤ 穿衣并行调度器 ---------- */
 (() => {
-  const tasks = {
-    "左袜": [], "右袜": [], "内衣": [], "衬衫": ["左袜", "右袜", "内衣"].length ? [] : [],
-  };
-  // 按原书 Figure 10.7：边集
+  // 按原书 Figure 10.7：边集（underwear→belt 在图上直达，与正文分层 A₁–A₄ 一致）
   const edges = {
     "left sock": [], "right sock": [], "underwear": [], "shirt": [],
     "pants": ["underwear", "shirt"],
     "tie": ["shirt"],
+    "belt": ["underwear", "pants"],
     "left shoe": ["left sock", "pants"],
     "right shoe": ["right sock", "pants"],
-    "belt": ["pants"],
     "jacket": ["tie", "belt"],
   };
   const ALL = Object.keys(edges);
@@ -515,9 +763,9 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
 (() => {
   const rels = [
     { name:"&lt; （实数小于）", truth: {r:"F", s:"F", a:"T", t:"T"} },
-    { name:"≤ （实数小于等于）", truth: {r:"T", s:"F", a:"F", t:"T"} },
-    { name:"⊆ （集合包含）", truth: {r:"T", s:"F", a:"F", t:"T"} },
-    { name:"| （正整数整除）", truth: {r:"T", s:"F", a:"F", t:"T"} },
+    { name:"≤ （实数小于等于）", truth: {r:"T", s:"F", a:"T", t:"T"} },
+    { name:"⊆ （集合包含）", truth: {r:"T", s:"F", a:"T", t:"T"} },
+    { name:"| （正整数整除）", truth: {r:"T", s:"F", a:"T", t:"T"} },
   ];
   const props = [["r","自反"],["s","对称"],["a","反对称"],["t","传递"]];
   const tbl = $("#pm-table");
@@ -581,6 +829,433 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   upd();
 })();
 
+/* ---------- 互动① walk 审判庭 ---------- */
+(() => {
+  const SEQS = [
+    { s: "a b d", cls: "path", note: "长度 2 的 path：顶点互异，两步都是合法边（a→b, b→d）。" },
+    { s: "(a→b)(b→d)", cls: "path", note: "同一条 path 的边序列写法——原书展示的两种记法。" },
+    { s: "a b c b d", cls: "walk", note: "长度 4 的 walk：b 走了两次，但箭头全合法。它不是 path。" },
+    { s: "d c b c b d", cls: "closed", note: "长度 5 的闭合 walk：起点 = 终点 = d，中途 c、b 各重复。" },
+    { s: "b d c b", cls: "cycle", note: "长度 3 的圈：首尾同为 b，中间顶点互异。" },
+    { s: "(b→c)(c→b)", cls: "cycle", note: "长度 2 的圈——靠 c→b 这条回边。" },
+    { s: "(c→b)(b→a)(a→d)", cls: "no", note: "不是 walk：b→a 是逆行，图 H 没有这条方向的边。" },
+  ];
+  const BUCKETS = [
+    { k: "path", t: "path" },
+    { k: "walk", t: "walk（非 path）" },
+    { k: "closed", t: "闭合 walk（非圈）" },
+    { k: "cycle", t: "圈 cycle" },
+    { k: "no", t: "不是 walk" },
+  ];
+  let picked = null; // 当前选中的 chip 索引
+  let where = Array(SEQS.length).fill(null); // 每个 seq 所在桶
+  function render() {
+    const pool = $("#wj-pool");
+    pool.innerHTML = "";
+    SEQS.forEach((q, i) => {
+      if (where[i] !== null) return;
+      const b = document.createElement("button");
+      b.className = "wchip" + (picked === i ? " done" : "");
+      b.textContent = q.s;
+      b.addEventListener("click", () => { picked = (picked === i ? null : i); render(); });
+      b.addEventListener("dragstart", e => e.dataTransfer.setData("text/plain", i));
+      pool.appendChild(b);
+    });
+    if (!pool.children.length) pool.innerHTML = "<span class='small muted'>（全部已分桶——点'宣判'）</span>";
+    const bx = $("#wj-buckets");
+    bx.innerHTML = "";
+    BUCKETS.forEach(bk => {
+      const d = document.createElement("div");
+      d.className = "wb";
+      d.innerHTML = `<h5>${bk.t}</h5>`;
+      SEQS.forEach((q, i) => {
+        if (where[i] === bk.k) {
+          const c = document.createElement("span");
+          c.className = "dropped";
+          c.textContent = q.s;
+          c.title = "点我取回";
+          c.addEventListener("click", () => { where[i] = null; picked = null; render(); });
+          d.appendChild(c);
+        }
+      });
+      d.addEventListener("click", () => {
+        if (picked !== null) { where[picked] = bk.k; picked = null; render(); }
+      });
+      d.addEventListener("dragover", e => { e.preventDefault(); d.classList.add("over"); });
+      d.addEventListener("dragleave", () => d.classList.remove("over"));
+      d.addEventListener("drop", e => {
+        e.preventDefault(); d.classList.remove("over");
+        const i = +e.dataTransfer.getData("text/plain");
+        where[i] = bk.k; picked = null; render();
+      });
+      bx.appendChild(d);
+    });
+  }
+  $("#wj-check").addEventListener("click", () => {
+    const fb = $("#wj-fb");
+    if (where.some(w => w === null)) { fb.className = "fb no"; fb.textContent = "还有序列没入桶——先把七个都分好类。"; return; }
+    const bad = [];
+    SEQS.forEach((q, i) => { if (where[i] !== q.cls) bad.push(q.s); });
+    $$("#wj-buckets .wb").forEach(d => {
+      const bk = BUCKETS.find(b => d.querySelector("h5").textContent.startsWith(b.t.split("（")[0].slice(0,4)));
+      if (!bk) return;
+      const mine = SEQS.map((q, i) => ({q, i})).filter(o => where[o.i] === bk.k);
+      const okAll = mine.every(o => o.q.cls === bk.k);
+      d.classList.toggle("good", okAll && mine.length);
+      d.classList.toggle("badb", !okAll);
+    });
+    if (!bad.length) {
+      fb.className = "fb ok";
+      fb.innerHTML = "🎯 七案全破！与原书 371 页判例完全一致。记住定理 10.2.3：最短的 walk 必是 path——重复顶点删环即更短。";
+    } else {
+      fb.className = "fb no";
+      fb.innerHTML = "有 " + bad.length + " 个放错了（红桶）。提示：bdcb 靠 b→d、d→c、c→b 成圈；(c→b)(b→a)(a→d) 里 b→a 不存在。";
+    }
+  });
+  $("#wj-reset").addEventListener("click", () => { where = Array(SEQS.length).fill(null); picked = null; $("#wj-fb").className = "fb"; render(); });
+  render();
+})();
+
+/* ---------- 互动③ 闭包引擎 ---------- */
+(() => {
+  const names = ["a","b","c","d"];
+  const A = [[0,1,0,1],[0,0,1,1],[0,1,0,0],[0,0,1,0]];
+  const n = 4;
+  const mul = (P,Q) => {
+    const R = Array.from({length:n}, () => Array(n).fill(0));
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++)
+      for (let k = 0; k < n; k++) R[i][j] += P[i][k]*Q[k][j];
+    return R;
+  };
+  let k = 0, acc = Array.from({length:n}, () => Array(n).fill(0));
+  function drawTable(el, M, {hot, bool} = {}) {
+    el.innerHTML = "";
+    const head = document.createElement("tr");
+    head.innerHTML = "<th></th>" + names.map(x => `<th>${x}</th>`).join("");
+    el.appendChild(head);
+    names.forEach((rn, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<th>${rn}</th>`;
+      M[i].forEach((v, j) => {
+        const td = document.createElement("td");
+        td.textContent = bool ? (v ? "1" : "·") : v;
+        if (!v) td.classList.add("z");
+        if (hot && hot.has(i + "," + j)) td.classList.add("hot");
+        tr.appendChild(td);
+      });
+      el.appendChild(tr);
+    });
+  }
+  function notes(kk) {
+    return {
+      0: "还没开始——点'再并一层 Aᵏ'从 A¹ 涨起。",
+      1: "A¹ 涨潮：六条边各点亮一格。",
+      2: "新开 5 格（黄）：a→c（两条路！）、b→b（b→c→b）、c→c（c→b→c）、c→d（c→b→d）、d→b（d→c→b）。",
+      3: "只新开一格：d→d（d→c→b→d 绕一圈回家）。G⁺ 除 a 的对角格外已全满。",
+      4: "潮水停了：k=4 无新格。a→a 永远等不来——a 入度为 0。正 walk 关系 G⁺ 定格；G* = G⁺ ∪ G⁰（再并对角线）。",
+    }[kk] || "";
+  }
+  function render() {
+    $("#cl-k").textContent = k ? `已并到 k = ${k}` : "";
+    if (k === 0) {
+      drawTable($("#cl-acc"), acc, {bool:true});
+      drawTable($("#cl-pow"), Array.from({length:n}, () => Array(n).fill(0)), {bool:true});
+    } else {
+      let P = A;
+      for (let i = 1; i < k; i++) P = mul(P, A);
+      const hot = new Set();
+      for (let i = 0; i < n; i++) for (let j = 0; j < n; j++)
+        if (P[i][j] > 0 && !acc[i][j]) { acc[i][j] = 1; hot.add(i + "," + j); }
+      drawTable($("#cl-acc"), acc, {bool:true, hot});
+      drawTable($("#cl-pow"), P, {});
+    }
+    $("#cl-note").textContent = notes(k);
+    $("#cl-step").disabled = k >= 4;
+  }
+  $("#cl-step").addEventListener("click", () => { if (k < 4) { k++; render(); } });
+  $("#cl-reset").addEventListener("click", () => { k = 0; acc = Array.from({length:n}, () => Array(n).fill(0)); render(); });
+  render();
+})();
+
+/* ---------- 互动④ 距离查找器 ---------- */
+(() => {
+  const names = ["a","b","c","d"];
+  const A = [[0,1,0,1],[0,0,1,1],[0,1,0,0],[0,0,1,0]];
+  const adj = names.map((_, i) => names.map((__, j) => A[i][j] ? j : null).filter(x => x !== null));
+  function plainBfs(u, v) {
+    const prev = new Map([[u, null]]), q = [u];
+    while (q.length) {
+      const x = q.shift();
+      if (x === v) {
+        const path = [v];
+        let cur = v;
+        while (prev.get(cur) !== null) { cur = prev.get(cur); path.unshift(cur); }
+        return path;
+      }
+      for (const y of adj[x]) if (!prev.has(y)) { prev.set(y, x); q.push(y); }
+    }
+    return null;
+  }
+  function bfsPath(u, v) {
+    if (u !== v) return plainBfs(u, v);
+    let best = null; // u==v：从每个邻居出发绕回自己，取最短正长圈
+    for (const s of adj[u]) {
+      const sub = plainBfs(s, u);
+      if (sub && (!best || sub.length + 1 < best.length)) best = [u, ...sub];
+    }
+    return best;
+  }
+  const su = $("#ds-u"), sv = $("#ds-v");
+  names.forEach(nn => { su.add(new Option(nn, nn)); sv.add(new Option(nn, nn)); });
+  sv.value = "c";
+  $("#ds-go").addEventListener("click", () => {
+    const u = names.indexOf(su.value), v = names.indexOf(sv.value);
+    const note = $("#ds-note");
+    const p = bfsPath(u, v);
+    if (!p) {
+      note.innerHTML = `∞：把幂一路升到 A⁴ 也等不来非零——<b>${su.value} 无法经正长度 walk 到达 ${sv.value}</b>。a 是全图唯一入度为 0 的顶点，谁也走不到它（正 walk 关系 G⁺ 里这一格永缺；a↔a 只剩长 0 的 G⁰）。`;
+      return;
+    }
+    const d = p.length - 1;
+    note.innerHTML = `dist(${su.value}, ${sv.value}) = <b style="color:var(--accent)">${d}</b>，见证 path：` +
+      `<span class="math">${p.map(x => names[x]).join(" → ")}</span>。第一个非零幂正是 A<sup>${d}</sup>——"首个非零幂 = 距离"（10.3.1）。` +
+      (u === v ? " 回到自己的正长 walk 必含圈（引理 10.2.6 的镜像）。" : d >= 2 ? " 它是 path：中途顶点不重复。" : "");
+  });
+})();
+
+/* ---------- 互动⑥ 拓扑排序挑战 ---------- */
+(() => {
+  const pre = {
+    "left sock": [], "right sock": [], "underwear": [], "shirt": [],
+    "pants": ["underwear", "shirt"],
+    "tie": ["shirt"],
+    "belt": ["underwear", "pants"],
+    "left shoe": ["left sock", "pants"],
+    "right shoe": ["right sock", "pants"],
+    "jacket": ["tie", "belt"],
+  };
+  const cn = { "left sock":"左袜", "right sock":"右袜", "underwear":"内衣", "shirt":"衬衫",
+               "pants":"裤子", "tie":"领带", "left shoe":"左鞋", "right shoe":"右鞋",
+               "belt":"腰带", "jacket":"外套" };
+  const OFFICIAL = [
+    ["underwear","shirt","pants","belt","tie","jacket","left sock","right sock","left shoe","right shoe"],
+    ["left sock","shirt","tie","underwear","right sock","pants","right shoe","belt","jacket","left shoe"],
+  ];
+  let order = [], animating = false;
+  const avail = () => Object.keys(pre).filter(t => !order.includes(t) && pre[t].every(p => order.includes(p)));
+  function render() {
+    const pool = $("#tp-pool");
+    pool.innerHTML = "";
+    if (animating) { pool.innerHTML = "<span class='small muted'>官方解演示中…</span>"; }
+    avail().forEach(t => {
+      const b = document.createElement("button");
+      b.className = "garment"; b.textContent = cn[t];
+      b.addEventListener("click", () => pick(t));
+      pool.appendChild(b);
+    });
+    if (!avail().length && order.length < 10 && !animating) pool.innerHTML = "<span class='small muted'>（池空了？不可能——定理 10.5.4 保证总有一个 minimal 元素）</span>";
+    if (order.length === 10) pool.innerHTML = "<span class='small muted'>✅ 10 件全部入列</span>";
+    $("#tp-line").innerHTML = order.length
+      ? order.map((t, i) => `<span class="picked"><span class="pos">${i+1}.</span>${cn[t]}</span>`).join("")
+      : "<span class='small muted'>（尚未开始——从左侧挑第一件）</span>";
+  }
+  function pick(t) {
+    order.push(t); render();
+    if (order.length === 10) finish();
+  }
+  function sameArr(a, b) { return a.length === b.length && a.every((x, i) => x === b[i]); }
+  function finish() {
+    const fb = $("#tp-fb");
+    const hit = OFFICIAL.findIndex(o => sameArr(order, o));
+    fb.className = "fb ok";
+    fb.innerHTML = "🎉 合法拓扑序完成！" + (hit >= 0
+      ? `而且与原书 Figure 10.8 的官方解 (${["a","b"][hit]}) <b>一字不差</b>！`
+      : "它不在原书 Figure 10.8 的两个官方解里——但完全合法。10 件衣服的拓扑排序远不止两个：每一步在 minimal 池里怎么挑都由你。");
+  }
+  $("#tp-reset").addEventListener("click", () => { order = []; animating = false; $("#tp-fb").className = "fb"; render(); });
+  $("#tp-show").addEventListener("click", () => {
+    if (animating || order.length === 10) return;
+    animating = true; render();
+    const sol = OFFICIAL[1];
+    (function step() {
+      const next = sol.find(t => !order.includes(t));
+      if (next === undefined) { animating = false; return; }
+      order.push(next); render();
+      if (order.length === 10) { animating = false; finish(); } else setTimeout(step, 300);
+    })();
+  });
+  render();
+})();
+
+/* ---------- 互动⑧ 关系类型终审 ---------- */
+(() => {
+  const TYPES = ["严格偏序", "弱偏序", "等价关系", "都不是"];
+  const RELS = [
+    { name: "<", sub: "实数上的小于", ans: 0, why: "传递 ✓ 反自反 ✓ → 严格偏序（原书 10.6.2 开篇判例）。" },
+    { name: "≤", sub: "实数上的小于等于", ans: 1, why: "传递 + 自反 + 反对称 → 弱偏序；它就是 < 加上相等（引理 10.6.14）。" },
+    { name: "|", sub: "正整数整除", ans: 1, why: "Example 10.6.17：整除是非负整数上的弱偏序（自反：a|a；反对称；传递）。" },
+    { name: "Id_D", sub: "恒等关系（a R b ⟺ a=b）", ans: 1, why: "恒等 vacuously 反对称、传递，且自反 → 弱偏序（原书 practice 判例）。" },
+    { name: "∅", sub: "空关系（无任何箭头）", ans: 0, why: "没有箭头就 vacuously 传递、反自反 → 严格偏序（原书 practice 判例）。" },
+    { name: "≠", sub: "实数上的不等", ans: 3, why: "对称+反自反，但<b>不传递</b>：1≠2 且 2≠1，结论却该是 1≠1——假。四类都不是。" },
+  ];
+  const grid = $("#ty-grid"), picks = Array(RELS.length).fill(-1);
+  RELS.forEach((r, i) => {
+    const c = document.createElement("div");
+    c.className = "tcard"; c.id = "ty-" + i;
+    c.innerHTML = `<div class="rname math">${r.name}</div><div class="rsub">${r.sub}</div>`;
+    const btns = document.createElement("div");
+    btns.className = "tbtns";
+    TYPES.forEach((t, j) => {
+      const b = document.createElement("button");
+      b.className = "tbtn"; b.textContent = t;
+      b.addEventListener("click", () => { picks[i] = j; $$(".tbtn", c).forEach((x, k2) => x.style.background = k2 === j ? "var(--accent-soft)" : "#fff"); });
+      btns.appendChild(b);
+    });
+    c.appendChild(btns);
+    grid.appendChild(c);
+  });
+  $("#ty-check").addEventListener("click", () => {
+    const fb = $("#ty-fb");
+    if (picks.includes(-1)) { fb.className = "fb no"; fb.textContent = "六张卡各选一个类型再终审。"; return; }
+    let all = true;
+    RELS.forEach((r, i) => {
+      const ok = picks[i] === r.ans;
+      $("#ty-" + i).classList.toggle("okc", ok);
+      $("#ty-" + i).classList.toggle("noc", !ok);
+      if (!ok) all = false;
+    });
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.innerHTML = all
+      ? "🎯 六案全对！速记：恒等=弱、空=严格、≠ 败在传递。"
+      : "红色卡片判错了——展开看各关系的判据：" + RELS.map((r, i) => `${r.name}：${r.why}`).join(" ");
+  });
+  $("#ty-reset").addEventListener("click", () => {
+    picks.fill(-1);
+    RELS.forEach((_, i) => { $("#ty-" + i).classList.remove("okc","noc"); $$("#ty-" + i + " .tbtn").forEach(x => x.style.background = "#fff"); });
+    $("#ty-fb").className = "fb";
+  });
+})();
+
+/* ---------- 互动⑨ 同构机 ---------- */
+(() => {
+  const nums = [1, 3, 4, 6, 8, 12];
+  const sets = { 1:[1], 3:[1,3], 4:[1,4], 6:[1,3,6], 8:[1,4,8], 12:[1,3,4,6,12] };
+  const divides = (x, y) => y % x === 0;
+  const ldiv = $("#iso-div"), lset = $("#iso-set");
+  function render() {
+    ldiv.innerHTML = "<div class='small muted' style='margin-bottom:6px'>每行：x 整除的所有 y</div>";
+    lset.innerHTML = "<div class='small muted' style='margin-bottom:6px'>每行：包含 S<sub>x</sub> 的所有集合</div>";
+    nums.forEach(x => {
+      const targets = nums.filter(y => divides(x, y));
+      const r = document.createElement("div");
+      r.className = "row"; r.id = "dv-" + x;
+      r.innerHTML = `<b>${x}</b> ⟶ {${targets.join(", ") || "—"}}`;
+      r.addEventListener("click", () => hl(x));
+      ldiv.appendChild(r);
+      const s = document.createElement("div");
+      s.className = "row"; s.id = "st-" + x;
+      s.innerHTML = `{${sets[x].join(",")}}`;
+      s.addEventListener("click", () => hl(x));
+      lset.appendChild(s);
+    });
+  }
+  function hl(x) {
+    $$(".row").forEach(r => r.classList.remove("hl"));
+    const up = nums.filter(y => divides(x, y));      // x | y
+    up.forEach(y => { $("#dv-" + y)?.classList.add("hl"); $("#st-" + y)?.classList.add("hl"); });
+    $("#dv-" + x)?.classList.add("hl"); $("#st-" + x)?.classList.add("hl");
+    $("#iso-note").innerHTML = `<b>${x}</b> 整除 {${up.filter(y => y !== x).join(", ") || "（除自身外无）"}} ` +
+      `⟺ {${sets[x].join(",")}} ⊆ 这些 y 的因数集（含自身的平凡包含未画）。` +
+      `映射 f(x) = {b : b 整除 x} 就是同构——引理 10.7.2 / 定理 10.7.3：每个弱偏序都"长得像 ⊆"。`;
+  }
+  render();
+})();
+
+/* ---------- 互动⑪ 习题 10.9 复合解题器 ---------- */
+(() => {
+  const A2B = [[1,4],[1,5],[2,5],[3,6]];
+  const QUESTS = [
+    { expr: "S ∘ R", pool: "AB",
+      ans: [[1,5],[1,6],[1,4],[2,4]],
+      hint: "a (S∘R) c ⟺ ∃b：aRb 且 bSc——先 R 后 S。",
+      why: "逐对算：1R4 & 4S5 → (1,5)；1R4 & 4S6 → (1,6)；1R5 & 5S4 → (1,4)；2R5 & 5S4 → (2,4)；3R6 但 6 在 S 里没有出边。" },
+    { expr: "S ∘ S", pool: "BB",
+      ans: [[4,4],[5,5],[5,6]],
+      hint: "两头都在 B 里；S⁻¹ 不参与，纯查 S 的两步链。",
+      why: "4S5 & 5S4 → (4,4)；5S4 & 4S5 → (5,5)；5S4 & 4S6 → (5,6)。(4,6) 之后 6 没有出边。" },
+    { expr: "S⁻¹ ∘ R", pool: "AB",
+      ans: [[1,5],[1,4],[2,4],[3,4]],
+      hint: "S⁻¹ = {(5,4),(6,4),(4,5)}。仍是 aRb 且 bS⁻¹c——注意 bS⁻¹c ⟺ cSb，方向与 S 相反。",
+      why: "逐对算：1R4 & 4S⁻¹5（即 5S4 ✓）→ (1,5)；1R5 & 5S⁻¹4（即 4S5 ✓）→ (1,4)；2R5 & 5S⁻¹4 ✓ → (2,4)；3R6 & 6S⁻¹4（即 4S6 ✓）→ (3,4)。(1,6) 不成立：需 4S⁻¹6 即 6S4，但 6 在 S 中没有出边。这次 S⁻¹∘R ≠ S∘R——S∘R 里的 (1,6) 在这里换成了 (3,4)。" },
+  ];
+  const poolPairs = {
+    AB: [[1,4],[1,5],[1,6],[2,4],[2,5],[2,6],[3,4],[3,5],[3,6]],
+    BB: [[4,4],[4,5],[4,6],[5,4],[5,5],[5,6],[6,4],[6,5],[6,6]],
+  };
+  let qi = 0, sel = new Set();
+  function key(p) { return p[0] + "-" + p[1]; }
+  function render() {
+    const q = QUESTS[qi];
+    $("#cp-q").innerHTML = `第 ${qi+1} / 3 小问：求 <span class="math" style="font-size:18px">${q.expr}</span>`;
+    const box = $("#cp-cands");
+    box.innerHTML = "";
+    sel = new Set();
+    poolPairs[q.pool].forEach(p => {
+      const b = document.createElement("span");
+      b.className = "pair"; b.id = "cp-" + key(p);
+      b.textContent = `(${p[0]},${p[1]})`;
+      b.addEventListener("click", () => {
+        if (b.classList.contains("right") || b.classList.contains("wrongp")) return;
+        sel.has(key(p)) ? sel.delete(key(p)) : sel.add(key(p));
+        b.classList.toggle("sel", sel.has(key(p)));
+      });
+      box.appendChild(b);
+    });
+    $("#cp-fb").className = "fb";
+    $("#cp-next").textContent = qi === QUESTS.length - 1 ? "↺ 从头再来" : "下一小问 →";
+  }
+  $("#cp-check").addEventListener("click", () => {
+    const q = QUESTS[qi], fb = $("#cp-fb");
+    if (!sel.size) { fb.className = "fb no"; fb.textContent = "先从候选里点选你算出的所有序对。"; return; }
+    const ansSet = new Set(q.ans.map(key));
+    let ok = sel.size === ansSet.size && [...ansSet].every(k => sel.has(k));
+    [...ansSet, ...sel].forEach(k => {
+      const el = $("#cp-" + k);
+      if (!el) return;
+      if (sel.has(k) && ansSet.has(k)) el.classList.add("right");
+      else el.classList.add("wrongp");
+    });
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = (ok ? "✅ 全对！" : "❌ 有出入（绿 = 应选，红 = 不该选）。") + " " + q.why;
+  });
+  $("#cp-next").addEventListener("click", () => { qi = (qi + 1) % QUESTS.length; render(); });
+  render();
+})();
+
+/* ---------- 互动⑫ 习题 10.15 三连问 ---------- */
+(() => {
+  const ANS = { a: 4, b: 3, c: 4 };
+  const WHY = {
+    a: "最长链 A → D → E → G（A→D、D→E、E→G 全是边），大小 <b>4</b>。B、E、G 只凑出 3。",
+    b: "<b>3</b>：如 {A, B, C}（两两不可比），{B, C, D} 也行。Dilworth 侧写：8 顶点、最长链 4 ⟹ 必有反链 ≥ ⌈8/4⌉ = 2，实测最大 3。",
+    c: "<b>4</b> 分钟 = critical path（A→D→E→G）的大小——推论 10.5.9：并行时间 = 最长链大小；depth 分层 {A,B,C} {D,F} {E,H} {G} 恰好 4 层达标。",
+  };
+  $("#h15-check").addEventListener("click", () => {
+    const fb = $("#h15-fb");
+    const parts = [["a", "#h15a"], ["b", "#h15b"], ["c", "#h15c"]];
+    const msgs = [];
+    let all = true;
+    parts.forEach(([k, sel]) => {
+      const v = $(sel).value;
+      if (v === "") { msgs.push(`(${k}) 未填`); all = false; return; }
+      if (+v === ANS[k]) msgs.push(`(${k}) ✅ ${WHY[k]}`);
+      else { msgs.push(`(${k}) ❌ 你答 ${v}——再想想：链 = 两两可比、反链 = 两两不可比、并行时间看 critical path。`); all = false; }
+    });
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.innerHTML = msgs.join("<br>");
+  });
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -602,10 +1277,10 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"critical path（最长链）的长度", ok:true, fb:"对（推论 10.5.9）：贪心按 depth 分层即达此界；最长链又决定了下界。"},
        {t:"最大反链的大小", ok:false, fb:"反链大小是一分钟内最多并行数——那是处理器需求的下界。"},
        {t:"log₂ n", ok:false, fb:"无此一般结论。"}]},
-    {q:"Dilworth 引理（10.5.12）：n 顶点 DAG 最长链为 t，则？",
+    {q:"推论 10.5.11（Dilworth）：n 顶点 DAG 最长链为 t，则？",
      opts:[
        {t:"顶点可划分为 t 个反链", ok:true, fb:"对——按 depth 分层，每层是一个反链。于是必有大小 ≥ n/t 的反链。"},
-       {t:"顶点可划分为 t 个链", ok:false, fb:"那是 Dilworth 定理的镜像版（对偶），引理说的是反链划分。"},
+       {t:"顶点可划分为 t 个链", ok:false, fb:"那是 Dilworth 定理的镜像版（对偶），推论 10.5.11 说的正是反链划分。"},
        {t:"图必为线性序", ok:false, fb:"线性序是最强情形。"},
        {t:"t 必等于 n", ok:false, fb:"穿衣例：t=4 而 n=10。"}]},
     {q:"弱偏序（weak partial order）的三条性质是？",
@@ -620,15 +1295,27 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"等价类之间可以有公共元素", ok:false, fb:"划分要求两两不交——否则传递性会强迫它们合并。"},
        {t:"等价类必须有限", ok:false, fb:"[0] mod 5 包含无穷多整数。"},
        {t:"每个等价类恰好一个元素", ok:false, fb:"那是恒等关系的等价类——最细的划分。"}]},
+    {q:"Definition 10.5.2：有限 DAG 的拓扑排序是？",
+     opts:[
+       {t:"把全部顶点排成一列，每个顶点都在它可达的顶点之前", ok:true, fb:"对——反复挑当前 minimal 元素即可构造（定理 10.5.4：有限 DAG 必有拓扑排序，'早上能穿好衣'的数学证明）。"},
+       {t:"按顶点名字典序排列", ok:false, fb:"字典序与先后约束无关，会违反先修。"},
+       {t:"按入度从大到小排列", ok:false, fb:"入度排序不保证可达关系，只是某种启发式。"},
+       {t:"critical path 上的顶点排最后", ok:false, fb:"恰恰相反——链的前端（depth 小的）应排前面。"}]},
+    {q:"Example 10.9.2：101 个学生在'更年轻且更矮'的积序 Y 下，Dilworth 引理（10.5.12）保证？",
+     opts:[
+       {t:"必有 11 人'越大越高'（链），或 11 人'越小越高'（反链）", ok:true, fb:"对——t=10 时必有链 > 10 或反链 ≥ 10，原书取整为 11 人的链或反链。'越老越高'班队 vs '越小越高'班的课堂演示。"},
+       {t:"必有两人同岁且同高", ok:false, fb:"积序不比较相等分量之外的组合，抽屉原理不适用于此。"},
+       {t:"积序 Y 是线性序", ok:false, fb:"原书明说 Y 不是线性：(240,68) 与 (228,72) 不可比。"},
+       {t:"必有 101 级长链", ok:false, fb:"那要求全班排成全序——反例比比皆是。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🕸️ 图论调度师", "从 walk 计数到 critical path 到偏序全家桶——Part II 的图论地基打好了。下一章通信网络：给这些图接上真实的包。"]
-      : right >= 3 ? ["🧭 walk 绘图员", "邻接矩阵幂与五性质矩阵再过一遍——'出/入、自反/反自反'的方向感是本章命门。"]
-      : ["🌱 顶点描点生", "重玩穿衣调度器：盯住 critical path 的四件衣物，偏序的'先后'就有了体感。"];
+    const [rank, note] = right >= 7 ? ["🕸️ 图论调度师", "从 walk 计数到拓扑排序到偏序全家桶——Part II 的图论地基打牢了。下一章通信网络：给这些图接上真实的包。"]
+      : right >= 4 ? ["🧭 walk 绘图员", "邻接矩阵幂与五性质矩阵再过一遍——'出/入、自反/反自反'的方向感是本章命门。"]
+      : ["🌱 顶点描点生", "重玩穿衣调度器与 walk 审判庭：盯住 critical path 的四件衣物和'重复顶点删环'，方向感就来了。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){

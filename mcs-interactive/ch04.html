@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>数学数据类型 · 数学之旅第四章 — 格致</title>
-<meta name="description" content="MIT《Mathematics for Computer Science》第 4 章的中文交互式解读：集合、序列、函数、二元关系与有限基数。7 个互动装置 + 终局自测。" />
+<meta name="description" content="MIT《Mathematics for Computer Science》第 4 章的中文交互式解读：集合、序列、函数、二元关系与有限基数。6 个互动装置 + 终局自测。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
 <style>
 :root{
@@ -194,7 +194,7 @@ footer p{margin:6px 0}
     <div class="en">Mathematical Data Types</div>
     <p class="lead">集合、序列、函数、关系——程序员的日常类型系统，数学家的地基工程。这一章定义密集，但我们不背定义：你会开庭审判集合运算、开动幂集发电站、亲手连线鉴定关系的五种性质。</p>
     <div class="meta">
-      <span>⏱ 约 35 分钟</span><span>🧩 6 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 91–130 页</span>
+      <span>⏱ 约 35 分钟</span><span>🧩 6 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 91–122 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch03.html">上一章：逻辑公式</a></div>
@@ -323,7 +323,7 @@ footer p{margin:6px 0}
   <div class="widget reveal" id="w-rel">
     <span class="pill">互动 ⑤</span>
     <h4 class="wtitle">🕸️ 关系五性质鉴定器</h4>
-    <p class="wdesc">先点左列一个点，再点右列一个点 = 画一条箭头；点已画的箭头可删除。五盏灯实时判定——挑战：造出 <b>bijective</b>（每点恰一进一出），再故意破坏其中一条性质看灯怎么灭。</p>
+    <p class="wdesc">先点左列一个点，再点右列一个点 = 画一条箭头；点已画的箭头可删除。五盏灯实时判定——挑战：造出 total + surjective 的函数（原书 101 页左图那样），再故意破坏其中一条性质看灯怎么灭。</p>
     <div class="rel-wrap">
       <svg id="rel-svg" width="380" height="330" viewBox="0 0 380 330" role="application" aria-label="关系箭头图，点击左右点连线"></svg>
       <div class="rel-side">
@@ -331,7 +331,7 @@ footer p{margin:6px 0}
         <div class="rel-msg" id="rel-msg">先点左边一个点。</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
           <button class="btn ghost" id="rel-clear">清空</button>
-          <button class="btn" id="rel-book">书里那两个例子</button>
+          <button class="btn" id="rel-book">原书 101 页左图</button>
         </div>
       </div>
     </div>
@@ -404,8 +404,8 @@ footer p{margin:6px 0}
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
           <li><b>4.2</b> 只用 ∈、⊆、=、∪、−、pow 把"x 是 y 的真子集"等关系写成集合论公式（自制一门"集合语言"）。</li>
           <li><b>4.5</b> 由命题逻辑 De Morgan 推导集合版 NOT(A ∩ B) = Ā ∪ B̄——把 3、4 两章的知识缝起来。</li>
-          <li><b>4.14</b> 用关系语言严格定义"函数 f 是全的"与"f 的像"（4.4.2 节的 R(Y)）。</li>
-          <li><b>4.17 / 4.18</b> 鸽笼原理的映射规则版：|A| &gt; |B| 时从 A 到 B 的全函数必有两人同席——第 14 章将正式登场。</li>
+          <li><b>4.4 节概念题</b> 用关系语言严格定义"函数 f 是全的"与"f 的像"（4.4.2 节的 R(Y)）。</li>
+          <li><b>鸽笼原理·前奏</b> 映射规则版：|A| &gt; |B| 时从 A 到 B 的全函数必有两人同席——原书 15.8 节将正式登场。</li>
         </ul>
       </div>
     </details>
@@ -415,7 +415,7 @@ footer p{margin:6px 0}
 <footer>
   <div class="wrap" style="padding:0">
     <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
-    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 4 章 = 第 91–130 页）。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 4 章 = 第 91–122 页）。</p>
     <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch03.html">上一章：逻辑公式</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
   </div>
 </footer>
@@ -613,7 +613,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
 /* ---------- 互动⑤ 关系五性质鉴定器 ---------- */
 (() => {
   const svg = $("#rel-svg"), NS = "http://www.w3.org/2000/svg";
-  const L = ["a","b","c","d","e"], R = ["1","2","3","4","5"];
+  const L = ["a","b","c","d","e"], R = ["1","2","3","4"];
   const Lx = 90, Rx = 290, y0 = 40, dy = 62;
   const posL = L.map((_, i) => [Lx, y0 + i * dy]);
   const posR = R.map((_, i) => [Rx, y0 + i * dy]);
@@ -686,7 +686,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
     });
   }
   function props(){
-    const out = Array(5).fill(0), inn = Array(5).fill(0);
+    const out = Array(L.length).fill(0), inn = Array(R.length).fill(0);
     arrows.forEach(a => { out[a.a]++; inn[a.b]++; });
     return {
       fn: out.every(d => d <= 1),
@@ -718,15 +718,15 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
     });
     msg.textContent = p.none
       ? "先点左边一个点，再点右边一个点，画出你的第一条箭头。"
-      : p.bij
-        ? "🎯 双射达成！每点恰一进一出——按映射规则 4.5.4，这意味着 |A| = |B| = 5 的一个完美配对。试试删掉一条箭头，看 bijective 与 total 谁先灭。"
+      : (p.fn && p.total && p.surj)
+        ? "🎯 total + surjective 的函数达成！但只要右侧有一点双箭头入，injective 就亮不起来——原书 101 页左图正是这个形状。"
         : `当前 ${arrows.length} 条箭头。注意区分：function 看<b>出</b>度上限，total 看<b>出</b>度下限；injective 看<b>入</b>度上限，surjective 看<b>入</b>度下限。`;
   }
   $("#rel-clear").addEventListener("click", () => { arrows = []; selL = -1; redraw(); });
   $("#rel-book").addEventListener("click", () => {
-    arrows = [ {a:0,b:0}, {a:1,b:3}, {a:2,b:1}, {a:3,b:3}, {a:4,b:2} ];
+    arrows = [ {a:0,b:0}, {a:1,b:1}, {a:2,b:2}, {a:3,b:3}, {a:4,b:3} ];
     selL = -1; redraw();
-    msg.innerHTML = "这是原书 101 页<b>左图</b>的复刻：total + surjective 的函数，但 3 号点有两箭头入 ⇒ 不是 injective。点'清空'自己再造书里的<b>右图</b>（total + injective 但不 surjective）试试。";
+    msg.innerHTML = "这是原书 101 页<b>左图</b>同类的关系：total + surjective 的函数，但 4 号点有两箭头入 ⇒ 不是 injective（原书图里双入的是 3 号点，形状相同）。点'清空'自己改造：把指向 4 号点的两条箭头都挪去 3 号点，surjective 立刻熄灭——看灯说话。";
   });
   redraw();
 })();
@@ -737,13 +737,15 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   function upd(){
     const a = +sa.value, b = +sb.value;
     $("#map-a").textContent = a; $("#map-b").textContent = b;
+    const noFn = a > 0 && b === 0;   // B 为空且 A 非空：连函数都不存在
     const surj = a >= b, inj = a <= b, bij = a === b;
     const empty = a === 0 || b === 0;
+    const nope = "不可能 ✗——B 为空时连函数都不存在（除非 A 也空）";
     $("#map-out").innerHTML =
-      `<b>surj（满射函数）</b>：${surj ? (a === 0 && b === 0 ? "∅ → ∅ 的空映射是双射，当然满射 ✓" : "可能 ✓——把 A 多余的元素'折'到 B 上（原书 f(aᵢ) ::= b_min(i,|B|) 的招法）") : "不可能 ✗ —— |A| &lt; |B|，总有点没有箭头进来"}<br>
-       <b>inj（单射全关系）</b>：${inj ? "可能 ✓" : "不可能 ✗ —— |A| &gt; |B| 必有两点挤同一个目标（鸽笼原理的先声）"}<br>
-       <b>bij（双射）</b>：${bij ? "可能 ✓ —— 一一配对" : "不可能 ✗ —— 双射要求两边一样大"}<br>
-       <span class="small muted">${empty ? "空集参与时按定义与空映射/空关系讨论。" : ""}映射规则（定理 4.5.4）对有限集是'iff'：大小关系与映射存在性互为表里。</span>`;
+      `<b>surj（满射函数）</b>：${noFn ? nope : (surj ? (a === 0 && b === 0 ? "∅ → ∅ 的空映射是双射，当然满射 ✓" : "可能 ✓——把 A 多余的元素'折'到 B 上（原书 f(aᵢ) ::= b_min(i,|B|) 的招法）") : "不可能 ✗ —— |A| &lt; |B|，总有点没有箭头进来")}<br>
+       <b>inj（单射全关系）</b>：${noFn ? nope : (inj ? "可能 ✓" : "不可能 ✗ —— |A| &gt; |B| 必有两点挤同一个目标（鸽笼原理的先声）")}<br>
+       <b>bij（双射）</b>：${noFn ? nope : (bij ? "可能 ✓ —— 一一配对" : "不可能 ✗ —— 双射要求两边一样大")}<br>
+       <span class="small muted">${empty ? (noFn ? "B = ∅：A 的每个元素都无处可指，映射无从谈起。" : "空集参与时按定义与空映射/空关系讨论。") : ""}映射规则（定理 4.5.4）对有限集是'iff'：大小关系与映射存在性互为表里。</span>`;
   }
   sa.addEventListener("input", upd); sb.addEventListener("input", upd);
   upd();

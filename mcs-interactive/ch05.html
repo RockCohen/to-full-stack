@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>归纳法 · 数学之旅第五章 — 格致</title>
-<meta name="description" content="MIT《Mathematics for Computer Science》第 5 章的中文交互式解读：普通归纳、强归纳、同色马假证明与堆叠游戏。7 个互动装置 + 终局自测。" />
+<meta name="description" content="MIT《Mathematics for Computer Science》第 5 章的中文交互式解读：普通归纳、强归纳、同色马假证明与堆叠游戏。6 个互动装置 + 终局自测。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
 <style>
 :root{
@@ -217,7 +217,7 @@ footer p{margin:6px 0}
     <div class="en">Induction</div>
     <p class="lead">规则一：队首的学生有糖。规则二：有糖的下一人也有糖。两句话，一整条队伍人人有糖——这就是归纳：离散数学的定义性特征。这一章你将推翻"所有马同色"，并在堆叠游戏里发现策略根本不重要。</p>
     <div class="meta">
-      <span>⏱ 约 40 分钟</span><span>🧩 7 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 123–158 页</span>
+      <span>⏱ 约 40 分钟</span><span>🧩 6 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 123–158 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch04.html">上一章：数学数据类型</a></div>
@@ -329,7 +329,7 @@ footer p{margin:6px 0}
       <p style="margin:4px 0">若 P(0) 为真，且<b> P(0), P(1), …, P(n) 全体</b>蕴含 P(n+1)（对所有 n），则 P(m) 对所有非负整数 m 为真。<br>
       <span class="small muted">唯一的变化：归纳步允许假设 P(0)…P(n) <b>全部</b>为真，而不只 P(n)。</span></p>
     </div>
-    <p>什么时候非用强归纳不可？当 P(n+1) 依赖的不只是 P(n)——比如 Fibonacci 数 F(n+1) 依赖 F(n) 和 F(n−2) 两代（原书用它证"F(n) 是偶 ⟺ F(n+3) 是偶"，基例要验证 n=0 和 n=1 两个）；又比如素分解——n+1 拆成哪两个因子事先不知道，只知道它们都比 n+1 小。做完下面四道场景判断，手感就来了：</p>
+    <p>什么时候非用强归纳不可？当 P(n+1) 依赖的不只是 P(n)——比如 Fibonacci 数 F(n+1) 依赖 F(n) 和 F(n−1) 两代（原书用它证"F(n) 是偶 ⟺ F(n+3) 是偶"，基例要验证 n=0 和 n=1 两个）；又比如素分解——n+1 拆成哪两个因子事先不知道，只知道它们都比 n+1 小。做完下面四道场景判断，手感就来了：</p>
   </div>
 
   <!-- 互动④ 归纳选型快判 -->
@@ -603,7 +603,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   const items = [
     { s:"证明 1+2+⋯+n = n(n+1)/2（同第 2 章良序版）", ans:"o",
       why:"普通归纳足够：P(n+1) 的和 = P(n) 的和再加 (n+1)，只用到相邻一环。" },
-    { s:"证明 Fibonacci 的 F(n) 是偶 ⟺ F(n+3) 是偶（依赖 F(n) 与 F(n−2) 两代）", ans:"s",
+    { s:"证明 Fibonacci 的 F(n) 是偶 ⟺ F(n+3) 是偶（依赖 F(n) 与 F(n−1) 两代）", ans:"s",
       why:"强归纳：P(n+1) 要同时调用 P(n) 与 P(n−1)——普通归纳的单一假设不够。基例还要验证 n=0、1 两个。" },
     { s:"证明每个大于 1 的整数都是素数之积（n+1 拆成的因子事先未知）", ans:"s",
       why:"强归纳：n+1 = k·m 拆出来的 k、m 各是几不确定，只知道都 ≤ n——'全都已证'的强假设正好罩住。" },
@@ -693,27 +693,31 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
 (() => {
   const slider = $("#coin-slider"), out = $("#coin-out"), fb = $("#coin-fb"), label = $("#coin-n");
   function upd(){
-    let v = +slider.value;
+    const v = +slider.value;
     label.textContent = v;
     out.innerHTML = "";
-    if (v < 8) {
+    // 求非负整数 a、b 使 5a + 3b = v：a 从 ⌊v/5⌋ 往下试，找到首个使余数被 3 整除的 a
+    let a = -1, b = 0;
+    for (let t = Math.floor(v / 5); t >= 0; t--) {
+      if ((v - 5 * t) % 3 === 0) { a = t; b = (v - 5 * t) / 3; break; }
+    }
+    if (a === -1) {
       fb.className = "fb no";
-      fb.textContent = `${v} Sg 找不开——3 和 5 拼不出（4、7 是著名死角）。这正是强归纳要绕开的区域：基例从 8 开始（8=3+5, 9=3+3+3, 10=5+5）。`;
+      fb.textContent = `${v} Sg 找不开——3 和 5 怎么拼都差一点。1、2、4、7 是仅有的四个死角：这正是强归纳要绕开的区域，基例从 8 开始（8=3+5, 9=3+3+3, 10=5+5）。`;
       return;
     }
-    let rest = v;
     const coins = [];
-    while (rest >= 5 && (rest - 5 === 0 || rest - 5 >= 3 || rest - 5 >= 8)) { coins.push(5); rest -= 5; if (rest < 3) break; }
-    while (rest >= 5 && rest !== 4 && rest !== 7) { coins.push(5); rest -= 5; }
-    while (rest >= 3) { coins.push(3); rest -= 3; }
-    coins.sort((a, b) => b - a);
+    for (let i = 0; i < a; i++) coins.push(5);
+    for (let i = 0; i < b; i++) coins.push(3);
     coins.forEach(c => {
       const d = document.createElement("span");
       d.className = "coin c" + c; d.textContent = c + "Sg";
       out.appendChild(d);
     });
     fb.className = "fb ok";
-    fb.textContent = `${v} Sg = ${coins.map(c => c + "Sg").join(" + ")}。≥ 8 恒可凑（强归纳：n+1 ≥ 11 时先凑 (n+1)−3，再加一枚 3Sg）。`;
+    fb.textContent = `${v} Sg = ${coins.map(c => c + "Sg").join(" + ")}。` +
+      (v >= 8 ? "≥ 8 恒可凑（强归纳：n+1 ≥ 11 时先凑 (n+1)−3，再加一枚 3Sg）。"
+              : "小面额 3、5、6 同样凑得开——真正的死角只有 1、2、4、7。");
   }
   slider.addEventListener("input", upd);
   upd();

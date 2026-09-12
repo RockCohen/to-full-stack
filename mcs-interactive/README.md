@@ -16,9 +16,9 @@
 | `ch07.html` | 第 7 章 · 递归数据类型（Recursive Data Types） | 5 个（RecMatch 构造器+检验器 / 病态定义展览馆·含 Collatz / Aexp 替换vs环境模型 / OBT 结构归纳实战）+ 终局自测 ×6 |
 | `ch08.html` | 第 8 章 · 无限集（Infinite Sets）· Part I 收官 | 5 个（无限旅馆 / 对角论证剧场三幕 / 停机悖论五步引爆器 / Russell 悖论与 ZFC / 自测）+ 终局自测 ×6 |
 | `ch09.html` | 第 9 章 · 数论（Number Theory）· Part II 开篇 | 5 个（水壶终审判决器 / Pulverizer 表 / 素数之谜叙事 / RSA Playground 完整加解密 / 自测）+ 终局自测 ×6 |
-| `ch10.html` | 第 10 章 · 有向图与偏序（Directed Graphs & Partial Orders） | 4 个（邻接矩阵幂计数器 / 穿衣并行调度器·critical path / 关系性质鉴定矩阵 / 等价类划分器）+ 终局自测 ×6 |
-| `ch11.html` | 第 11 章 · 通信网络（Communication Networks） | 3 个（四强网络对比表·N 滑块 / Beneš 约束图 2-着色 / 拥塞快判）+ 终局自测 ×6 |
-| `ch12.html` | 第 12 章 · 简单图（Simple Graphs） | 4 个（平均度悖论实验台 / Hall 快判 / 考试着色器 / 自测）+ 终局自测 ×6 |
+| `ch10.html` | 第 10 章 · 有向图与偏序（Directed Graphs & Partial Orders） | 12 个（walk 审判庭 / 邻接矩阵幂计数器 / 闭包引擎 G⁺ / 距离查找器 / 穿衣并行调度器 / 拓扑排序挑战 / 关系性质鉴定矩阵 / 关系类型终审 / 偏序↔集合包含同构机 / 等价类划分器 / 习题10.9 复合解题器 / 习题10.15 三连问）+ 终局自测 ×8 |
+| `ch11.html` | 第 11 章 · 通信网络（Communication Networks） | 7 个（四强对比表·N 滑块 / 二叉树寻径器·root 拥塞 / 阵列拥塞=2 实验台 / 蝶形递归构造器 / 蝶形拥塞热区·习题 11.8 / Beneš 约束图 2-着色 / 拥塞快判）+ 终局自测 ×6 |
+| `ch12.html` | 第 12 章 · 简单图（Simple Graphs） | 9 个（平均度悖论实验台 / 同构侦探·Figure 12.7 / Hall 快判 / Hall 15 子集扫描器+匹配揭晓 / 考试着色器 / 圈猎手三圈 / 割边鉴定·Figure 12.14 / 树性质六连判·Figure 12.17 / 习题12.2 度数和20 / 习题12.5 同构保持十连判）+ 终局自测 ×8 |
 | `ch13.html` | 第 13 章 · 平面图（Planar Graphs）· Part II 收官 | 4 个（欧拉公式实验室 / 边数上界检验器 / 五色定理步进剧场 / 正多面体穷举表）+ 终局自测 ×6 |
 | `ch14.html` | 第 14 章 · 求和与渐近（Sums & Asymptotics）· Part III 开篇 | 5 个（年金现值计算器 / 扰动法步进器 / 积分包围实验台 / 书堆悬挑 Hₙ/2 模拟器 / 渐近记号快判）+ 终局自测 ×6 |
 | `ch15.html` | 第 15 章 · 计数规则（Cardinality Rules） | 6 个（牌照实验室 / Bookkeeper 计数器 / 扑克牌型计数器·含 2-to-1 陷阱 / 鸽笼鉴定器 / 五张牌魔术解码台 / 容斥文氏图）+ 终局自测 ×6 |

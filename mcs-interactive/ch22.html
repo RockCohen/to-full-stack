@@ -171,7 +171,7 @@ footer p{margin:6px 0}
     <div class="en">Recurrences · Finale</div>
     <p class="lead">一条递归式藏着数列的全部未来，但不解开来它什么也不说。猜测验证需要灵感，代入法只要纪律；爬楼梯数出 Fibonacci，特征方程一锤定音；Merge Sort 的 n log n − n + 1，最后由 Akra-Bazzi 公式一积分收工——全书的机器在这装配完成。</p>
     <div class="meta">
-      <span>⏱ 约 60 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 933–954 页</span>
+      <span>⏱ 约 60 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 931–960 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch21.html">上一章：随机游走</a></div>
@@ -195,7 +195,7 @@ footer p{margin:6px 0}
 <section class="ch" id="s1">
   <div class="ch-head reveal"><span class="no">22.1</span><h2>汉诺塔：guess-and-verify 与 plug-and-chug</h2><span class="en">The Towers of Hanoi</span></div>
   <div class="reveal">
-    <p><b>猜测验证</b>：看数列 1, 3, 7, 15, 31, 63 猜 Tₙ = 2ⁿ−1，再用归纳一锤定音（命题 22.1.1）——递归式与归纳证明结构天然同构：基例对第一行、归纳步对第二行。<b>上界陷阱</b>（22.1.1）：想证更"漂亮"的 Tₙ ≤ 2ⁿ？归纳在第 2ⁿ−1+1 ⋠ 2ⁿ 处当场翻车（书里标红 "Uh-oh!"）——弱假设撑不起弱结论，归纳常常需要<b>更强</b>的假设。</p>
+    <p><b>猜测验证</b>：看数列 1, 3, 7, 15, 31, 63 猜 Tₙ = 2ⁿ−1，再用归纳一锤定音（命题 22.1.1）——递归式与归纳证明结构天然同构：基例对第一行、归纳步对第二行。<b>上界陷阱</b>（22.1.1）：想证更"漂亮"的 Tₙ ≤ 2ⁿ？归纳在第 2·2ⁿ⁻¹ + 1 = 2ⁿ+1 ⋠ 2ⁿ 处当场翻车（书里标红 "Uh-oh!"）——弱假设撑不起弱结论，归纳常常需要<b>更强</b>的假设。</p>
     <p><b>代入法（plug-and-chug）</b>三步走：① 反复"代入-整理"直到出现模式（别过度化简！）；② 再做一轮验证模式（k → k+1 时公式形状不变，等于顺手完成了归纳）；③ 取 k = n−1 用已知的首项收尾。</p>
   </div>
 
@@ -324,17 +324,16 @@ footer p{margin:6px 0}
     <details class="egg">
       <summary>六世纪的悬案与 φ 的浪漫（22.3.1）</summary>
       <div class="body">
-        <p>Fibonacci 递归挂了将近六百年没人解——难就难在解是 φⁿ 这种无理数的组合，而 Fibonacci 数明明全是整数。Binet 公式里 √5 处处出现又处处抵消。f(20)/f(19) = 10946/6765 = 1.618033988…——相邻 Fibonacci 数之比奔向黄金分割；φ²⁰/√5 = 6765.000029…，离最近的整数只差万分之三。</p>
+        <p>Fibonacci 递归挂了将近六百年没人解——难就难在解是 φⁿ 这种无理数的组合，而 Fibonacci 数明明全是整数。Binet 公式里 √5 处处出现又处处抵消。f(20)/f(19) = 10946/6765 = 1.618033998…——相邻 Fibonacci 数之比奔向黄金分割；φ²⁰/√5 = 6765.000029…，离最近的整数只差十万分之三。</p>
       </div>
     </details>
     <details class="egg">
-      <summary>课后挑战（均出自原书习题）</summary>
+      <summary>课后挑战（出处逐条标注）</summary>
       <div class="body">
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
-          <li><b>22.2</b> 用代入法解 T(n) = 2T(n/2) + 3（提示：答案是 Θ(n)，第 16 章习题 16.6 的平方和恒等式还会帮你）。</li>
-          <li><b>22.4</b> 汉诺塔变体 f(n) = 2f(n−1) + n：完整走一遍五步法，验证 f(n) = 2·2ⁿ − n − 2。</li>
-          <li><b>22.6</b> 爬楼梯变体：每次可以迈 1、2 或 3 阶——写出递归、猜出增长阶。</li>
-          <li><b>22.15</b> 用 Akra-Bazzi 重解 Merge Sort 与二分搜索，体会"边界条件无关"。</li>
+          <li><b>22.1 节代入法（正文方法）</b>：用代入法解 T(n) = 2T(n/2) + 3（提示：答案是 Θ(n)）。</li>
+          <li><b>22.3.3 正文例题</b>：汉诺塔变体 f(n) = 2f(n−1) + n：完整走一遍五步法，验证 f(n) = 2·2ⁿ − n − 2。</li>
+          <li><b>自拟练习</b>：爬楼梯变体：每次可以迈 1、2 或 3 阶——写出递归、猜出增长阶（仿照 22.3 正文）。</li>
         </ul>
       </div>
     </details>
@@ -344,7 +343,7 @@ footer p{margin:6px 0}
 <footer>
   <div class="wrap" style="padding:0">
     <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
-    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 22 章 = 第 933–996 页）。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 22 章 = 第 931–960 页）。</p>
     <p><a href="index.html">← 返回数学之旅目录（全书 22 章已全部上线 🎉）</a> · <a href="ch21.html">上一章：随机游走</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
   </div>
 </footer>

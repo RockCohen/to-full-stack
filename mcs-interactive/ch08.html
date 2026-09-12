@@ -198,7 +198,7 @@ footer p{margin:6px 0}
   <div class="ch-head reveal"><span class="no">8.1</span><h2>无限基数：比大小，不称重</h2><span class="en">Infinite Cardinality</span></div>
   <div class="reveal">
     <p>Cantor 研究傅里叶级数时被逼出一门新学问：怎么比较两个<b>无限集合</b>的大小？他的妙招是不给"大小"下定义，只比较——沿用第四章的映射规则：<b>A bij B</b> 叫"一样大"，<b>A surj B</b> 叫"不小于"，<b>A strict B</b>（即 NOT(A surj B)）叫"严格更小"。</p>
-    <p>有限集的直觉大量失效：<b>无限集加一个元素，还是一样大</b>（引理 8.1.7）——ℕ bij ℕ∪{周一周二…}；ℤ 与 ℕ 一样大（0,1,−1,2,−2,…）；连 ℕ×ℕ、ℚ⁺ 都可数（定理 8.1.10）。"可数（countable）"= 能排成清单 c₀, c₁, c₂, …（有限集也算，可重复列举）。</p>
+    <p>有限集的直觉大量失效：<b>无限集加一个元素，还是一样大</b>（引理 8.1.7）——ℕ bij ℕ∪{周一周二…}；ℤ 与 ℕ 一样大（0,1,−1,2,−2,…）；连 ℕ×ℕ、ℚ⁺ 都可数（推论 8.1.10）。"可数（countable）"= 能排成清单 c₀, c₁, c₂, …（有限集也算，可重复列举）。</p>
     <p>这条直觉的经典可视化就是"无限旅馆"：</p>
   </div>
 
@@ -312,13 +312,13 @@ footer p{margin:6px 0}
     <details class="egg">
       <summary>Cantor 的流放与"康托乐园"（原书 8.1 节）</summary>
       <div class="body">
-        <p>Cantor 本是研究傅里叶级数收敛的，被无穷集"带偏"后遭到当时数学界主流的怀疑与排斥，同侪讥其研究的是"康托乐园里的OutOfInfinity"。他去世后，这门学问成了数学与计算机科学共同的地基——你的每次类型检查失败，都是对角论证在工作。另外：连续统假设在 ZFC 中不可判定（Gödel 1940 / Cohen 1963），两位都为此拿了 Fields 奖。</p>
+        <p>Cantor 本是研究傅里叶级数收敛的，被无穷集"带偏"后遭到当时数学界主流的怀疑与排斥，同侪讥其研究的是"康托乐园里的OutOfInfinity"。他去世后，这门学问成了数学与计算机科学共同的地基——你的每次类型检查失败，都是对角论证在工作。另外：连续统假设在 ZFC 中不可判定（Gödel 1940 / Cohen 1963），Cohen 因此获 1966 年 Fields 奖。</p>
       </div>
     </details>
     <details class="egg">
       <summary>Schröder-Bernstein 定理（原书 8.1.4 定理 8.1.4）</summary>
       <div class="body">
-        <p>若 A surj B 且 B surj A，则 A bij B——有限集上显然，无限集上是要真证的（构造双射需要把两个满射"缝"起来，习题 8.10）。配角的深度的最好例子：随手一写的"显然"，可能藏着一页纸的机关。</p>
+        <p>若 A surj B 且 B surj A，则 A bij B——有限集上显然，无限集上是要真证的（把两个单射“缝”成一个双射，习题 8.10）。配角的深度的最好例子：随手一写的"显然"，可能藏着一页纸的机关。</p>
       </div>
     </details>
     <details class="egg">

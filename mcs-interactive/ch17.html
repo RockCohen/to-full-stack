@@ -194,7 +194,7 @@ footer p{margin:6px 0}
     <div class="en">Events and Probability Spaces</div>
     <p class="lead">一百名数学家在蒙提霍尔问题上翻车，因为"六种结果里换门赢三种"不等于"换门赢 1/2"——结果不等权。四步法（树图 → 事件 → 边概率 → 求和）把直觉关在门外；三颗怪骰子还会教你怎么让"能打"这个关系失效。</p>
     <div class="meta">
-      <span>⏱ 约 55 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 717–738 页</span>
+      <span>⏱ 约 55 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 715–738 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch16.html">上一章：生成函数</a></div>
@@ -331,7 +331,7 @@ footer p{margin:6px 0}
 <section class="ch" id="s6">
   <div class="ch-head reveal"><span class="no">17.5.4</span><h2>无限概率空间：先手到底占多少便宜？</h2><span class="en">Infinite Probability Spaces</span></div>
   <div class="reveal">
-    <p>两人轮流掷公平硬币，先掷出正面者胜。样本空间无限：{TʰH}。先手在第 1, 3, 5, … 步获胜，概率 1/2 + 1/8 + 1/32 + ⋯ = 几何级数收口：</p>
+    <p>两人轮流掷公平硬币，先掷出正面者胜。样本空间无限：{TⁿH}。先手在第 1, 3, 5, … 步获胜，概率 1/2 + 1/8 + 1/32 + ⋯ = 几何级数收口：</p>
     <div class="eq math">Pr[先手胜] = ½ · Σ (1/4)ⁿ = ½ · 1/(1−¼) = 2/3　　后手 1/3，和恰好为 1</div>
     <p>树图里那条"永远掷出反面"的无限路径没有对应 outcome——概率 0 的事件不必放进模型，加了也无害（ω<sub>forever</sub> 的讨论）。上一章的几何级数 1/(1−x) 在这里领了第一份工资。</p>
   </div>
@@ -383,7 +383,7 @@ footer p{margin:6px 0}
     <details class="egg">
       <summary>HHT 与 TTH 谁先出现？（习题 17.12）</summary>
       <div class="body">
-        <p>反复掷公平硬币直到 HHT 或 TTH 出现——两个模式"看起来对称"，胜率却不是 1/2:1/2。模式匹配竞争是概率空间设计（什么叫一次"试验"？）的绝佳反例，Penney's game 的入门款。</p>
+        <p>反复掷公平硬币直到 HHT 或 TTH 出现——两个模式"看起来对称"，胜率就是 1/2:1/2：H↔T 对换把两个事件互相映射（原书 17.12 的提示正是这条对称性）。"看似对称实则不公"的陷阱要换一对才成立：HHT vs HTT 这类自重叠模式才有先后之分——模式匹配竞争是概率空间设计（什么叫一次"试验"？）的绝佳反例，Penney's game 的入门款。</p>
       </div>
     </details>
     <details class="egg">
@@ -403,7 +403,7 @@ footer p{margin:6px 0}
 <footer>
   <div class="wrap" style="padding:0">
     <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
-    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 17 章 = 第 717–746 页）。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 17 章 = 第 715–746 页）。</p>
     <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch16.html">上一章：生成函数</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
   </div>
 </footer>
@@ -459,8 +459,8 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   for (const car of DOORS)
     for (const pick of DOORS) {
       const others = DOORS.filter(d => d !== car && d !== pick);
-      if (others.length === 2) others.forEach(open => rows.push({car, pick, open, p: "1/18", pTxt: "1/3 · 1/3 · 1/2", win: true}));
-      else rows.push({car, pick, open: others[0], p: "1/9", pTxt: "1/3 · 1/3 · 1", win: false});
+      if (others.length === 2) others.forEach(open => rows.push({car, pick, open, p: "1/18", pTxt: "1/3 · 1/3 · 1/2", win: false}));
+      else rows.push({car, pick, open: others[0], p: "1/9", pTxt: "1/3 · 1/3 · 1", win: true});
     }
   let onlyWin = false;
   function draw(){

@@ -187,7 +187,7 @@ footer p{margin:6px 0}
     <div class="en">Conditional Probability</div>
     <p class="lead">准确率 95% 的乳腺癌检测，阳性后真患病的概率只有 15%——"检测错了"与"你病了"不是同一道题。选错条件会让 O.J. 辛普森的律师团和上万愤怒读者一起翻车；贝叶斯因子 ×100 也压不住 1:9999 的先验赔率。</p>
     <div class="meta">
-      <span>⏱ 约 60 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 747–775 页</span>
+      <span>⏱ 约 60 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 747–775 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch17.html">上一章：事件与概率空间</a></div>
@@ -316,7 +316,7 @@ footer p{margin:6px 0}
   <div class="ch-head reveal"><span class="no">18.7</span><h2>独立性：两两都是朋友，仨仨未必</h2><span class="en">Independence &amp; Mutual Independence</span></div>
   <div class="reveal">
     <div class="box thm"><span class="label">定义 18.7.1 / 定理 18.7.2</span>
-      <p style="margin:4px 0">A、B 独立 ⟺ Pr[A|B] = Pr[A] ⟺ Pr[A∩B] = Pr[A]·Pr[B]。<b>陷阱</b>：互不相交（disjoint）的事件恰恰<b>永远不独立</b>——知道 A 发生就直接宣判 B 不发生。独立是<b>建模假设</b>，不是能从数据里读出的性质。</p></div>
+      <p style="margin:4px 0">A、B 独立 ⟺ Pr[A|B] = Pr[A] ⟺ Pr[A∩B] = Pr[A]·Pr[B]。<b>陷阱</b>：互不相交（disjoint）的事件恰恰<b>永远不独立</b>——除非其中一方概率为 0。知道 A 发生就直接宣判 B 不发生。独立是<b>建模假设</b>，不是能从数据里读出的性质。</p></div>
     <p>经典爆炸现场（18.8.2）：掷三枚公平硬币，A₁ = "币1=币2"，A₂ = "币2=币3"，A₃ = "币3=币1"。任何两个都独立，但三个放在一起：只要前两个成立，第三个<b>必然</b>成立——Pr[A₁∩A₂∩A₃] = 1/4 ≠ 1/8。下面自己按亮 outcome 验算：</p>
   </div>
 

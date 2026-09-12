@@ -334,7 +334,7 @@ footer p{margin:6px 0}
   <div class="reveal">
     <p>给定一个命题公式，问：<b>存不存在一组真值赋值让它为真？</b>这就是 <span class="term">SAT 问题</span>。直觉上"暴力枚举 2ⁿ 种组合"总能解决，但 n 一大就爆炸。有没有跑得多项式时间（如 n²、n¹⁴）而非指数时间（2ⁿ）的算法？<b>没人知道。</b>这就是理论计算机科学头号未解之谜 <span class="term">P vs. NP</span>——千禧年七大数学难题之一，克雷研究所悬赏 100 万美元。高效 SAT 算法将瞬间攻克调度、资源分配、电路验证等一大片问题，也会让现有密码学与"网上乱说话" simultaneously 玩完。</p>
     <p>原书在正文里随手丢了一个 SAT 实例——四条子句的 AND。别看答案，先当猎手：</p>
-    <div class="eq math">(P ∨ Q ∨ R) ∧ (P̄ ∨ Q̄) ∧ (P̄ ∨ R) ∧ (R ∨ Q̄)</div>
+    <div class="eq math">(P ∨ Q ∨ R) ∧ (P ∨ Q) ∧ (P ∨ R) ∧ (R ∨ Q)</div>
   </div>
 
   <!-- 互动⑥ SAT 猎手 -->
@@ -422,7 +422,7 @@ footer p{margin:6px 0}
     <details class="egg">
       <summary>Sloppy Sam 的循环证明（原书习题 3.5）</summary>
       <div class="body">
-        <p>Sam 证出了 P⇒Q、Q⇒R、R⇒P 三条蕴含，然后宣布"P、Q、R 全真"。反例：P=F, Q=T, R=T——三条蕴含全部为真，但 P∧Q∧R 为假！<b>循环蕴含锁不死任何真值</b>：环上允许"一个假、其余真"地滑动。这个反例赋值值得亲手在真值表里验一遍。</p>
+        <p>Sam 证出了 P⇒Q、Q⇒R、R⇒P 三条蕴含，然后宣布"P、Q、R 全真"。反例：P=Q=R=F——三条蕴含全部为真（假⇒假仍是真），但 P∧Q∧R 为假！<b>循环蕴含锁不死任何真值</b>：环上只要有一处为假，假就沿环传染一圈，"全假"与"全真"同样自洽。这个反例赋值值得亲手在真值表里验一遍。</p>
       </div>
     </details>
     <details class="egg">
@@ -622,7 +622,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   const items = [
     { f:"P OR NOT(P)", ans:"V", why:"恒真——排中律。任何赋值下 P 与 ¬P 必有一个为 T。" },
     { f:"P AND NOT(P)", ans:"N", why:"不可满足——P 真则 ¬P 假，P 假则 ¬P 真，AND 永远吃不到两个 T。" },
-    { f:"P IMPLIES Q", ans:"S", why:"取 P=F 即真（假 if 自动真），所以可满足；取 P=Q=F 即假，所以不有效。" },
+    { f:"P IMPLIES Q", ans:"S", why:"取 P=F 即真（假 if 自动真），所以可满足；取 P=T、Q=F，此时 P⇒Q 为假，所以不有效。" },
     { f:"[(P IMPLIES Q) AND P] IMPLIES Q", ans:"V", why:"modus ponens 的公式化——恰好就是第一章那条推理规则的'有效性'版本。" },
     { f:"P AND (Q OR NOT(Q))", ans:"S", why:"Q OR NOT(Q) 恒真，整个公式等价于 P——真值随 P 起，可满足但非有效。" },
   ];
@@ -761,9 +761,9 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   const val = { P:false, Q:false, R:false };
   const clauses = [
     { txt:"P ∨ Q ∨ R", f:(v) => v.P || v.Q || v.R },
-    { txt:"P̄ ∨ Q̄",    f:(v) => !v.P || !v.Q },
-    { txt:"P̄ ∨ R",    f:(v) => !v.P || v.R },
-    { txt:"R ∨ Q̄",    f:(v) => v.R || !v.Q },
+    { txt:"P ∨ Q",    f:(v) => v.P || v.Q },
+    { txt:"P ∨ R",    f:(v) => v.P || v.R },
+    { txt:"R ∨ Q",    f:(v) => v.R || v.Q },
   ];
   const knobs = $("#sat-knobs"), cl = $("#sat-clauses"), total = $("#sat-total"), fb = $("#sat-fb");
   names.forEach(n => {

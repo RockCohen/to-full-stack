@@ -179,7 +179,7 @@ footer p{margin:6px 0}
 <section class="ch" id="s1">
   <div class="ch-head reveal"><span class="no">13.1</span><h2>狗屋、quadarpi 与平面性</h2><span class="en">Drawing Graphs in the Plane</span></div>
   <div class="reveal">
-    <p>两道古怪谜题开场：<b>三座狗屋与三户人家</b>，每座狗屋到每户人家修一条路，路不能交叉——能吗？<b>五只 quadrapus</b>（四臂生物）要两两握手，八只手臂不交叉——能吗？翻译成图论：前者的图是 <span class="term">K₃,₃</span>（完全二部图），后者是 <span class="term">K₅</span>（5 顶点完全图）。答案都是"不能——但差一点！"：从任一图中删掉<b>一条边</b>，立刻就能无交叉地画在平面上。</p>
+    <p>两道古怪谜题开场：<b>三座狗屋与三户人家</b>，每座狗屋到每户人家修一条路，路不能交叉——能吗？<b>五只 quadrapus</b>（形似章鱼，章鱼八臂、它只有四臂）要两两握手，手臂还不许交叉——能吗？翻译成图论：前者的图是 <span class="term">K₃,₃</span>（完全二部图），后者是 <span class="term">K₅</span>（5 顶点完全图）。答案都是"不能——但差一点！"：从任一图中删掉<b>一条边</b>，立刻就能无交叉地画在平面上。</p>
     <div class="insight"><span class="ico">💻</span><div>这不是纸上谈兵：Wozniak 设计早期 Apple II 磁盘驱动器电路时，为了让 PCB 上几乎不需要"过孔"（feedthrough），反复重画平面化电路——最终版被工程师公认既正确又优美。平面性 = 更便宜、更可靠的硬件。</div></div>
     <p>精确的定义用"递归数据类型"完成（定义 13.2.2：平面嵌入 = 一组闭合 walk 作为离散面，基例单顶点，构造 = "分裂一个面"与"加一条桥"）——第 7 章的结构归纳在这里全面接管几何直觉。收获是三个大定理：</p>
     <div class="box thm">
@@ -307,13 +307,13 @@ footer p{margin:6px 0}
       </div>
     </details>
     <details class="egg">
-      <summary>课后挑战（均出自原书习题）</summary>
+      <summary>课后挑战（均出自原书习题与正文）</summary>
       <div class="body">
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
           <li><b>13.1</b> 写出两个平面嵌入的所有离散面（闭合 walk 序列，注意 bridge 出现两次、dangle 每边一来一回）。</li>
           <li><b>13.9</b> 用结构归纳证明：从平面嵌入中删除一条边仍是平面嵌入。</li>
-          <li><b>13.16</b> 证明欧拉公式的推论：任何平面图至少有 4 个度 ≤ 5 的顶点。</li>
-          <li><b>13.26</b> 利用正多面体分类回答：能否给 20 颗以上卫星安排"均匀覆盖"轨道？</li>
+          <li>证明欧拉公式的推论：任何平面图至少有 4 个度 ≤ 5 的顶点（由欧拉公式与 e ≤ 3v−6 立得）。</li>
+          <li>利用 13.7 节的正多面体分类回答：能否给 20 颗以上卫星安排"均匀覆盖"轨道？（原书 13.7 节正文：想这么干，"tough luck"。）</li>
         </ul>
       </div>
     </details>

@@ -380,7 +380,7 @@ footer p{margin:6px 0}
       <div class="body">
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
           <li><b>19.1</b> 证明：两事件独立 ⟺ 它们的指示变量独立。</li>
-          <li><b>19.5</b> (a) Ex[R|A] 与 (b) 全期望定律的完整证明（定理 19.4.5 的分组重排）。</li>
+          <li><b>条件期望与全期望</b>（对应正文定义 19.4.4 / 定理 19.4.5）：(a) 证明条件期望 Ex[R|A] 及其按缩小空间求和的展开，(b) 给出全期望定律的完整证明（分组重排）。</li>
           <li><b>19.28</b> 不用线性的方法直接算 Σk·C(n,k)pᵏ(1−p)ⁿ⁻ᵏ = np，体会两种证明的落差。</li>
           <li><b>18.31（前章预热）</b> 三硬币定义 D="偶数枚正面"：A、B、C、D 不是相互独立，却 3-way 独立——动手验证。</li>
         </ul>
@@ -466,10 +466,8 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
     const t = wins + losses;
     $("#ev-score").textContent = `${wins.toLocaleString()} 胜 ${losses.toLocaleString()} 负`;
     $("#ev-rate").textContent = t ? (wins / t * 100).toFixed(1) + "%" : "—";
-    $("#ev-theo").textContent = "1/" + (maxN) * 1;
-    $("#ev-theo").textContent = "50% + 1/" + (2 * (maxN + 1));
+    $("#ev-theo").textContent = "1/" + (2 * maxN);
     $("#ev-log").innerHTML = log.join("<br>") || "点「偷看并出手」开始。";
-    const fb = $("#ev-log");
   }
   $("#ev-play").addEventListener("click", play);
   $("#ev-auto").addEventListener("click", () => { for (let i = 0; i < 1000; i++) play(); });
@@ -627,7 +625,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
     {q:"信封游戏（对手挑数、非随机）：半整数策略的胜率下界是？",
      opts:[
        {t:"恰好 50%——对手可以完美针对", ok:false, fb:"确定性策略才会被针对；这里 x 是随机的。"},
-       {t:"50% + (H−L)/2n ≥ 50% + 1/2n", ok:true, fb:"对（式 19.3 推论）。猜中 x 落在两数之间时稳赢，猜不中不亏。范围 0..10 时高达 55%。"},
+       {t:"50% + (H−L)/2n ≥ 50% + 1/2n", ok:true, fb:"对（直接展开可得：x 恰落在两数之间时稳赢，猜不中不亏）。范围 0..10 时高达 55%。"},
        {t:"100%——策略无敌", ok:false, fb:"x 猜偏时退回 50%。"},
        {t:"取决于对手用什么分布挑数", ok:false, fb:"这正是策略的美：对任何挑法都成立。"}]},
     {q:"掷骰子 R：Ex[R] = 7/2。Ex[1/R] = ？",

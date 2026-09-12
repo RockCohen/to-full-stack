@@ -250,7 +250,7 @@ footer p{margin:6px 0}
       <span class="label">不变量原理 THE INVARIANT PRINCIPLE</span>
       <p style="margin:4px 0">若 P 是状态机的<b>保持不变量（preserved invariant）</b>——起始状态满足 P，且每条转移 q → r 都有 P(q) ⇒ P(r)——则 P 对<b>一切可达状态</b>成立。</p>
     </div>
-    <p>它就是归纳原理换了身衣服：起始状态真 = 基例；保持 = 归纳步。提出者是 Robert W. Floyd（1967），后来拿了图灵奖。顺便看一个反向陷阱：状态 (1,0) 满足 NOT(P) 却有转移到满足 P 的 (0,0)——<b>保持不变量的否定不一定是保持不变量</b>。</p>
+    <p>它就是归纳原理换了身衣服：起始状态真 = 基例；保持 = 归纳步。提出者是 Robert W. Floyd（1967），后来拿了图灵奖。顺便看一个反向陷阱：“保持”只约束<b>满足 P 的状态</b>的出边（P(q) ⇒ P(r)），对违反 P 的状态的出边没有任何承诺——所以<b>保持不变量的否定不一定是保持不变量</b>。真实反例见下节“永恒版”水壶：保持不变量 P ::= “两壶水量都是 3 的倍数”，但违反 P 的状态 (5,0) 经“灌满大壶”转移到满足 P 的 (9,0)，P 的否定就此失守。</p>
   </div>
 </section>
 
@@ -325,7 +325,7 @@ footer p{margin:6px 0}
   <div class="ch-head reveal"><span class="no">6.4</span><h2>稳定婚姻问题</h2><span class="en">The Stable Marriage Problem</span></div>
   <div class="reveal">
     <p>n 位男士、n 位女士，每人心里有一份对异性的完整偏好排序。要给所有人配对，且配对<span class="term">稳定（stable）</span>：不存在"两人都更爱对方而非现任配偶"的<span class="term">流氓对（rogue couple）</span>。原书用 Brad / Angelina / Jennifer / Billy Bob 举例：Brad 和 Angelina 互为最爱却各配他人——婚姻岌岌可危。</p>
-    <p>Mating Ritual（相亲仪式）：每天早上，单身男士向自己名单上<b>排位最高</b>的女士唱小夜曲；下午，每位女士从追求者中留下最爱、对其余宣布"此生休想"；晚上，被拒男士把该女士划掉。直到每位女士至多一位追求者，全员成婚。三大定理：必在 n² 天内终止；人人结婚；结果稳定。还有一记反转：<b>这套仪式对男士最优、对女士最劣</b>（定理 6.4.9）——虽然看起来天天挑人的是女士。</p>
+    <p>Mating Ritual（相亲仪式）：每天早上，单身男士向自己名单上<b>排位最高</b>的女士唱小夜曲；下午，每位女士从追求者中留下最爱、对其余宣布"此生休想"；晚上，被拒男士把该女士划掉。直到每位女士都恰有一位追求者，全员成婚。三大定理：必在 n² 天内终止；人人结婚；结果稳定。还有一记反转：<b>这套仪式对男士最优、对女士最劣</b>（定理 6.4.9）——虽然看起来天天挑人的是女士。</p>
   </div>
 
   <!-- 互动⑦ 稳定婚姻模拟器（hero） -->
@@ -371,7 +371,7 @@ footer p{margin:6px 0}
     <details class="egg">
       <summary>Robert W. Floyd：没读过博士的图灵奖得主（原书 6.2.2 侧栏）</summary>
       <div class="body">
-        <p>不变量原理由 Floyd 于 1967 年在卡内基理工提出。他十几岁就被博士班录取，却因口试挂科再没回去——照样当上教授，后来以形式文法与程序验证的奠基工作获图灵奖。作者 Meyer 回忆：Floyd 兴冲冲讲不变量原理时，Meyer 心想"这么显然的东西也值得兴奋？"后来才懂：Floyd 兴奋的不是定理之真，而是<b>如此简单的方法竟能如此广泛地验证程序</b>。</p>
+        <p>不变量原理由 Floyd 于 1967 年在卡内基理工提出。他十几岁就被博士班录取，却考试挂科退学、再没回去——照样当上教授，后来以形式文法与程序验证的奠基工作获图灵奖。作者 Meyer 回忆：Floyd 兴冲冲讲不变量原理时，Meyer 心想"这么显然的东西也值得兴奋？"后来才懂：Floyd 兴奋的不是定理之真，而是<b>如此简单的方法竟能如此广泛地验证程序</b>。</p>
       </div>
     </details>
     <details class="egg">
@@ -381,7 +381,7 @@ footer p{margin:6px 0}
       </div>
     </details>
     <details class="egg">
-      <summary>西南跳跃机器人（原书 6.3.4，可选）</summary>
+      <summary>东南跳跃机器人（原书 6.3.4，可选）</summary>
       <div class="body">
         <p>机器人每次要么向西一格，要么向南一格加任意远向东跳。它能停在原点，但<b>无法用非负整数派生变量证终止</b>——因为它可以拖任意多步。妙招：定义派生变量 v(x,y) = y + x/(x+1)，取值在良序集 ℕ+𝔽（第 2 章埋的伏笔！）上严格递减——定理 6.3.3（良序集版终止定理）接管。第 2、5、6 章在此会师。</p>
       </div>
@@ -391,9 +391,9 @@ footer p{margin:6px 0}
       <div class="body">
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
           <li><b>6.6</b> 精确证明快速幂至多 2(⌈log₂b⌉+1) 次乘法。</li>
-          <li><b>6.19</b>（经典）九枚金币一枚假（偏轻），天平最少称两次——用不变量思路写出状态机与策略。</li>
+          <li><b>附加题</b>（经典，原书未收）九枚金币一枚假（偏轻），天平最少称两次——用不变量思路写出状态机与策略。</li>
           <li><b>6.23</b> 构造一份四人偏好，使"同性 buddy 配对"不存在稳定匹配——异性版的定理在同性场景失效。</li>
-          <li><b>6.24</b> 证明 Mating Ritual 里男士的最优配偶可能不止一个可行配偶的情形分析（feasible spouse 定义 6.4.5）。</li>
+          <li><b>附加题</b> 证明 Mating Ritual 里男士的最优配偶可能不止一个可行配偶的情形分析（feasible spouse 定义 6.4.5）。</li>
         </ul>
       </div>
     </details>
@@ -682,10 +682,10 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
         state.engaged[w] = keep;
       }
     });
-    const fin = receiving.every(w => state.suitors[w].length <= 1);
+    const fin = receiving.every(w => state.engaged[w]);
     if (fin) {
       done = true;
-      log += `<br><b>终止条件达成：每位女士至多一位追求者。全员成婚！</b>`;
+      log += `<br><b>终止条件达成：每人都有了订婚对象（n 对配齐）。全员成婚！</b>`;
       $("#sm-stable").disabled = false; $("#sm-optimal").disabled = false;
       $("#sm-step").disabled = true; $("#sm-auto").disabled = true;
     }
@@ -739,14 +739,14 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
     {q:"不变量原理：若 P 是状态机的保持不变量且 P 在起始状态为真，则？",
      opts:[
        {t:"P 在一切可达状态为真", ok:true, fb:"对——基例（起始态）+ 保持（每条转移）＝归纳原理换装。"},
-       {t:"P 的否定也是保持不变量", ok:false, fb:"原书反例：状态 (1,0) 违反 P 却有转移到满足 P 的 (0,0)。"},
+       {t:"P 的否定也是保持不变量", ok:false, fb:"否定不必保持：“保持”只承诺满足 P 的状态的出边仍落在满足 P 的状态。违反 P 的状态可以转移到满足 P 的状态——如“永恒版”水壶（9/3）里 P ::= “两壶水量都是 3 的倍数”，(5,0) 违反 P，灌满大壶后到 (9,0) 满足 P。"},
        {t:"所有状态都可达", ok:false, fb:"可达性与不变量是两回事。"},
        {t:"机器必然终止", ok:false, fb:"终止要靠'严格递减的良序派生变量'，不变量管的是性质保持。"}]},
     {q:"对角机器人（只能 (m,n)→(m±1,n±1)）永远到不了 (1,0)，用的不变量是？",
      opts:[
        {t:"m·n 是偶数", ok:false, fb:"不对。比如 (1,1) 处 m·n=1 是奇数但机器人能到。"},
        {t:"m+n 是偶数（Even-sum）", ok:true, fb:"对。每步坐标和变化 +2/0/−2，偶性保持；而 1+0 是奇数 ⇒ 不可达（推论 6.2.3）。"},
-       {t:"m ≤ n", ok:false, fb:"机器人能到 (2,1)？不能——但能到 (1,2)。这条'性质'根本不是不变量。"},
+       {t:"m ≤ n", ok:false, fb:"违反 m≤n 的点机器人能到吗？能——(0,0)→(1,1)→(2,0)，而 (2,0) 里 2>0。这条'性质'起始为真却在半路被打破，不是保持不变量。"},
        {t:"机器人永远在原点", ok:false, fb:"它明明能走到 (1,1)。"}]},
     {q:"《Die Hard Permanently》（9 加仑 + 3 加仑壶）里，目标 (4,·) 永不可达。用的不变量是？",
      opts:[
@@ -765,7 +765,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"n 天", ok:false, fb:"太乐观——有人可能要被拒很多轮。"},
        {t:"n² 天", ok:true, fb:"对：每位男士名单共 n² 个条目，仪式每进行一天至少划掉一条，划完必终止。"},
        {t:"2ⁿ 天", ok:false, fb:"指数上界高估了——列表条目只有 n² 个。"},
-       {t:"永不终止", ok:false, fb:"定理 6.4.2：必有结婚日。"}]},
+       {t:"永不终止", ok:false, fb:"不会——6.4.2 节的论证：至多 n² 天必有结婚日。"}]},
     {q:"定理 6.4.9 说 Mating Ritual 里谁占便宜？",
      opts:[
        {t:"女士——她们每天挑人", ok:false, fb:"看似如此，但定理相反：表面掌权者实际拿到最劣可行配偶。"},

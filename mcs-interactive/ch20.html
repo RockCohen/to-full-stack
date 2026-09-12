@@ -162,7 +162,7 @@ footer p{margin:6px 0}
     <div class="en">Deviation from the Mean</div>
     <p class="lead">期望是 1 的两场赌局，方差差了一百万倍——期望不告诉你的事，方差说。马尔可夫给 IQ≥300 画出 1/3 的粗糙上限，切比雪夫用 σ=15 磨到 1/178；至于"该采样多少人"——不管三亿还是三万选民，3125 个就够。</p>
     <div class="meta">
-      <span>⏱ 约 70 分钟</span><span>🧩 6 个互动装置</span><span>📖 原书第 853–894 页</span>
+      <span>⏱ 约 70 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 853–894 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch19.html">上一章：随机变量与期望</a></div>
@@ -206,6 +206,7 @@ footer p{margin:6px 0}
       <span><i style="background:#b4832a"></i>平移 Markov（下界100）</span>
       <span><i style="background:#0f4c81"></i>Chebyshev 15²/(x−100)²</span>
     </div>
+    <div class="small muted" style="margin-top:6px">注：金色"平移 Markov"曲线取自原书 20.1.2 均值 150 的 MIT IQ 例（T = R−100，Ex[T]=50 ⟹ 上界 50/(x−100)），此处仅作形状参照——图中正态曲线是 μ=100 的设定。</div>
     <div class="fb info" id="iq-fb" style="display:block">x=300：Markov 只给 1/3，Chebyshev 磨到 1/178 ≈ 0.56%——信息每多一条（σ），界就紧一分。</div>
   </div>
 </section>
@@ -223,10 +224,10 @@ footer p{margin:6px 0}
   <div class="widget reveal" id="w-var">
     <span class="pill">互动 ②</span>
     <h4 class="wtitle">🎰 方差对比器：Game A vs Game B</h4>
-    <label class="small">Game B 赢金额 = <b id="vb-win" style="font-family:var(--mono)">$1002</b>（2/3 概率；输 = 赢额 − 1）　</label>
+    <label class="small">Game B 赢金额 = <b id="vb-win" style="font-family:var(--mono)">$1002</b>（2/3 概率；输 = 2×赢额 − 3）　</label>
     <input type="range" id="vb-win-s" min="3" max="5002" value="1002" step="1" />
     <table class="var-table" id="vb-table"></table>
-    <div class="fb info" id="vb-fb" style="display:block">期望恒为 $1（2/3 · W − 1/3 · (W−1) = (2W − W + 1)/3 = (W+1)/3 …等等，书里 Game B 输 $2001 恰好配平 $1——滑动验证）。σ 才是风险计。</div>
+    <div class="fb info" id="vb-fb" style="display:block">期望恒为 $1：2/3 · W − 1/3 · (2W−3) = (2W − 2W + 3)/3 = $1（书里 Game B 赢 $1002、输 $2001 = 2×1002−3 恰好配平——滑动验证）。σ 才是风险计。</div>
   </div>
 </section>
 
@@ -270,7 +271,7 @@ footer p{margin:6px 0}
   <div class="ch-head reveal"><span class="no">20.4</span><h2>随机采样：该问多少人？</h2><span class="en">Estimation by Random Sampling</span></div>
   <div class="reveal">
     <p>估计支持率 p：抽 n 人（有放回），样本占比 Sₙ/n。想要 ±0.04、95% 置信。Var[Sₙ/n] ≤ 1/(4n)（p(1−p) 在 p=1/2 最大），切比雪夫一压：</p>
-    <div class="eq math">n ≥ 156.25/(0.04² · 5%) ⟹ n ≥ 3,125</div>
+    <div class="eq math">Pr[|Sₙ/n − p| ≥ 0.04] ≤ (1/4n)/0.04² = 156.25/n ≤ 1/20 ⟹ n ≥ 3,125</div>
     <p>推论 20.4.2（弱大数定律）：pairwise 独立、同均值有限方差 → 样本均值依概率收敛到 μ。<b>选民总数从头到尾没出现过</b>——3000 人永远够，不管总人口一万还是十亿。</p>
   </div>
 
@@ -286,7 +287,7 @@ footer p{margin:6px 0}
     </div>
     <div class="num-row">
       <div class="statcard">切比雪夫要求 n ≥ <b id="pl-n" style="color:var(--amber)">3,125</b></div>
-      <div class="statcard">真实二项（正态近似）约 <b id="pl-real">2,401</b> —— 切比雪夫粗 30%</div>
+      <div class="statcard">真实二项（正态近似）约 <b id="pl-real">601</b> —— 原书 20.6.2 的尾界可把 n 再压小约 4 倍</div>
       <button class="btn primary" id="pl-run">用 n 实测 1,000 次民调</button>
     </div>
     <div class="fb info" id="pl-fb" style="display:block">点击实测：p=1/2、样本量取上式，跑 1,000 次虚拟民调，统计 |Sₙ/n − 1/2| 超差的频率——看它离 5% 的承诺有多远。</div>
@@ -309,12 +310,12 @@ footer p{margin:6px 0}
     <p>均值和方差都知道了，切比雪夫就是天花板。但如果随机变量是<b>一堆独立小变量之和</b>（每个取值 ∈[0,1]），还有一把锤子——Chernoff 界（定理 20.6.1）：</p>
     <div class="eq math">Pr[T ≥ c·Ex[T]] ≤ e^(−β(c)·Ex[T])，β(c) := c·ln c − c + 1</div>
     <p><b>指数 vs 多项式</b>：Markov 给 1/c、切比雪夫给 1/c²、Chernoff 给 e^(−Θ(Ex[T]))。1000 次掷币正面超均值 20%（c=1.2，β=0.0187）：概率 &lt; 1/10,000；超 30%（β=0.041）：1/10 亿；一百万枚硬币：e^(−9392)，"不可想象的小"。应用：Pick-4 彩票 1000 万玩家翻车概率 e^(−386)；Fussbook（虚构社交站）负载均衡——24000 帖、每帖平均 ¼ 秒、600 秒窗口：</p>
-    <div class="eq math">Pr[某台超载] ≤ m·e^(−β(m/10)·6000/m)：m=11 → 0.78　m=12 → 0.0001　m=13 → 0.000000076</div>
+    <div class="eq math">Pr[某台超载] ≤ m·e^(−β(m/10)·6000/m)：m=11 → 0.78　m=12 → ≈0.001　m=13 → 0.000000076</div>
   </div>
 
   <!-- 互动 Chernoff 计算器 -->
   <div class="widget reveal" id="w-cher">
-    <span class="pill">互动 ⑥</span>
+    <span class="pill">互动 ⑤</span>
     <h4 class="wtitle">🔨 Chernoff 计算器：β(c) 与三界对比</h4>
     <label class="small">超出倍数 c = <b id="ch-c" style="font-family:var(--mono)">1.20</b>　</label>
     <input type="range" id="ch-cs" min="100" max="300" value="120" />
@@ -323,7 +324,7 @@ footer p{margin:6px 0}
     <table class="var-table">
       <tr><th>界</th><th>公式</th><th>Pr[T ≥ c·Ex[T]] ≤</th></tr>
       <tr><td>Markov</td><td>1/c</td><td id="cher-mk">—</td></tr>
-      <tr><td>Chebyshev*</td><td>1/(9(c−1)²)</td><td id="cher-cb">—</td></tr>
+      <tr><td>Chebyshev</td><td>1/((c−1)²·μ)</td><td id="cher-cb">—</td></tr>
       <tr><td style="color:var(--amber)">Chernoff</td><td>e^(−β(c)·μ)</td><td id="cher-ch" style="color:var(--amber);font-weight:700">—</td></tr>
     </table>
     <div class="fb info" id="ch-fb" style="display:block"></div>
@@ -358,7 +359,7 @@ footer p{margin:6px 0}
     <details class="egg">
       <summary>Scott Brown 与 3125 人的由来（20.4 开场）</summary>
       <div class="body">
-        <p>2010 年麻省参议员补选，民主党早期民调全没看出共和党人 Scott Brown 会赢 Teddy Kennedy 坐了 40 多年的席位——抽样误差不是抽象概念，是会翻盘的。切比雪夫版的 3,125 偏保守约 30%（真实二项约 2,400）；第 21 章的 Chernoff 界能再收紧。书中脚注：这个例子 xkcd #882 有一幅著名的吐槽（显著性检验的次数问题）。</p>
+        <p>2010 年麻省参议员补选，民主党早期民调全没看出共和党人 Scott Brown 会赢 Teddy Kennedy 坐了 40 多年的席位——抽样误差不是抽象概念，是会翻盘的。切比雪夫版的 3,125 偏保守——真实二项（正态近似）约 600，原书 20.6.2 的尾界法能把 n 再压小约 4 倍；第 21 章的 Chernoff 界正是干这个的。书中脚注：这个例子 xkcd #882 有一幅著名的吐槽（显著性检验的次数问题）。</p>
       </div>
     </details>
     <details class="egg">
@@ -371,10 +372,10 @@ footer p{margin:6px 0}
       <summary>课后挑战（均出自原书习题）</summary>
       <div class="body">
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
-          <li><b>20.3</b> 有上界 u 时用 u−S 套 Markov，给出"R 远低于均值"的上界；对偶地补全 20.1.2。</li>
-          <li><b>20.5</b> MIT 洗衣三连：busy（3 套题各 1 或 2 天）、relaxed（掷骰到 1 才洗）、unlucky（两骰积天数）——三种懒法各期望多少天？混合型呢（Ex[D]）？</li>
-          <li><b>20.9 / 20.16</b> 方差性质的证明细节（平方倍规则、pairwise 可加）。</li>
-          <li><b>20.13</b> 信心与概率：复习 18.9.3 的"你的 TB 不是随机事件"，对比 20.5 的置信语言。</li>
+          <li><b>20.3</b> R 非负且有下界 b：对 R−b 套 Markov 能再压低 Pr[R ≥ x]——证明 b&gt;0 时界必更小，并找出最优的 b；对偶的"有上界 u 时用 u−S 界 S 远低于均值"见正文 20.1.2 末尾评注。</li>
+          <li><b>19.19（前章回马枪）</b> MIT 洗衣三连：busy（3 套题各 1 或 2 天）、relaxed（掷骰到 1 才洗）、unlucky（两骰积天数）——三种懒法各期望多少天？混合型呢（Ex[D]）？</li>
+          <li><b>20.18</b> 证明方差的 pairwise 独立可加性（定理 20.3.8）；平方倍规则 Var[aR] = a²Var[R] 顺手一并推。</li>
+          <li><b>20.13</b> n 把钥匙只有一把开门，试错即弃：已知 Ex[T] = (n+1)/2（19.25），写出 Var[T] 的闭式。</li>
         </ul>
       </div>
     </details>
@@ -489,10 +490,7 @@ const svgText = (svg, x, y, s, attrs={}) => {
   function upd(){
     const W = +$("#vb-win-s").value;
     $("#vb-win").textContent = "$" + W.toLocaleString();
-    const lose = W - 1;                     // 书中 B 输 $2001 与赢 $1002 配平 Ex=1
-    const ex = 2/3 * W + 1/3 * (-lose);
-    // 修正：书中 Game B 赢 1002 输 2001 → Ex = 1002*2/3 - 2001/3 = 1 ✓（输 = 2W - 3）
-    const loseFix = 2 * W - 3;
+    const loseFix = 2 * W - 3;              // 书中 Game B 赢 1002 输 2001 → Ex = 1002*2/3 - 2001/3 = 1 ✓（输 = 2W - 3）
     const exFix = 2/3 * W - 1/3 * loseFix;
     const varA = 2/3 * (2 - 1)**2 + 1/3 * (-1 - 1)**2;  // Game A: +2/-1, Ex=1
     const dW = W - exFix, dL = -loseFix - exFix;
@@ -599,7 +597,7 @@ const svgText = (svg, x, y, s, attrs={}) => {
   upd();
 })();
 
-/* ---------- 互动⑥ Chernoff 计算器 ---------- */
+/* ---------- 互动⑤ Chernoff 计算器 ---------- */
 (() => {
   function fmtSci(x){
     if (x >= 1) return x.toPrecision(3);
@@ -613,7 +611,7 @@ const svgText = (svg, x, y, s, attrs={}) => {
     $("#ch-mu").textContent = mu.toLocaleString();
     const beta = c * Math.log(c) - c + 1;
     const mk = 1 / c;
-    const cb = 1 / (9 * (c - 1) ** 2);          // 切比雪夫用于 μ→cμ 距离 (c−1)μ：σ²≤μ/4 → 界 1/(9(c−1)²μ)；此处列相对量级
+    const cb = 1 / ((c - 1) ** 2);              // 切比雪夫：Var[T] ≤ Ex[T] = μ（[0,1] 变量满足 X² ≤ X），距均值 (c−1)μ → 界 1/((c−1)²μ)
     const chBound = Math.exp(-beta * mu);
     $("#cher-mk").textContent = fmtSci(mk);
     $("#cher-cb").textContent = fmtSci(Math.min(1, cb / mu));
@@ -662,8 +660,8 @@ const svgText = (svg, x, y, s, attrs={}) => {
        {t:"Ex=12.23，Var=0", ok:false, fb:"那 M 就成常数了。"}]},
     {q:"想要 ±0.04、95% 置信的支持率估计，切比雪夫要 n≥？",
      opts:[
-       {t:"3,125", ok:true, fb:"对。Var[Sₙ/n]≤1/(4n)，切比雪夫 → 156.25/(n·0.04²) ≤ 1/20 → n≥3,125。与选民总数无关！"},
-       {t:"385", ok:false, fb:"那是更强的尾部界（第 21 章 Chernoff）给出的量级。"},
+       {t:"3,125", ok:true, fb:"对。Var[Sₙ/n]≤1/(4n)，切比雪夫给 Pr ≤ (1/4n)/0.04² = 156.25/n ≤ 1/20 → n≥3,125。与选民总数无关！"},
+       {t:"385", ok:false, fb:"那是把 ε 放宽到 5% 时的正态口径：(1.96/0.1)² ≈ 385——±5% 误差对应的正态近似样本量，与 Chernoff 无关。"},
        {t:"与选民总数成正比", ok:false, fb:"书中强调：人口规模从头到尾没出现过。"},
        {t:"312", ok:false, fb:"差十倍——方差项 1/(4n) 算漏了。"}]},
   ];

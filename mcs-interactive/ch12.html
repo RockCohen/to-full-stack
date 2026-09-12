@@ -87,6 +87,7 @@ h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-rig
 .insight .ico{font-size:20px;line-height:1.5}
 .eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
 .math{font-family:var(--serif);white-space:nowrap}
+.eq.math{white-space:normal}
 .term{color:var(--accent);font-weight:600}
 .muted{color:var(--muted)} .small{font-size:14px}
 
@@ -109,13 +110,13 @@ h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-rig
 
 /* 伴侣图 */
 .deg-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
-.deg-wrap svg{flex-shrink:0;background:#fff;border:1px solid var(--line);border-radius:12px;max-width:100%}
+.deg-wrap svg{background:#fff;border:1px solid var(--line);border-radius:12px;width:100%;max-width:430px;height:auto}
 .deg-side{flex:1;min-width:240px;font-size:15px}
 .degstat{border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin:8px 0;background:#fff;font-family:var(--mono);font-size:14px}
 
 /* 着色 */
 .col-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
-.col-wrap svg{flex-shrink:0;background:#fff;border:1px solid var(--line);border-radius:12px;max-width:100%}
+.col-wrap svg{background:#fff;border:1px solid var(--line);border-radius:12px;width:100%;max-width:430px;height:auto}
 .col-side{flex:1;min-width:240px;font-size:15px}
 .pal{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
 .pal .cbtn{width:44px;height:44px;border-radius:10px;border:2.5px solid transparent}
@@ -129,7 +130,70 @@ h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-rig
 .qc-row .verdict.show{display:block}
 .qc-row.done{opacity:.92}
 
+/* 同构侦探 */
+.iso2{display:flex;gap:20px;flex-wrap:wrap;align-items:center;justify-content:center}
+.iso2 svg{background:#fff;border:1px solid var(--line);border-radius:12px;width:100%;max-width:460px;height:auto}
+.fmap{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.fmap .fslot{display:flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:10px;
+  padding:5px 10px;background:#fff;font-family:var(--mono);font-size:15px}
+.fmap .fslot b{color:var(--accent)}
+.fmap select{border:1.5px solid var(--line);border-radius:8px;padding:3px 6px;font-family:var(--mono);font-size:14px;background:#fff}
+
+/* Hall 子集扫描器 */
+.hsub{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin:12px 0}
+.hcard{border:1.5px solid var(--line);border-radius:10px;background:#fff;padding:8px 10px;font-size:13.5px}
+.hcard .who{font-weight:600;color:var(--accent)}
+.hcard .btns{display:flex;gap:6px;margin-top:6px}
+.hcard .btns button{flex:1;border:1.2px solid var(--line);background:#fff;border-radius:8px;font-size:12.5px;padding:3px 0;transition:.15s}
+.hcard .btns button:hover{border-color:var(--accent)}
+.hcard.right{border-color:var(--good);background:var(--good-soft)}
+.hcard.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.matchline{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.matchline .mchip{border:2px solid var(--good);border-radius:999px;background:var(--good-soft);color:var(--good);
+  padding:3px 12px;font-size:13.5px;font-weight:600}
+
+/* 圈猎手 */
+.cy-wrap{display:flex;gap:20px;flex-wrap:wrap}
+.cy-wrap svg{background:#fff;border:1px solid var(--line);border-radius:12px;width:100%;max-width:340px;height:auto}
+.cy-side{flex:1;min-width:250px}
+.cyc{border:1.5px solid var(--line);border-radius:10px;background:#fff;padding:8px 12px;margin:6px 0;
+  font-family:var(--mono);font-size:14.5px;cursor:pointer;transition:.15s;text-align:left;width:100%}
+.cyc:hover{border-color:var(--accent)}
+.cyc.picked{border-color:var(--amber);background:var(--amber-soft)}
+.cyc.okc{border-color:var(--good);background:var(--good-soft)}
+.cyc.noc{border-color:var(--bad);background:var(--bad-soft);text-decoration:line-through}
+
+/* 树性质 */
+.tq-row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:12px;padding:11px 16px;margin:8px 0;background:#fff}
+.tq-row .stmt{flex:1;min-width:230px;font-size:15px}
+.tq-row .verdict{font-size:13.5px;display:none;border-top:1px dashed var(--line);padding-top:7px;margin-top:7px;width:100%;line-height:1.7}
+.tq-row .verdict.show{display:block}
+.tq-row.done{opacity:.92}
+
+/* 同构保持性质 */
+.keepgrid{display:grid;grid-template-columns:1fr;gap:6px;margin:12px 0}
+@media (min-width:640px){.keepgrid{grid-template-columns:1fr 1fr}}
+.keepline{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:9px;
+  background:#fff;padding:7px 12px;font-size:14px}
+.keepline .letter{font-family:var(--mono);color:var(--amber);font-weight:700}
+.keepline .btns{margin-left:auto;display:flex;gap:5px}
+.keepline .btns button{border:1.2px solid var(--line);background:#fff;border-radius:8px;font-size:12.5px;padding:2px 10px}
+.keepline.right{border-color:var(--good);background:var(--good-soft)}
+.keepline.wrong{border-color:var(--bad);background:var(--bad-soft)}
+
 .quiz-item{margin:18px 0}
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.ansrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.ansrow input{width:76px;border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;
+  font-size:16px;font-family:var(--mono);text-align:center}
+.ansrow input:focus{outline:none;border-color:var(--accent)}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
 .result-box.show{display:block;animation:fadein .5s}
 .result-box .rank{font-family:var(--serif);font-size:26px}
@@ -164,7 +228,7 @@ footer p{margin:6px 0}
     <div class="en">Simple Graphs</div>
     <p class="lead">边没有方向的图，专管"互相"的关系。本章从一则著名的社会调查悖论出发——"男性平均伴侣数比女性多 74%"在数学上根本不可能——一路走到握手引理、Hall 定理与考试排色。</p>
     <div class="meta">
-      <span>⏱ 约 40 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 445–470 页</span>
+      <span>⏱ 约 55 分钟</span><span>🧩 9 个互动装置</span><span>📖 原书第 445–478 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch11.html">上一章：通信网络</a></div>
@@ -174,10 +238,12 @@ footer p{margin:6px 0}
 <div class="layout">
 <nav id="toc" aria-label="章节目录">
   <div class="toc-title">本章路线图</div>
-  <a href="#s1"><span class="toc-num">12.1–12.2</span>度数与平均度悖论</a>
-  <a href="#s2"><span class="toc-num">12.3–12.4</span>常见图与同构</a>
-  <a href="#s3"><span class="toc-num">12.5</span>二部图匹配与 Hall</a>
+  <a href="#s1"><span class="toc-num">12.1–2</span>度数与平均度悖论</a>
+  <a href="#s2"><span class="toc-num">12.3–4</span>常见图与同构侦探</a>
+  <a href="#s3"><span class="toc-num">12.5</span>二部匹配 · Hall 扫描器</a>
   <a href="#s4"><span class="toc-num">12.6</span>着色</a>
+  <a href="#s5"><span class="toc-num">12.7–9</span>圈 · 割边 · 树</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -188,7 +254,7 @@ footer p{margin:6px 0}
   <div class="ch-head reveal"><span class="no">12.1</span><h2>度数与著名的平均度悖论</h2><span class="en">Vertex Degrees</span></div>
   <div class="reveal">
     <p><span class="term">简单图</span>：边无方向、无自环、两点间至多一条边。握手引理（12.2.1）：<b>所有顶点度数之和 = 边数的两倍</b>——每次握手都贡献两只手。</p>
-    <p>它有个炸裂的应用。芝加哥大学、ABC News、美国卫生统计中心都调查过"美国人平均有过多少异性伴侣"，结论一致：男性比女性多 74%、231% 不等。原书用一行图论把这堆调查全部判死：<b>把人当顶点、伴侣关系当边，男性度数和 = 女性度数和 = 边数</b>，于是</p>
+    <p>它有个炸裂的应用。芝加哥大学、ABC News、美国卫生统计中心都调查过"美国人平均有过多少异性伴侣"，结论一致：男性比女性多 74%、233% 不等。原书用一行图论把这堆调查全部判死：<b>把人当顶点、伴侣关系当边，男性度数和 = 女性度数和 = 边数</b>，于是</p>
     <div class="eq math">Avg. deg in M = (|F| / |M|) · Avg. deg in F</div>
     <p>两边平均度之比<b>完全由人口性别比决定</b>（美国 |F|/|M| ≈ 1.035，男性平均只可能多 3.5%）——与谁的"花心程度"毫无关系。亲手连边验证：</p>
   </div>
@@ -212,9 +278,25 @@ footer p{margin:6px 0}
 
 <!-- ================= 12.3-12.4 ================= -->
 <section class="ch" id="s2">
-  <div class="ch-head reveal"><span class="no">12.3</span><h2>常见图与同构</h2><span class="en">Common Graphs &amp; Isomorphism</span></div>
+  <div class="ch-head reveal"><span class="no">12.3–4</span><h2>常见图与同构侦探</h2><span class="en">Common Graphs &amp; Isomorphism</span></div>
   <div class="reveal">
-    <p>明星图全家福：<span class="term">完全图 Kₙ</span>（两两有边，n(n−1)/2 条边）、空图、线图 Lₙ、圈图 Cₙ。<span class="term">同构（isomorphism）</span>则是"换个标签还是同一张图"的严格说法——保持边的双射。同构保持度数、连通性、圈长等一切图性质；反过来，找到一个不被保持的性质就证明了两图不同构。顺带：判断两图是否同构至今没有已知的多项式算法——这个"难"还支撑着一类加密协议。</p>
+    <p>明星图全家福：<span class="term">完全图 Kₙ</span>（两两有边，n(n−1)/2 条边）、空图、线图 Lₙ、圈图 Cₙ。<span class="term">同构（isomorphism，Definition 12.4.1）</span>则是"换个标签还是同一张图"的严格说法——一个保持边的双射 f：⟨u—v⟩ ∈ E(G) ⟺ ⟨f(u)—f(v)⟩ ∈ E(H)。同构保持度数、连通性、圈长等一切图性质；反过来，找到一个被保持的性质（比如度序列）不成立就证明了两图不同构。顺带：判断两图是否同构至今没有已知的多项式算法——这个"难"还支撑着一类加密协议。</p>
+  </div>
+
+  <!-- 互动④ 同构侦探 -->
+  <div class="widget reveal" id="w-iso">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🕵️ 同构侦探：给 Figure 12.7 找出那个双射</h4>
+    <p class="wdesc">原书 Figure 12.7：左右两张 4 顶点 5 边图（方形 + 一条对角线）。给左图每个顶点指派一个右图顶点（必须双射），验证"边当且仅当映到边"。</p>
+    <div class="iso2">
+      <svg id="iso-svg" width="460" height="260" viewBox="0 0 460 260"></svg>
+    </div>
+    <div class="fmap" id="iso-map"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" id="iso-check">验证同构</button>
+      <button class="btn ghost" id="iso-answer">看一个正解</button>
+    </div>
+    <div class="fb" id="iso-fb"></div>
   </div>
 </section>
 
@@ -232,13 +314,31 @@ footer p{margin:6px 0}
     <div id="hall-list"></div>
     <div style="margin-top:14px;font-size:14.5px">进度 <span class="score-pill" id="hall-score">0 / 3</span></div>
   </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">12.5.2</span>把 15 个男生子集全部过一遍堂</h3>
+    <p>原书 Figure 12.9 的"谁喜欢谁"图：Chuck、Tom、Michael、John 四位男生，Alice、Martha、Sara、Jane、Mergatroid 五位女生。Hall 条件要求"每个男生子集"都够大——4 个男生共 15 个非空子集，一个都不能是 bottleneck（|S| > |N(S)|）。这张图恰好是 degree-constrained 的（每人至少喜欢 2 位、每位至多被 2 人喜欢），定理 12.5.6 预告了结局。亲手扫一遍：</p>
+  </div>
+
+  <!-- 互动⑤ Hall 子集扫描器 -->
+  <div class="widget reveal" id="w-hscan">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">🔍 Hall 子集扫描器：N(S) ≥ |S| 吗？</h4>
+    <p class="wdesc">每个卡片是一个男生子集 S。先猜 N(S)（他们合起来喜欢的女生集合）够不够大，点击揭晓。15 张全部判对后，展示一个完整匹配。</p>
+    <div class="hsub" id="hs-grid"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="btn primary" id="hs-show" disabled>🎁 揭晓一个完整匹配</button>
+      <span class="small muted" id="hs-progress">已判 0 / 15</span>
+    </div>
+    <div class="matchline" id="hs-match"></div>
+  </div>
 </section>
 
 <!-- ================= 12.6 着色 ================= -->
 <section class="ch" id="s4">
   <div class="ch-head reveal"><span class="no">12.6</span><h2>着色：考试怎么排</h2><span class="en">Coloring</span></div>
   <div class="reveal">
-    <p>边也可以表示<b>冲突</b>：顶点是考试，边=有学生同时选两门 ⇒ 不能同时考。给顶点涂色使相邻不同色，最少颜色数就是<span class="term">色数 χ(G)</span>。原书五门课的调度图（6.004, 6.042, 6.003, 6.170, 6.002）恰需 3 色——其中有个三角形卡死了 2 色的可能。来，亲自排考：</p>
+    <p>边也可以表示<b>冲突</b>：顶点是考试，边=有学生同时选两门 ⇒ 不能同时考。给顶点涂色使相邻不同色，最少颜色数就是<span class="term">色数 χ(G)</span>。原书五门课的调度图（6.041, 6.042, 6.003, 6.170, 6.002）恰需 3 色——其中有个三角形卡死了 2 色的可能。来，亲自排考：</p>
   </div>
 
   <!-- 互动③ 考试着色器 -->
@@ -263,11 +363,74 @@ footer p{margin:6px 0}
   </div>
 </section>
 
+<!-- ================= 12.7-12.9 圈、割边与树 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">12.7–9</span><h2>圈、割边与树</h2><span class="en">Walks, Cut Edges &amp; Trees</span></div>
+  <div class="reveal">
+    <p>简单图里的 walk/path/cycle 与有向图版本几乎一样，只是箭头换成无向边、长度 2 的来回不算圈（Definition 12.7.1）。<b>圈是子图</b>（12.7.2）：没有起点、没有方向，bcdehb 和 dehbc 是同一个圈。<b>连通性</b>（12.8）：任意两点间有 path 则图连通；极大连通块叫<span class="term">连通分量</span>。定理 12.8.3 的三等价：有奇圈 ⟺ 非 2-着色 ⟺ 有奇长闭合 walk。边还能论"结实程度"：<span class="term">割边（cut edge）</span>= 拔掉就断的边，引理 12.8.6 一句话——<b>割边 ⟺ 不在任何圈上</b>；Kₙ 是 (n−1)-连通的，每个圈都 2-连通。</p>
+    <p>12.9 登场的<span class="term">树</span>（连通无圈图）是计算机科学里最重要的图：定理 12.9.3 列了六条等价性质——连通子图仍是树、任意两点 path 唯一、加边生圈、每边都是割边、≥2 顶点必有 ≥2 叶、n 顶点恰 n−1 条边。每个连通图都含<span class="term">生成树</span>（Theorem 12.9.6）；给边加上权重、想要总权最小的生成树（MST），Prim/Kruskal 的贪心就够（引理 12.9.11"最小灰边"）。原书 Figure 12.20(b) 那张加权图的最小生成树重 17——贪心拿到了。</p>
+  </div>
+
+  <!-- 互动⑥ 圈猎手与割边 -->
+  <div class="widget reveal" id="w-cycle">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🧭 圈猎手与割边鉴定（原书 Figure 12.14）</h4>
+    <p class="wdesc">第一步：从清单里挑出图中<b>全部 3 个圈</b>（圈不分起点与方向！）。第二步：点击右图里所有<b>割边</b>——拔掉就断、不在任何圈上的边。</p>
+    <div class="cy-wrap">
+      <div class="cy-side">
+        <div class="small muted" style="margin-bottom:6px">① 哪些是图中真实存在的圈？</div>
+        <div id="cy-list"></div>
+        <div class="fb" id="cy-fb"></div>
+      </div>
+      <svg id="cy-svg" width="340" height="300" viewBox="0 0 340 300"></svg>
+    </div>
+    <div class="fb" id="ce-fb"></div>
+  </div>
+
+  <!-- 互动⑦ 树性质六连判 -->
+  <div class="widget reveal" id="w-tree">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🌳 树性质六连判（原书 Figure 12.17 的 9 节点树）</h4>
+    <p class="wdesc">这棵树有 9 个顶点、5 片叶（a, c, f, h, i）。对每条陈述判"对/错"——依据全是定理 12.9.3。</p>
+    <div id="tq-list"></div>
+    <div style="margin-top:12px;font-size:14.5px">进度 <span class="score-pill" id="tq-score">0 / 6</span></div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Practice Problems, Playable</span></div>
+  <div class="reveal">
+    <p>两道原书 Practice Problem 做成解题器。</p>
+  </div>
+
+  <!-- 习题 12.2 -->
+  <div class="widget reveal" id="w-p122">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">⚖️ 习题 12.2：度数和为 20 的连通图</h4>
+    <p class="wdesc">原书题目：连通简单图的所有顶点度数之和为 20。(a) 顶点数最多可能多少？(b) 最少可能多少？填数字。</p>
+    <div class="ansrow">(a) 最多顶点数 = <input id="p122a" type="number" min="1" max="30" /> <span class="small muted">（提示：连通图每少一条边都伤筋动骨）</span></div>
+    <div class="ansrow">(b) 最少顶点数 = <input id="p122b" type="number" min="1" max="30" /> <span class="small muted">（提示：n 个顶点最多能装下多少条边？）</span></div>
+    <div style="margin-top:10px"><button class="btn primary" id="p122-check">两问全判</button></div>
+    <div class="fb" id="p122-fb"></div>
+  </div>
+
+  <!-- 习题 12.5 -->
+  <div class="widget reveal" id="w-p125">
+    <span class="pill">互动 ⑨</span>
+    <h4 class="wtitle">🧬 习题 12.5：哪些性质被同构保持？</h4>
+    <p class="wdesc">原书 Practice Problem 12.5 的十项（略去两幅有歧义的画图项）。逐条判"保持 / 不保持"——判断错了就想想能不能造出一对同构不同的图。</p>
+    <div class="keepgrid" id="kp-grid"></div>
+    <div style="margin-top:12px"><button class="btn primary" id="kp-check">十项全判</button> <button class="btn ghost" id="kp-reset">重来</button></div>
+    <div class="fb" id="kp-fb"></div>
+  </div>
+</section>
+
 <!-- ================= 终局自测 ================= -->
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 12.1–12.9。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -291,10 +454,10 @@ footer p{margin:6px 0}
       <summary>课后挑战（均出自原书习题）</summary>
       <div class="body">
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
-          <li><b>12.4</b> 证明 F18 函数类（初等微积分函数的递归类型）对求导封闭——微积分版结构归纳。</li>
-          <li><b>12.9</b> 证明：图中存在经过每条边恰一次的闭合 walk（Euler tour）⟺ 每顶点度数为偶且弱连通——第 10 章 Euler tour 习题的无向版。</li>
-          <li><b>12.14</b> 判断三张图是否同构，并给出同构映射或"保持性质"的反证。</li>
-          <li><b>12.55</b> 证明等价关系 ⟺ 划分（第 10 章 10.10.4 的对偶练习）。</li>
+          <li><b>7.4</b> 证明 F18 函数类（初等微积分函数的递归类型）对求导封闭——微积分版结构归纳（第 7 章习题）。</li>
+          <li><b>12.35</b> 证明：图中存在经过每条边恰一次的闭合 walk（Euler tour）⟺ 每顶点度数为偶且连通——第 10 章 Euler tour 习题的无向版。</li>
+          <li><b>12.8</b> 判断原书 Figure 12.24 的四张图中哪些同构，并给出同构映射或"保持性质"的反证。</li>
+          <li><b>10.55</b> 证明等价关系 ⟺ 划分（定理 10.10.4 的配套练习）。</li>
         </ul>
       </div>
     </details>
@@ -304,7 +467,7 @@ footer p{margin:6px 0}
 <footer>
   <div class="wrap" style="padding:0">
     <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
-    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 12 章 = 第 445–470 页）。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 12 章正文 = 第 445–478 页，12.9 森林与树 + MST 在 470–478）。</p>
     <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch11.html">上一章：通信网络</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
   </div>
 </footer>
@@ -316,8 +479,9 @@ footer p{margin:6px 0}
   <div class="panel">
     <button class="close" id="toc-close">×</button>
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
-    <a href="#s1">12.1 · 度数与平均度悖论</a><a href="#s2">12.3 · 常见图与同构</a><a href="#s3">12.5 · Hall 定理</a>
-    <a href="#s4">12.6 · 着色</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#s1">12.1–2 · 度数与悖论</a><a href="#s2">12.3–4 · 常见图与同构</a><a href="#s3">12.5 · Hall 扫描器</a>
+    <a href="#s4">12.6 · 着色</a><a href="#s5">12.7–9 · 圈 · 割边 · 树</a><a href="#sp">⚔️ · 习题实战</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -359,120 +523,47 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   const M = ["M1","M2","M3","M4"], F = ["F1","F2","F3","F4"];
   const posM = M.map((_, i) => [70, 50 + i * 78]);
   const posF = F.map((_, i) => [360, 50 + i * 78]);
-  let edges = [];
-  function degM(m){ return edges.filter(e => e[0] === m).length; }
-  function degF(f){ return edges.filter(e => e[1] === f).length; }
+  // 每位男生的连接模式 = 4 bit 位掩码；点击男生节点循环 0→15
+  const modes = M.map(() => 0);
+  const el = (tag, attrs) => { const x = document.createElementNS(NS, tag); for (const k in attrs) x.setAttribute(k, attrs[k]); return x; };
+  function edgesNow(){
+    const es = [];
+    M.forEach((m, i) => F.forEach((f, j) => { if (modes[i] & (1 << j)) es.push([m, f]); }));
+    return es;
+  }
   function render(){
     svg.innerHTML = "";
+    const edges = edgesNow();
     edges.forEach(([m, f]) => {
       const i = M.indexOf(m), j = F.indexOf(f);
-      const ln = document.createElementNS(NS, "line");
-      ln.setAttribute("x1", posM[i][0] + 16); ln.setAttribute("y1", posM[i][1]);
-      ln.setAttribute("x2", posF[j][0] - 16); ln.setAttribute("y2", posF[j][1]);
-      ln.setAttribute("stroke", "#b4832a"); ln.setAttribute("stroke-width", 2.5);
-      svg.appendChild(ln);
+      svg.appendChild(el("line", {x1:posM[i][0]+16, y1:posM[i][1], x2:posF[j][0]-16, y2:posF[j][1], stroke:"#b4832a", "stroke-width":2.5}));
     });
-    const hit = document.createElementNS(NS, "g");
-    M.forEach((m, i) => edges.forEach(([mm, f]) => { if (mm === m) {
-      const j = F.indexOf(f);
-      const h = document.createElementNS(NS, "line");
-      h.setAttribute("x1", posM[i][0] + 16); h.setAttribute("y1", posM[i][1]);
-      h.setAttribute("x2", posF[j][0] - 16); h.setAttribute("y2", posF[j][1]);
-      h.setAttribute("stroke", "transparent"); h.setAttribute("stroke-width", 14);
-      h.style.cursor = "pointer";
-      h.addEventListener("click", () => { edges = edges.filter(e => !(e[0] === m && e[1] === f)); render(); });
-      svg.appendChild(h);
-    }}));
     [[M, posM, "M"], [F, posF, "F"]].forEach(([names, pos, tag]) => {
       names.forEach((nm, i) => {
         const [x, y] = pos[i];
-        const deg = tag === "M" ? degM(nm) : degF(nm);
-        const c = document.createElementNS(NS, "circle");
-        c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 16);
-        c.setAttribute("fill", "#fffdf8"); c.setAttribute("stroke", "#2b2a26"); c.setAttribute("stroke-width", 2);
-        svg.appendChild(c);
-        const t = document.createElementNS(NS, "text");
-        t.setAttribute("x", x); t.setAttribute("y", y + 5); t.setAttribute("text-anchor", "middle");
-        t.setAttribute("font-size", 13); t.setAttribute("font-weight", 700); t.setAttribute("fill", "#2b2a26");
-        t.textContent = nm;
-        svg.appendChild(t);
-        const d = document.createElementNS(NS, "text");
-        d.setAttribute("x", x + (tag === "M" ? -28 : 28)); d.setAttribute("y", y + 4);
-        d.setAttribute("text-anchor", "middle"); d.setAttribute("font-size", 12); d.setAttribute("fill", "#b4832a");
-        d.textContent = "deg " + deg;
-        svg.appendChild(d);
+        const deg = edges.filter(e => tag === "M" ? e[0] === nm : e[1] === nm).length;
+        svg.appendChild(el("circle", {cx:x, cy:y, r:16, fill:"#fffdf8", stroke:"#2b2a26", "stroke-width":2}));
+        const t = el("text", {x, y:y+5, "text-anchor":"middle", "font-size":13, "font-weight":700, fill:"#2b2a26"});
+        t.textContent = nm; svg.appendChild(t);
+        const d = el("text", {x:x+(tag==="M"?-30:30), y:y+4, "text-anchor":"middle", "font-size":12, fill:"#b4832a"});
+        d.textContent = "deg " + deg; svg.appendChild(d);
       });
     });
-    // 顶点命中区域（附加透明圆用于点击切换）
-    // 事件绑定放 render 末尾重新附加
-    bindDots();
-    const sumM = M.reduce((s, m) => s + degM(m), 0);
-    const sumF = F.reduce((s, f) => s + degF(f), 0);
-    const avgM = sumM / 4, avgF = sumF / 4;
-    $("#deg-m").textContent = `Σdeg(M) = ${sumM} · 平均 = ${avgM.toFixed(2)}`;
-    $("#deg-f").textContent = `Σdeg(F) = ${sumF} · 平均 = ${avgF.toFixed(2)}`;
-    const vd = $("#deg-verdict");
-    if (sumM === 0) vd.textContent = "连接一些边试试——无论怎么连，两组平均度之比恒为 |F|/|M| = 1。";
-    else if (sumM === sumF) vd.textContent = `✓ Σdeg(M) = Σdeg(F) = ${sumM}（都等于边数）——平均度必然相等。想打破它？不可能。`;
-    else vd.textContent = `Σdeg(M) = Σdeg(F) = ${sumM}。平均度之比 = |F|/|M| = 1——数学保证两组平均相等。`;
-  }
-  function bindDots(){
-    // 顶点透明命中：点击 M 顶点后点 F 顶点 => 加边
-    const dots = [...svg.querySelectorAll("circle.data")];
-    let sel = null;
     M.forEach((m, i) => {
       const [x, y] = posM[i];
-      const h = document.createElementNS(NS, "circle");
-      h.setAttribute("cx", x); h.setAttribute("cy", y); h.setAttribute("r", 22);
-      h.setAttribute("fill", "transparent"); h.style.cursor = "pointer";
-      h.classList.add("data");
-      h.addEventListener("click", () => {
-        F.forEach((f, j) => {
-          const has = edges.some(e => e[0] === m && e[1] === f);
-          const key = "f-" + j;
-          const btn = document.createElement("button");
-          btn.className = "btn"; btn.style.fontSize = "12px"; btn.style.padding = "3px 8px";
-          btn.textContent = (has ? "断开 " : "连接 ") + f;
-          btn.addEventListener("click", () => {
-            if (has) edges = edges.filter(e => !(e[0] === m && e[1] === f));
-            else edges.push([m, f]);
-            document.body.removeChild(overlay);
-            render();
-          });
-          overlayBtns.push(btn);
-        });
-        showOverlay(x, y);
-        render();
-      });
+      const h = el("circle", {cx:x, cy:y, r:26, fill:"transparent"});
+      h.style.cursor = "pointer";
+      h.addEventListener("click", () => { modes[i] = (modes[i] + 1) % 16; render(); });
       svg.appendChild(h);
     });
-    function overlayBtns(){}
-    function showOverlay(){}
+    const sumM = M.reduce((s, m) => s + edges.filter(e => e[0] === m).length, 0);
+    const sumF = F.reduce((s, f) => s + edges.filter(e => e[1] === f).length, 0);
+    $("#deg-m").textContent = `Σdeg(M) = ${sumM} · 平均 = ${(sumM/4).toFixed(2)}`;
+    $("#deg-f").textContent = `Σdeg(F) = ${sumF} · 平均 = ${(sumF/4).toFixed(2)}`;
+    const vd = $("#deg-verdict");
+    if (sumM === 0) vd.textContent = "点击左侧任意男生节点：每点一次切换他的连接组合。无论怎么连，两组平均度之比恒为 |F|/|M| = 1。";
+    else vd.textContent = `Σdeg(M) = Σdeg(F) = ${sumM}（都等于边数 ${edges.length}）——平均度之比被钉死在 |F|/|M| = 1。想打破它？数学上不可能。`;
   }
-  // 简化交互：点击左侧 M 顶点 => 依次连接/断开 F1..F4 太繁琐。
-  // 改为：点击 M 顶点循环其在 F 侧的连接模式（0~15 的位掩码步进）。
-  const modes = M.map(() => 0);
-  M.forEach((m, i) => {
-    const [x, y] = posM[i];
-    const h = document.createElementNS(NS, "circle");
-    h.setAttribute("cx", x); h.setAttribute("cy", y); h.setAttribute("r", 22);
-    h.setAttribute("fill", "transparent"); h.style.cursor = "pointer";
-    h.addEventListener("click", () => {
-      modes[i] = (modes[i] + 1) % 16;
-      rebuildEdges();
-      render();
-    });
-    h.classList.add("data");
-    svg.appendChild(h);
-  });
-  function rebuildEdges(){
-    edges = [];
-    M.forEach((m, i) => {
-      F.forEach((f, j) => { if (modes[i] & (1 << j)) edges.push([m, f]); });
-    });
-  }
-  // 保留接口
-  function bindDots(){}
   render();
 })();
 
@@ -509,7 +600,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
 /* ---------- 互动③ 考试着色器 ---------- */
 (() => {
   const svg = $("#col-svg"), NS = "http://www.w3.org/2000/svg";
-  const V = ["6.004", "6.042", "6.003", "6.170", "6.002"];
+  const V = ["6.041", "6.042", "6.003", "6.170", "6.002"];
   const pos = [[215, 40], [70, 120], [95, 240], [335, 240], [360, 120]];
   const E = [[0,1],[0,2],[0,3],[1,2],[1,4],[2,3],[2,4],[3,4]];
   const palette = [["红","#c0392b"],["绿","#2e7d4f"],["蓝","#2471a3"]];
@@ -576,6 +667,338 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   render();
 })();
 
+/* ---------- 互动④ 同构侦探 ---------- */
+(() => {
+  const svg = $("#iso-svg"), NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs) => { const x = document.createElementNS(NS, tag); for (const k in attrs) x.setAttribute(k, attrs[k]); return x; };
+  // 原书 Figure 12.7：(a) 方形 a-b-c-d + 对角 a—c；(b) 方形 1-2-3-4 + 对角 2—4
+  const GA = { V:["a","b","c","d"], E:[["a","b"],["b","c"],["c","d"],["d","a"],["a","c"]],
+               pos:{a:[55,50], b:[165,50], c:[165,160], d:[55,160]} };
+  const GB = { V:["1","2","3","4"], E:[["1","2"],["2","3"],["3","4"],["4","1"],["2","4"]],
+               pos:{1:[275,50], 2:[385,50], 3:[385,160], 4:[275,160]} };
+  const fmap = {a:null, b:null, c:null, d:null};
+  function drawGraph(G, ox, highlight){
+    G.E.forEach(([u, v]) => {
+      const p1 = G.pos[u], p2 = G.pos[v];
+      svg.appendChild(el("line", {x1:p1[0]+ox, y1:p1[1], x2:p2[0]+ox, y2:p2[1], stroke:"#cfc8ba", "stroke-width":2}));
+    });
+    G.V.forEach(v => {
+      const [x, y] = G.pos[v];
+      svg.appendChild(el("circle", {cx:x+ox, cy:y, r:15, fill: highlight && highlight.has(v) ? "#f7efdd" : "#fff", stroke:"#2b2a26", "stroke-width":2}));
+      const t = el("text", {x:x+ox, y:y+5, "text-anchor":"middle", "font-size":13, "font-weight":700, fill:"#2b2a26"});
+      t.textContent = v; svg.appendChild(t);
+    });
+  }
+  function render(badSet, okSet){
+    svg.innerHTML = "";
+    drawGraph(GA, 0, okSet);
+    drawGraph(GB, 0, okSet);
+    GA.V.forEach(u => {
+      if (!fmap[u]) return;
+      const [x1, y1] = GA.pos[u], [x2, y2] = GB.pos[fmap[u]];
+      const ln = el("line", {x1:x1+18, y1:y1+18, x2:x2-18, y2:y2+18,
+        stroke: badSet && badSet.has(u) ? "#b3372e" : "#0f4c81", "stroke-width":2, "stroke-dasharray":"5,4", opacity:.75});
+      svg.appendChild(ln);
+    });
+  }
+  function buildMap(){
+    const box = $("#iso-map");
+    box.innerHTML = "";
+    GA.V.forEach(u => {
+      const d = document.createElement("div");
+      d.className = "fslot";
+      d.innerHTML = `<b>f(${u}) =</b>`;
+      const sel = document.createElement("select");
+      sel.add(new Option("—", ""));
+      GB.V.forEach(v => sel.add(new Option(v, v)));
+      sel.value = fmap[u] || "";
+      sel.addEventListener("change", () => { fmap[u] = sel.value || null; render(); $("#iso-fb").className = "fb"; });
+      d.appendChild(sel);
+      box.appendChild(d);
+    });
+  }
+  $("#iso-check").addEventListener("click", () => {
+    const fb = $("#iso-fb");
+    if (GA.V.some(u => !fmap[u])) { fb.className = "fb no"; fb.textContent = "先给四个顶点都指派好 f。"; return; }
+    if (new Set(Object.values(fmap)).size < 4) { fb.className = "fb no"; fb.textContent = "f 必须是双射——两个顶点映到了同一个点，修正一下。"; return; }
+    const bad = new Set();
+    GA.E.forEach(([u, v]) => {
+      if (!GB.E.some(([x, y]) => (x === fmap[u] && y === fmap[v]) || (x === fmap[v] && y === fmap[u]))) { bad.add(u); bad.add(v); }
+    });
+    render(bad);
+    if (!bad.size) {
+      // 双射 + 全部边映到边：5 条边映到 5 条不同边 ⟹ 也覆盖全部 E(H)
+      fb.className = "fb ok";
+      fb.innerHTML = "🎯 同构成立！f = {" + GA.V.map(u => `${u}↦${fmap[u]}`).join(", ") + "}。" +
+        (fmap.a === "2" && fmap.b === "3" && fmap.c === "4" && fmap.d === "1" ? "这正是原书给出的映射。" : "与原书的 f(a)=2, f(b)=3, f(c)=4, f(d)=1 不同——但同样合法：这张图共有 4 个同构（两侧对角线各自可翻转）。");
+    } else {
+      fb.className = "fb no";
+      fb.innerHTML = "红色端点的边没有映到右图的边上（⟨u—v⟩ ∈ E(G) 但 ⟨f(u)—f(v)⟩ ∉ E(H)）。提示：对角线必须映到对角线。";
+    }
+  });
+  $("#iso-answer").addEventListener("click", () => {
+    fmap.a = "2"; fmap.b = "3"; fmap.c = "4"; fmap.d = "1";
+    buildMap(); render();
+    $("#iso-fb").className = "fb info";
+    $("#iso-fb").textContent = "已填入原书的映射：f(a)=2, f(b)=3, f(c)=4, f(d)=1。点'验证同构'看它过审。";
+  });
+  buildMap(); render();
+})();
+
+/* ---------- 互动⑤ Hall 子集扫描器 ---------- */
+(() => {
+  const likes = {
+    "Chuck": ["Alice", "Jane"],
+    "Tom": ["Sara", "Mergatroid"],
+    "Michael": ["Martha", "Jane"],
+    "John": ["Martha", "Sara", "Mergatroid"],
+  };
+  const MEN = Object.keys(likes);
+  // 15 个非空子集，按大小排序
+  const subs = [];
+  for (let mask = 1; mask < 16; mask++) {
+    const S = MEN.filter((_, i) => mask & (1 << i));
+    const N = new Set();
+    S.forEach(m => likes[m].forEach(w => N.add(w)));
+    subs.push({S, N, bottleneck: N.size < S.length});
+  }
+  const grid = $("#hs-grid");
+  let done = 0, right = 0, revealed = new Set();
+  subs.forEach((sub, i) => {
+    const card = document.createElement("div");
+    card.className = "hcard"; card.id = "hs-" + i;
+    card.innerHTML = `<div class="who">S = {${sub.S.join(", ")}}（|S|=${sub.S.length}）</div>
+      <div class="nn">N(S) = ${sub.N.size} 位</div>
+      <div class="btns"><button data-v="1">N(S) ≥ |S|</button><button data-v="0">N(S) < |S|</button></div>`;
+    $$(".btns button", card).forEach(b => b.addEventListener("click", () => {
+      if (revealed.has(i)) return;
+      revealed.add(i); done++;
+      const saidBig = b.dataset.v === "1";
+      const ok = saidBig !== sub.bottleneck;
+      if (ok) right++;
+      card.classList.add(ok ? "right" : "wrong");
+      card.querySelector(".nn").textContent = `N(S) = {${[...sub.N].join(", ")}}（${sub.N.size} 位）` + (sub.bottleneck ? " ← bottleneck！" : "");
+      $("#hs-progress").textContent = `已判 ${done} / 15 · 答对 ${right}`;
+      if (done === 15) {
+        $("#hs-show").disabled = false;
+        $("#hs-progress").textContent += right === 15 ? " · 全对！" : "";
+      }
+    }));
+    grid.appendChild(card);
+  });
+  $("#hs-show").addEventListener("click", () => {
+    const box = $("#hs-match");
+    box.innerHTML = "";
+    // 原书 Figure 12.10 的匹配
+    [["Chuck","Jane"],["Tom","Sara"],["Michael","Martha"],["John","Mergatroid"]].forEach(([m, w]) => {
+      const c = document.createElement("span");
+      c.className = "mchip";
+      c.textContent = `${m} ♥ ${w}`;
+      box.appendChild(c);
+    });
+    const note = document.createElement("span");
+    note.className = "small muted";
+    note.textContent = "——4 位男生全部配到喜欢的人（Alice 落单没关系： Hall 只要求覆盖男生侧）＝原书 Figure 12.10。";
+    box.appendChild(note);
+  });
+})();
+
+/* ---------- 互动⑥ 圈猎手与割边 ---------- */
+(() => {
+  const svg = $("#cy-svg"), NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs) => { const x = document.createElementNS(NS, tag); for (const k in attrs) x.setAttribute(k, attrs[k]); return x; };
+  const pos = {a:[30,240], b:[85,60], c:[125,170], d:[190,40], e:[265,70], f:[205,255], g:[275,258], h:[315,150]};
+  const EDGES = [["a","b"],["b","c"],["b","h"],["c","d"],["c","e"],["d","e"],["e","f"],["e","h"],["f","g"]];
+  const CUT = new Set(["a|b", "e|f", "f|g"]);
+  const ek = (u, v) => [u, v].sort().join("|");
+  let pickedCycles = new Set(), pickedCuts = new Set();
+  const CYCLES = [
+    { s: "c d e c", ok: true, why: "✓ 真圈：c—d, d—e, e—c（原书 cdec）。" },
+    { s: "b h e c b", ok: true, why: "✓ 真圈：b—h, h—e, e—c, c—b（原书 bhecb）。" },
+    { s: "b c d e h b", ok: true, why: "✓ 真圈：bcdehb——它恰好是前两个圈拼起来再抵消 c—e。起点方向无所谓（12.7.2）。" },
+    { s: "a b c a", ok: false, why: "✗ a—c 这条边不存在，走不通。" },
+    { s: "f g h e f", ok: false, why: "✗ g—h 这条边不存在。" },
+    { s: "b d c e b", ok: false, why: "✗ b—d 这条边不存在。" },
+  ];
+  function render(){
+    svg.innerHTML = "";
+    EDGES.forEach(([u, v]) => {
+      const k = ek(u, v), isCut = pickedCuts.has(k);
+      const ln = el("line", {x1:pos[u][0], y1:pos[u][1], x2:pos[v][0], y2:pos[v][1],
+        stroke: isCut ? "#b3372e" : "#cfc8ba", "stroke-width": isCut ? 4 : 2});
+      svg.appendChild(ln);
+      const mx = (pos[u][0]+pos[v][0])/2, my = (pos[u][1]+pos[v][1])/2;
+      const hit = el("line", {x1:pos[u][0], y1:pos[u][1], x2:pos[v][0], y2:pos[v][1], stroke:"transparent", "stroke-width":14});
+      hit.style.cursor = "pointer";
+      hit.addEventListener("click", () => {
+        pickedCuts.has(k) ? pickedCuts.delete(k) : pickedCuts.add(k);
+        render();
+      });
+      svg.appendChild(hit);
+      const lb = el("text", {x:mx, y:my-4, "text-anchor":"middle", "font-size":10, fill:isCut?"#b3372e":"#a09a8c"});
+      lb.textContent = u + "—" + v;
+      svg.appendChild(lb);
+    });
+    Object.keys(pos).forEach(v => {
+      svg.appendChild(el("circle", {cx:pos[v][0], cy:pos[v][1], r:12, fill:"#fff", stroke:"#2b2a26", "stroke-width":2}));
+      const t = el("text", {x:pos[v][0], y:pos[v][1]+4, "text-anchor":"middle", "font-size":12, "font-weight":700, fill:"#2b2a26"});
+      t.textContent = v; svg.appendChild(t);
+    });
+  }
+  const list = $("#cy-list");
+  CYCLES.forEach((c, i) => {
+    const b = document.createElement("button");
+    b.className = "cyc"; b.textContent = c.s;
+    b.addEventListener("click", () => {
+      if ($$("#cy-list .cyc.picked").length >= 3 && !b.classList.contains("picked")) return;
+      b.classList.toggle("picked");
+      pickedCycles.has(i) ? pickedCycles.delete(i) : pickedCycles.add(i);
+      if (pickedCycles.size === 3) judge();
+    });
+    list.appendChild(b);
+  });
+  function judge(){
+    let allOk = true;
+    $$("#cy-list .cyc").forEach((b, i) => {
+      const wasPicked = pickedCycles.has(i);
+      b.classList.remove("picked");
+      const cls = wasPicked ? (CYCLES[i].ok ? "okc" : "noc") : (CYCLES[i].ok ? "noc" : "");
+      if (cls) b.classList.add(cls);
+      if (wasPicked !== CYCLES[i].ok) allOk = false;
+    });
+    const fb = $("#cy-fb");
+    fb.className = "fb " + (allOk ? "ok" : "no");
+    fb.innerHTML = (allOk ? "🎯 三个圈全中！" : "有假圈被选中（划线项）。") +
+      " 第二步：点击右图中的<b>割边</b>（拔掉就断的边），再点下面按钮判定。" ;
+    const btn = document.createElement("button");
+    btn.className = "btn primary"; btn.style.marginTop = "8px";
+    btn.textContent = "判定割边";
+    btn.addEventListener("click", () => {
+      const got = [...pickedCuts].every(k => CUT.has(k)) && pickedCuts.size === CUT.size;
+      const fb2 = $("#ce-fb");
+      fb2.className = "fb " + (got ? "ok" : "no");
+      fb2.innerHTML = got
+        ? "🎯 割边 = {a—b, e—f, f—g}，全中！它们不在任何圈上（引理 12.8.6）；顺带 g、a 是只连一条边的'叶子'顶点。其余边都在某个圈上——拔掉仍有绕行路。"
+        : "不对。提示：割边 ⟺ 不在任何圈上。刚才找到的三个圈覆盖了 6 条边，剩下 3 条就是答案。";
+    });
+    fb.appendChild(btn);
+  }
+  render();
+})();
+
+/* ---------- 互动⑦ 树性质六连判 ---------- */
+(() => {
+  const items = [
+    { s: "从 a 到 c 的 path 是唯一的：a — b — d — c。", ans: true,
+      why: "对——定理 12.9.3.2：树中任意两点间 path 唯一。反证：两条不同 path 拼起来就是一个圈。" },
+    { s: "若再加一条边 ⟨a — c⟩，新图必有圈。", ans: true,
+      why: "对——12.9.3.3：非邻接两点间加边，与它们之间唯一的 path 恰好围出一个圈。" },
+    { s: "每条边都是割边：删掉 ⟨d — e⟩，树断成 {a,b,c,d} 与 {e,f,g,h,i} 两半。", ans: true,
+      why: "对——12.9.3.4：树上任何边都是割边（唯一 path 断了就没有替代路）。这也是'树 = 2-连通的反面'。" },
+    { s: "任意两点之间恰有两条不同的 path。", ans: false,
+      why: "错——恰恰相反：任意两点之间有且只有一条 path（12.9.3.2）。'恰有两条'自相矛盾。" },
+    { s: "边数 = 8 = 9 − 1。", ans: true,
+      why: "对——12.9.3.6：n 顶点的树恰有 n − 1 条边。9 个顶点 → 8 条边，一 guest 不少。" },
+    { s: "这棵树至少两片叶——实际上有 5 片：a, c, f, h, i。", ans: true,
+      why: "对——12.9.3.5：≥2 顶点的树必有 ≥2 叶；这棵 9 节点树（原书 Figure 12.17）有 5 片。" },
+  ];
+  const list = $("#tq-list"); let done = 0, right = 0;
+  items.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "tq-row";
+    div.innerHTML = `<div class="stmt">${i+1}. ${it.s}</div>
+      <div class="btns"><button class="btn">对</button><button class="btn">错</button></div><div class="verdict"></div>`;
+    const vd = $(".verdict", div);
+    $$(".btns .btn", div).forEach((b, k) => b.addEventListener("click", () => {
+      if (div.classList.contains("done")) return;
+      div.classList.add("done"); done++;
+      const said = k === 0, ok = said === it.ans;
+      if (ok) right++;
+      vd.className = "verdict show";
+      vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+      $("#tq-score").textContent = done === 6 ? `完成！答对 ${right} / 6` : `${right} / ${done}`;
+    }));
+    list.appendChild(div);
+  });
+})();
+
+/* ---------- 互动⑧ 习题 12.2 ---------- */
+(() => {
+  const ANS = { a: 11, b: 5 };
+  const WHY = {
+    a: "Σdeg = 2|E| = 20 ⟹ |E| = 10。连通图 |V| ≤ |E| + 1（推论 12.8.8 的反向使用：连通需要 ≥ n−1 条边）⟹ n ≤ 11。取到：11 个顶点的树恰 10 条边。",
+    b: "n 个顶点的简单图至多 C(n,2) = n(n−1)/2 条边。要装下 10 条边：n(n−1) ≥ 20 ⟹ n ≥ 5。取到：K₅ 恰好 10 条边、连通。",
+  };
+  $("#p122-check").addEventListener("click", () => {
+    const fb = $("#p122-fb");
+    const parts = [["a", "#p122a"], ["b", "#p122b"]];
+    const msgs = []; let all = true;
+    parts.forEach(([k, sel]) => {
+      const v = $(sel).value;
+      if (v === "") { msgs.push(`(${k}) 未填`); all = false; return; }
+      if (+v === ANS[k]) msgs.push(`(${k}) ✅ 答案 ${ANS[k]}。${WHY[k]}`);
+      else { msgs.push(`(${k}) ❌ 你答 ${v}。提示：(a) 从 |E| = 10 与'连通图边数 ≥ n−1'反推；(b) 从'简单图边数 ≤ n(n−1)/2'反推。`); all = false; }
+    });
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.innerHTML = msgs.join("<br>");
+  });
+})();
+
+/* ---------- 互动⑨ 习题 12.5 同构保持性质 ---------- */
+(() => {
+  const ITEMS = [
+    { t: "(a) 有一个经过全部顶点的圈", keep: true, why: "Hamilton 圈是纯图性质——只看顶点与边的关系。" },
+    { t: "(b) 顶点已经编号为 1 到 7", keep: false, why: "编号是标签（画在顶点上的字），不是图结构——重贴标签就没了。" },
+    { t: "(c) 顶点可以被编号为 1 到 7", keep: true, why: "任何 7 顶点图都能编号——这由顶点数决定，而顶点数显然被双射保持。" },
+    { t: "(d) 存在两个度数为 8 的顶点", keep: true, why: "同构保持每一点的度数：deg(v) = deg(f(v))。" },
+    { t: "(e) 有两条边长度相等", keep: false, why: "边的'长度'是画图的产物，图论里根本没有长度的定义。" },
+    { t: "(f) 无论去掉哪条边，任意两点间仍有 path", keep: true, why: "这是 2-边连通（无割边）——割边 ⟺ 不在圈上，纯图性质。" },
+    { t: "(g) 存在两个不共享顶点的圈", keep: true, why: "圈的存在性与点不交性都由边关系决定，f 把圈映到圈。" },
+    { t: "(h) 顶点都是集合", keep: false, why: "顶点'装的内容'与图结构无关——同构根本不看顶点里装了什么。" },
+    { t: "(k) 两个'被保持性质'的 OR", keep: true, why: "若 P、Q 都被保持：f 保持结构 ⟹ P(G)⟺P(H) 且 Q(G)⟺Q(H) ⟹ OR 也成对相等。" },
+    { t: "(l) 某个'被保持性质'的否定", keep: true, why: "NOT(P(G)) ⟺ NOT(P(H))——布尔运算天然与同构交换。" },
+  ];
+  const grid = $("#kp-grid");
+  const picks = Array(ITEMS.length).fill(null);
+  ITEMS.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "keepline"; d.id = "kp-" + i;
+    d.innerHTML = `<span class="letter">${it.t.slice(1, 3)}</span><span>${it.t.slice(4)}</span>`;
+    const btns = document.createElement("div");
+    btns.className = "btns";
+    [["保持", true], ["不保持", false]].forEach(([label, v]) => {
+      const b = document.createElement("button");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        if (picks[i] !== null) return;
+        picks[i] = v;
+        $$(".btns button", d).forEach(x => x.style.background = x === b ? "var(--accent-soft)" : "#fff");
+      });
+      btns.appendChild(b);
+    });
+    d.appendChild(btns);
+    grid.appendChild(d);
+  });
+  $("#kp-check").addEventListener("click", () => {
+    const fb = $("#kp-fb");
+    if (picks.includes(null)) { fb.className = "fb no"; fb.textContent = "十项都选完再判定。"; return; }
+    let all = true;
+    ITEMS.forEach((it, i) => {
+      const ok = picks[i] === it.keep;
+      $("#kp-" + i).classList.add(ok ? "right" : "wrong");
+      if (!ok) all = false;
+    });
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.innerHTML = (all ? "🎯 十项全对！" : "红行判错了。逐项理由：") + " " +
+      ITEMS.map((it, i) => `${it.t.slice(1, 3)} ${it.keep ? "保持" : "不保持"}——${it.why}`).join(" ");
+  });
+  $("#kp-reset").addEventListener("click", () => {
+    picks.fill(null);
+    ITEMS.forEach((_, i) => { $("#kp-" + i).classList.remove("right", "wrong"); $$("#kp-" + i + " button").forEach(x => x.style.background = "#fff"); });
+    $("#kp-fb").className = "fb";
+  });
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -615,15 +1038,27 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"k + 1", ok:true, fb:"对——贪心逐点上色，邻居至多 k 个，总有一色可用。星星图说明这界可能很松。"},
        {t:"2", ok:false, fb:"只有二部图才保证 2 色。"},
        {t:"⌈k/2⌉", ok:false, fb:"无此一般界。"}]},
+    {q:"引理 12.8.6：一条边是割边 ⟺ ？",
+     opts:[
+       {t:"它连接两个度数为 1 的顶点", ok:false, fb:"桥两端可以是任何度——比如两条 path 单线相连的中间边。"},
+       {t:"它不在任何圈上", ok:true, fb:"对——在圈上的边拔掉还有绕行路；不在圈上的边是唯一的通道，拔掉必断。"},
+       {t:"它的两个端点度数相等", ok:false, fb:"度数与割边无关。"},
+       {t:"删掉它图恰分成两个连通分量且各自仍是树", ok:false, fb:"太强——割边两侧只要是连通块即可，不必是树。"}]},
+    {q:"n 顶点的树有多少条边（定理 12.9.3.6）？",
+     opts:[
+       {t:"n(n−1)/2", ok:false, fb:"那是完全图 Kₙ 的边数。"},
+       {t:"n − 1", ok:true, fb:"对——树 = 连通 + 无圈，两条都在收紧边数：少了不连通，多了必生圈。也因此每个连通图 ≥ n−1 条边（推论 12.8.8）。"},
+       {t:"n", ok:false, fb:"n 条边的连通图必有圈。"},
+       {t:"取决于树的形状", ok:false, fb:"形状千变，边数恒为 n−1——这正是树家族的统一签名。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🎨 图着色官", "度数、匹配、着色三线贯通——Akamai 的 20 万服务器调度逻辑你已经懂了。下一章平面图与四色定理。"]
-      : right >= 3 ? ["✋ 握手计数员", "握手引理已入脑——回看平均度悖论的推导和 Hall 定理的方向。"]
+    const [rank, note] = right >= 7 ? ["🎨 图着色官", "度数、匹配、着色、树四线贯通——Akamai 的 20 万服务器调度逻辑你已经懂了。下一章平面图与四色定理。"]
+      : right >= 4 ? ["✋ 握手计数员", "握手引理已入脑——回看平均度悖论的推导和 Hall 定理的方向。"]
       : ["🌱 连边新丁", "在平均度实验台上多连几条边，盯住'Σdeg(M) = Σdeg(F)'这条铁律。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){

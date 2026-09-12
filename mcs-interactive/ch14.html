@@ -191,7 +191,7 @@ footer p{margin:6px 0}
   <a href="#s2"><span class="toc-num">14.2</span>幂和与 Gauss</a>
   <a href="#s3"><span class="toc-num">14.3</span>积分包围近似</a>
   <a href="#s4"><span class="toc-num">14.4</span>书堆悬挑与调和数</a>
-  <a href="#s5"><span class="toc-num">14.6</span>渐近记号快判</a>
+  <a href="#s5"><span class="toc-num">14.7</span>渐近记号快判</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -289,7 +289,7 @@ footer p{margin:6px 0}
 <section class="ch" id="s4">
   <div class="ch-head reveal"><span class="no">14.4</span><h2>书堆悬挑：调和数登场</h2><span class="en">Hanging Out Over the Edge</span></div>
   <div class="reveal">
-    <p>n 本书叠成一摞、每本往桌沿外探，最多能探出多远？物理：第 i 层的质心要坐在下一层的边缘上。解递推得 <b>Bₙ = Hₙ/2</b>——调和数 Hₙ = 1 + 1/2 + ⋯ + 1/n 的一半！调和数没有已知闭式，但积分包围给 ln(n) + 1/2 ≤ Hₙ ≤ ln(n) + 1。结论：<b>书可以悬出桌沿任意远</b>（Hₙ ~ ln n → ∞），但代价指数级——悬出 3 本书长需要 227 本。</p>
+    <p>n 本书叠成一摞、每本往桌沿外探，最多能探出多远？物理：第 i 层的质心要坐在下一层的边缘上。解递推得 <b>Bₙ = Hₙ/2</b>——调和数 Hₙ = 1 + 1/2 + ⋯ + 1/n 的一半！调和数没有已知闭式，但积分包围给 ln(n) + 1/n ≤ Hₙ ≤ ln(n) + 1（式 14.20）。结论：<b>书可以悬出桌沿任意远</b>（Hₙ ~ ln n → ∞），但代价指数级——悬出 3 本书长需要 227 本。</p>
   </div>
 
   <!-- 互动④ 书堆悬挑 -->
@@ -305,7 +305,7 @@ footer p{margin:6px 0}
 
 <!-- ================= 渐近快判 ================= -->
 <section class="ch" id="s5">
-  <div class="ch-head reveal"><span class="no">14.6</span><h2>渐近记号快判</h2><span class="en">Asymptotic Notation</span></div>
+  <div class="ch-head reveal"><span class="no">14.7</span><h2>渐近记号快判</h2><span class="en">Asymptotic Notation</span></div>
   <div class="reveal">
     <p><span class="term">渐近相等 f ~ g</span>：lim f(x)/g(x) = 1。Hₙ ~ ln n（欧拉常数 γ 与 ε(n) 都被 ~ 吸收——注意 Hₙ ~ ln n + γ 写法不对，常数被 ~ 的定义吞掉）。Big-O 与家族成员在算法分析中的正式登场。四道快判：</p>
   </div>
@@ -354,9 +354,9 @@ footer p{margin:6px 0}
       <div class="body">
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
           <li><b>14.2</b> 用扰动法（而非求导）推导 Σixⁱ 的闭式。</li>
-          <li><b>14.4</b> 闭式推导 1·2 + 2·3 + ⋯ + n(n+1) = n(n+1)(n+2)/3（第 2 章习题 2.17 的闭式来源）。</li>
+          <li>闭式推导 1·2 + 2·3 + ⋯ + n(n+1) = n(n+1)(n+2)/3（用 14.1 节的扰动/换序技巧；第 2 章习题 2.17 的闭式来源）。</li>
           <li><b>14.10</b> 补全弱递减情形的积分包围证明。</li>
-          <li><b>14.21</b> 证明 |Hₙ − ln(n) − γ| ≤ 1/n 的精细版。</li>
+          <li>证明 |Hₙ − ln(n) − γ| ≤ 1/n 的精细版。</li>
         </ul>
       </div>
     </details>
@@ -379,7 +379,7 @@ footer p{margin:6px 0}
     <button class="close" id="toc-close">×</button>
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
     <a href="#s1">14.1 · 年金与几何级数</a><a href="#s2">14.2 · 幂和与 Gauss</a><a href="#s3">14.3 · 积分包围近似</a>
-    <a href="#s4">14.4 · 书堆悬挑与调和数</a><a href="#s5">14.6 · 渐近记号快判</a>
+    <a href="#s4">14.4 · 书堆悬挑与调和数</a><a href="#s5">14.7 · 渐近记号快判</a>
     <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
@@ -464,7 +464,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
       "第 1 步：老老实实写出 S。",
       "第 2 步：'扰动'——两边同乘 x。看：xS 的项和 S 的项几乎完全一样，只是错开一位。",
       "第 3 步：两式相减，错开的项成对抵消，只剩两端的 1 和 x⁵。这就是'大规模抵消'。",
-      "第 4 步：S(1−x) = 1 − x⁵，除一下就是闭式。原书定理 14.1.1 的 Σxⁱ = (1−xⁿ⁺¹)/(1−x) 就是这么来的（|x|<1 时令 n→∞ 得 1/(1−x)）。"][step];
+      "第 4 步：S(1−x) = 1 − x⁵，除一下就是闭式。原书式 (14.2) 的 Σxⁱ = (1−xⁿ⁺¹)/(1−x) 就是这么来的（|x|<1 时令 n→∞，得定理 14.1.1 的 1/(1−x)）。"][step];
     btn.textContent = step >= 4 ? "完成 ✓ 再来一轮？" : "下一步 →";
     if (step >= 4) btn.textContent = "再来一轮 →";
   }
@@ -567,9 +567,9 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
 (() => {
   const items = [
     { s:"Hₙ ~ ln n（调和数与 ln n 渐近相等）", ans:true,
-      why:"对。Hₙ = ln n + γ + 1/(2n) + ε(n)/120n⁴，比值 (ln n + γ + …)/ln n → 1。γ 是常数，被 ~ 吞掉。" },
+      why:"对。Hₙ = ln n + γ + 1/(2n) − 1/(12n²) + ε(n)/120n⁴，比值 (ln n + γ + …)/ln n → 1。γ 是常数，被 ~ 吞掉。" },
     { s:"Hₙ ~ ln n + γ（把第二项也写进去）", ans:true,
-      why:"（ln n + γ)/(ln n + γ) = 1 ——当然成立。原书提醒：正确表达 γ 是第二项的方法是写 Hₙ = ln n + γ + O(1/n)，~ 无法单独表达第二项。" },
+      why:"（ln n + γ)/(ln n + γ) = 1 ——当然成立。但想借此表达'γ 是第二项'却不行：Hₙ ~ ln n + c 对任何常数 c 都成立，~ 一视同仁地吞掉常数。用 γ 作第二项的正确说法是写 Hₙ − ln n ~ γ（原书口径；当然 Hₙ = ln n + γ + O(1/n) 也对）。" },
     { s:"n + 1 ~ n", ans:true,
       why:"对。(n+1)/n → 1。渐近相等只关心增长率的领先项，+1 被吞掉。" },    { s:"2ⁿ ~ 3ⁿ", ans:false,
       why:"确实不成立：(3ⁿ/2ⁿ) = (3/2)ⁿ → ∞ ≠ 1。指数之间没有'渐近相等'，除非底相同。" },
@@ -623,7 +623,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"√n 本书长", ok:false, fb:"√n 是'倒金字塔'多支撑结构的量级（习题延伸）。"}]},
     {q:"欧拉常数 γ 出现在哪个公式里？",
      opts:[
-       {t:"Hₙ = ln n + γ + 1/(2n) + ε(n)/120n⁴", ok:true, fb:"对——γ ≈ 0.5772，调和数的精细渐近展开。"},
+       {t:"Hₙ = ln n + γ + 1/(2n) − 1/(12n²) + ε(n)/120n⁴", ok:true, fb:"对——γ ≈ 0.5772，调和数的精细渐近展开。"},
        {t:"Hₙ ~ ln n + γ 中用 ~ 连接时 γ 仍然有意义", ok:false, fb:"~ 只保留领先项，γ 被吞掉；表达第二项要用 = 加误差项。"},
        {t:"γ = ln 2", ok:false, fb:"γ ≈ 0.5772 ≠ ln 2 ≈ 0.693。"},
        {t:"γ 是 3n+1 问题的峰值常数", ok:false, fb:"混淆了 Collatz（第 7 章）。"}]},

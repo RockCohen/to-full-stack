@@ -470,7 +470,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
       <p><b>病名：无基例。</b>这个"定义"没有任何锚点：若某个 f₁ 满足它，那 f₁ + 任意常数也满足。定义根本不唯一——f₁(5) 是多少？随便你加多少都行。递归定义必须有 base case 作为锚。</p>` },
     { tab:"② 不终止",
       html:`<div class="math" style="text-align:center">f₂(n) ::= 0 若 n=0；f₂(n+1) 否则</div>
-      <p><b>病名：永不终止。</b>有基例（n=0 → 0），但递归方向反了——f₂(1) 调 f₂(2) 调 f₂(3)……越走越远永不到 0。程序语言会把它解释成"处处无定义的部分函数"：f₂(1) 直接栈溢出。</p>` },
+      <p><b>病名：不终止，也不唯一。</b>有基例（n=0 → 0），但递归方向反了——f₂(1) 调 f₂(2) 调 f₂(3)……越走越远永不到 0。程序语言会把它解释成"0 处有定义（f₂(0)=0）、其余处处无定义"的部分函数：f₂(1) 直接栈溢出。它同时不唯一——任何在 0 处取 0、其余取常值的函数都满足这组方程。</p>` },
     { tab:"③ 不一致",
       html:`<div class="math" style="text-align:center">f₃(n) ::= 0 若 2|n；1 若 3|n；2 否则</div>
       <p><b>病名：自相矛盾。</b>f₃(6) 按第一条规则应为 0，按第二条应为 1——同一个输入两个输出，这不是定义而是悖论。案例间的条件必须互斥。</p>` },
@@ -506,14 +506,12 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   substBtn.addEventListener("click", () => {
     out.innerHTML =
 `eval(subst(3x, x(x−1)), 2)
-= eval([3x ∗ [x + −1]], 2)　　　（代入后：3x(x−1) 的全括号形式）
-= eval(3x, 2) ∗ eval([x + −1], 2)
-= (3∗2) ∗ eval([x + −1], 2)　　← <b style="color:var(--bad)">第 1 次乘法：3·2</b>
-= 6 ∗ (eval(x,2) + eval(−1,2))
-= 6 ∗ (2 + (−1))
-= 6 ∗ 1　　　　　　　　　　　　← <b style="color:var(--bad)">第 2 次乘法：6·1</b>
-= 6 ∗ eval(3x, 2) 里还没算的部分……3x 出现了两次！
-= 30`;
+= eval([3x ∗ [x + −1]], 2)　　　（subst 把两个 x 都换成 3x——整体变成 3x(3x−1)）
+= eval(3x, 2) ∗ eval([3x + −1], 2)
+= (3∗2) ∗ ((3∗2) + (−1))　　　　← <b style="color:var(--bad)">第 1 次乘法：3·2</b>
+= 6 ∗ (6 + (−1))　　　　　　　　← <b style="color:var(--bad)">第 2 次乘法：3·2——第二个 3x 又原样算了一遍</b>
+= 6 ∗ 5
+= 30　　　　　　　　　　　　　　← <b style="color:var(--bad)">第 3 次乘法：6·5</b>`;
     models.style.display = "grid";
   });
   envBtn.addEventListener("click", () => {

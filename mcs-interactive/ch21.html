@@ -169,7 +169,7 @@ footer p{margin:6px 0}
     <div class="en">Random Walks</div>
     <p class="lead">公平赌桌拿着 $100 想赢 $100，胜率恰好 1/2；轮盘只要轻微不利，哪怕你揣着 50 亿想只赢 100，成功率也不到 1/37,648——赌场的生意经是一条定理。同一套随机游走放到网页链接图上，就是 Google 起家的 PageRank。</p>
     <div class="meta">
-      <span>⏱ 约 55 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 905–929 页</span>
+      <span>⏱ 约 55 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 905–930 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch20.html">上一章：偏离均值</a></div>
@@ -180,7 +180,7 @@ footer p{margin:6px 0}
 <nav id="toc" aria-label="章节目录">
   <div class="toc-title">本章路线图</div>
   <a href="#s1"><span class="toc-num">21.1</span>赌徒破产</a>
-  <a href="#s2"><span class="toc-num">21.1.2</span>轮盘 1/37,648</a>
+  <a href="#s2"><span class="toc-num">21.1.3</span>轮盘 1/37,648</a>
   <a href="#s3"><span class="toc-num">21.1.4</span>要走多久？</a>
   <a href="#s4"><span class="toc-num">21.1.5</span>见好就收的悖论</a>
   <a href="#s5"><span class="toc-num">21.2</span>网页游走与 PageRank</a>
@@ -196,7 +196,7 @@ footer p{margin:6px 0}
     <p>赌徒拿着 n 美元做 $1 一注的赌博，每注胜率 p，直到<b>破产（0）或达标（T）</b>。Albert 与 Eric 的筹码版：两人共 T 个筹码，掷硬币互赢一枚，一方清空即终局。</p>
     <div class="box thm"><span class="label">定理 21.1.1 · 赌徒获胜概率</span>
       <p style="margin:4px 0">公平赌桌（p=1/2）：Pr[赢] = <b>n/T</b>——只看本钱占目标的比例，$100 冲 $200 恰好 1/2，$100 冲 $600 只有 1/6，百万富翁赢 $100 几乎必然（1M/1.001M）。有偏赌桌（r := q/p &gt; 1）：Pr[赢] = (rⁿ−1)/(r^T−1)。</p></div>
-    <p>Pascal 的巧证（21.1.1）：给第 i 枚筹码赋"价值" rⁱ（r=q/p），每注期望价值恰好为 0——游戏在价值尺度上变公平了；Albert 全部筹码的价值 = Eric 全部筹码的价值 × Pr[Albert 赢]，解出 wₙ。也可以老实解线性递归 wₙ = p·wₙ₊₁ + q·wₙ₋₁（边界 w₀=0, w_T=1），第 16 章的生成函数 + 部分分式机器照样吐出同一条公式。</p>
+    <p>Pascal 的巧证（21.1.1）：给第 i 枚筹码赋"价值" rⁱ（r=q/p），每注期望价值恰好为 0——游戏在价值尺度上变公平了；终局时 Pr[Albert 赢]·(Eric 全部筹码的价值) = (1−Pr[Albert 赢])·(Albert 全部筹码的价值)，解出 wₙ = A/(A+E)。也可以老实解线性递归 wₙ = p·wₙ₊₁ + q·wₙ₋₁（边界 w₀=0, w_T=1），第 16 章的生成函数 + 部分分式机器照样吐出同一条公式。</p>
   </div>
 
   <!-- 互动① 赌徒破产模拟器 -->
@@ -227,9 +227,9 @@ footer p{margin:6px 0}
   </div>
 </section>
 
-<!-- ================= 21.1.2 ================= -->
+<!-- ================= 21.1.3 ================= -->
 <section class="ch" id="s2">
-  <div class="ch-head reveal"><span class="no">21.1.2</span><h2>轮盘悖论：本钱再多也只是陪跑</h2><span class="en">How Casinos Stay in Business</span></div>
+  <div class="ch-head reveal"><span class="no">21.1.3</span><h2>轮盘悖论：本钱再多也只是陪跑</h2><span class="en">原书 21.1 导语所谓 "How Casinos Stay in Business"</span></div>
   <div class="reveal">
     <p>美式轮盘 38 格中 18 格红——押红的胜率 p = 18/38，只是"稍微"不利。用推论 21.1.2：Pr[赢] &lt; (1/r)^(T−n) = (9/10)^100 &lt; <b>1/37,648</b>。关键在于这个界<b>与初始本钱无关</b>：$500 也好、$50 亿也好，想靠 $1 注赢 $100，成功率都不到万分之三。想赢 $200？概率平方——不到 14 亿分之一。直觉（图 21.2）：<b>drift dominates swings</b>——每注期望 −5.3 分的下沉漂移迟早吃掉任何好运的上摆，而且越晚需要的好运越大。</p>
   </div>
@@ -240,7 +240,7 @@ footer p{margin:6px 0}
     <h4 class="wtitle">📉 轮盘胜率阶梯：本钱救不了你</h4>
     <div class="wdesc">押红轮盘（p=18/38，r=20/18），目标赢 $100。看各档本钱的精确胜率 (rⁿ−1)/(r^T−1)——以及它们如何被 (9/10)¹⁰⁰ 封顶。</div>
     <div id="lad-rows"></div>
-    <div class="fb info" id="lad-fb" style="display:block">从 $100 到 $50 亿本钱翻了两千五百万倍，胜率纹丝不动——赌场的数学护城河就是这条指数上界。</div>
+    <div class="fb info" id="lad-fb" style="display:block">从 $100 到 $50 亿本钱翻了五千万倍，胜率纹丝不动——赌场的数学护城河就是这条指数上界。</div>
   </div>
 </section>
 
@@ -249,8 +249,8 @@ footer p{margin:6px 0}
   <div class="ch-head reveal"><span class="no">21.1.4</span><h2>这场仗要打多久？</h2><span class="en">How Long a Walk?</span></div>
   <div class="reveal">
     <div class="box thm"><span class="label">定理 21.1.3 · 期望局长</span>
-      <p style="margin:4px 0">公平赌桌：Ex[注数] = <b>n(T−n)</b> = 本钱 × 目标利润。$10 起手冲 +$10 → 100 注；$500 冲 $600 → <b>50,000 注</b>——"小赌怡情"的时间代价是乘法级的。有偏时 Ex = wₙ(T−n)/(p−q)。</p></div>
-    <p>（21.1.5）更哲学的一对事实：无界公平游戏（不设目标）里，赌徒<b>以概率 1 必然破产</b>（引理 21.1.4）——哪怕本金一百万；但<b>期望游戏时长是无限</b>（引理 21.1.5）。公平赌桌上 1/2 的概率首注就输、15/16 五局内破产，可就是这套游戏"平均能玩到永远"。期望会骗人，分布不会。</p>
+      <p style="margin:4px 0">公平赌桌：Ex[注数] = <b>n(T−n)</b> = 本钱 × 目标利润。$10 起手冲 +$10 → 100 注；$500 冲 $600 → <b>50,000 注</b>——"小赌怡情"的时间代价是乘法级的。有偏时 Ex = (n − T·wₙ)/(q−p)。</p></div>
+    <p>（21.1.5）更哲学的一对事实：无界公平游戏（不设目标）里，赌徒<b>以概率 1 必然破产</b>（引理 21.1.4）——哪怕本金一百万；但<b>期望游戏时长是无限</b>（引理 21.1.5）。公平赌桌上 1/2 的概率首注就输、11/16 五局内破产（原书 21.1 印"超过 15/16"，系原书笔误：精确枚举 1/2+1/8+2·(1/32) = 11/16），可就是这套游戏"平均能玩到永远"。期望会骗人，分布不会。</p>
   </div>
 </section>
 
@@ -260,7 +260,7 @@ footer p{margin:6px 0}
   <div class="reveal">
     <p>把万维网看成有向图：页面是顶点、超链接是边。1995 年 Stanford 的两位学生 Larry Page 和 Sergey Brin 想到：与其数关键词出现次数（谁都能刷），不如让一个"随机网民"在图上游走——每到一个页面<b>等概率跟随一条出链</b>：</p>
     <div class="eq math">Pr[go to y] = Σ_{x→y} Pr[at x] / outdeg(x)</div>
-    <p>死胡同页面（没有出链）会把游走者困住——解法是加一个<span class="term">超顶点</span>：每页以小概率（原版 0.15）传送到超顶点、再等概率回到任意页。<b>稳态分布</b>（定义 21.2.1）：Pr[at x] = Pr[go to x next step] 的概率分配；强连通图上它存在、唯一，长游走必然收敛到它。这个稳态分布就是 <b>PageRank</b>——Rank(x) = Σ Rank(y)/outdeg(y)。书里的彩蛋：用这套公式，6.042 讲义在 378,000 条结果里排第一。</p>
+    <p>死胡同页面（没有出链）会把游走者困住——解法是加一个<span class="term">超顶点</span>：每页以小概率（原版 0.15）传送到超顶点、再等概率回到任意页。<b>稳态分布</b>（定义 21.2.1）：Pr[at x] = Pr[go to x next step] 的概率分配；强连通图上它存在、唯一，长游走必然收敛到它。这个稳态分布就是 <b>PageRank</b>——Rank(x) = Σ_{y→x} Rank(y)/outdeg(y)。书里的彩蛋：用这套公式，6.042 讲义在 378,000 条结果里排第一。</p>
   </div>
 
   <!-- 互动③ PageRank 实验台 -->
@@ -268,7 +268,7 @@ footer p{margin:6px 0}
     <span class="pill">互动 ③</span>
     <h4 class="wtitle">🌐 PageRank 实验台：8 页迷你万维网</h4>
     <div class="num-row">
-      <label class="small">重启概率 d = <b id="pr-d" style="font-family:var(--mono)">0.15</b>　</label>
+      <label class="small">传送概率 d = <b id="pr-d" style="font-family:var(--mono)">0.15</b>　</label>
       <input type="range" id="pr-ds" min="0" max="50" value="15" style="width:140px" />
       <button class="btn" id="pr-kill">☠️ 杀死页面 H（制造死端）</button>
       <button class="btn ghost" id="pr-reset">复原</button>
@@ -277,7 +277,7 @@ footer p{margin:6px 0}
       <svg class="pr-svg chart-svg" id="pr-svg" viewBox="0 0 420 320"></svg>
       <div class="pr-list" id="pr-list"></div>
     </div>
-    <div class="fb info" id="pr-fb" style="display:block">节点大小 ∝ Rank。被 4 个页面指向的 A 是权威；把 H 变成死端并保留 15% 重启，Rank 会怎样重新洗牌？把 d 拉到 0 再杀 H，游走者就会永久卡死——这就是超顶点存在的理由。</div>
+    <div class="fb info" id="pr-fb" style="display:block">节点大小 ∝ Rank。被 4 个页面指向的 A 是权威；把 H 变成死端并保留 15% 传送，Rank 会怎样重新洗牌？把 d 拉到 0 再杀 H，游走者就会永久卡死——这就是超顶点存在的理由。</div>
   </div>
 </section>
 
@@ -340,7 +340,7 @@ footer p{margin:6px 0}
   <div class="panel">
     <button class="close" id="toc-close">×</button>
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
-    <a href="#s1">21.1 · 赌徒破产</a><a href="#s2">21.1.2 · 轮盘 1/37648</a><a href="#s3">21.1.4 · 要走多久</a>
+    <a href="#s1">21.1 · 赌徒破产</a><a href="#s2">21.1.3 · 轮盘 1/37648</a><a href="#s3">21.1.4 · 要走多久</a>
     <a href="#s4">21.1.5 · 见好就收悖论</a><a href="#s5">21.2 · PageRank</a>
     <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
@@ -396,8 +396,8 @@ const svgEl = (svg, t, a) => { const e = document.createElementNS(NS, t); for (c
   function lenTheo(){
     const {n, T, p} = params();
     if (p === 0.5) return n * (T - n);
-    const r = (1 - p) / p, w = theo();
-    return w * (T - n) / (p - (1 - p));
+    const w = theo();
+    return (n - T * w) / ((1 - p) - p);  // 定理 21.1.3 有偏情形：Ex = (n − T·wₙ)/(q−p)
   }
   function updTheo(){
     const {n, T, p} = params();
@@ -465,7 +465,7 @@ const svgEl = (svg, t, a) => { const e = document.createElementNS(NS, t); for (c
   const rows = $("#lad-rows");
   const winP = n => {
     if (n <= 5000) return (Math.pow(r, n) - 1) / (Math.pow(r, n + 100) - 1);  // 目标：净赢 $100 → T = n+100
-    return Math.exp(-n * Math.log(r));  // 大 n 用极限式 r^(−n)，避免 pow 溢出
+    return Math.exp(-100 * Math.log(r));  // 大 n 用极限式 r^(−(T−n)) = r^(−100)，避免 pow 溢出
   };
   rows.innerHTML = caps.map(c => {
     const p = winP(c);
@@ -498,13 +498,16 @@ const svgEl = (svg, t, a) => { const e = document.createElementNS(NS, t); for (c
     const keys = Object.keys(NODES).filter(k => !(killed && k === "H"));
     let rk = {}; keys.forEach(k => rk[k] = 1 / keys.length);
     for (let it = 0; it < iters; it++) {
-      const nx = {}; keys.forEach(k => nx[k] = (1 - d) / keys.length);
+      const nx = {}; keys.forEach(k => nx[k] = d / keys.length);  // 传送分量：概率 d 均匀撒回（原书 0.15）
       keys.forEach(y => {
         const od = outdeg(y);
-        if (od === 0) { keys.forEach(k => nx[k] += d * rk[y] / keys.length + (1 - d) * rk[y] / keys.length); }
+        if (od === 0) {
+          // 死端：跟随分量无处可去，(1−d) 的质量原地卡死；只有传送分量 d 撒回（已含在基底）
+          nx[y] += (1 - d) * rk[y];
+        }
         else EDGES.forEach(([u, v]) => {
           if (u !== y || (killed && v === "H")) return;
-          nx[v] += d * rk[y] / od;
+          nx[v] += (1 - d) * rk[y] / od;  // 跟随分量：概率 1−d 等概率选出链（原书 0.85/n）
         });
       });
       rk = nx;
@@ -570,7 +573,7 @@ const svgEl = (svg, t, a) => { const e = document.createElementNS(NS, t); for (c
        {t:"无限——永不分胜负", ok:false, fb:"有界游走必然终止，且期望有限。"}]},
     {q:"无界公平游戏（不设目标、玩到破产为止）：下列哪对陈述同时成立？",
      opts:[
-       {t:"必破产（概率 1）且期望局长无限", ok:true, fb:"对（引理 21.1.4/21.1.5）。'平均能玩到永远'与'注定输光'毫不矛盾——期望会骗人，分布不会。50% 首局就输，15/16 五局内完。"},
+       {t:"必破产（概率 1）且期望局长无限", ok:true, fb:"对（引理 21.1.4/21.1.5）。'平均能玩到永远'与'注定输光'毫不矛盾——期望会骗人，分布不会。50% 首局就输，11/16 五局内完（原书 21.1 印'超过 15/16'，系原书笔误：精确枚举 1/2+1/8+2·(1/32) = 11/16）。"},
        {t:"有一半机会永不破产", ok:false, fb:"破产概率恰是 1。"},
        {t:"期望局长 = 本钱", ok:false, fb:"那是设定目标 T=2n 时的量。"},
        {t:"破产概率 1/2", ok:false, fb:"无界时是 1。"}]},
@@ -583,7 +586,7 @@ const svgEl = (svg, t, a) => { const e = document.createElementNS(NS, t); for (c
     {q:"稳态分布（stationary distribution）的定义是？",
      opts:[
        {t:"每个节点概率都相等", ok:false, fb:"那是均匀分布——只有特殊图上才是稳态。"},
-       {t:"Pr[at x] = Pr[go to x at next step]，对所有 x", ok:true, fb:"对（定义 21.2.1）。强连通图上存在且唯一，长游走必收敛到它——这就是 Rank(x) = ΣRank(y)/outdeg(y)。"},
+       {t:"Pr[at x] = Pr[go to x at next step]，对所有 x", ok:true, fb:"对（定义 21.2.1）。强连通图上存在且唯一，长游走必收敛到它——这就是 Rank(x) = Σ_{y→x} Rank(y)/outdeg(y)。"},
        {t:"入度最大的节点拿全部概率", ok:false, fb:"那是被否决的'第一版 rank'（可刷）。"},
        {t:"每步重新均匀撒点", ok:false, fb:"那是重启机制，不是稳态定义。"}]},
   ];

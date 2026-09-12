@@ -164,7 +164,7 @@ footer p{margin:6px 0}
     <div class="en">Number Theory</div>
     <p class="lead">Hardy 曾庆幸数论"远离人间烟火、洁净无害"——他错了。每次网购、每张证书、每个 PayPal 账户背后都是数论。本章从第六章的水壶讲到 RSA 密码系统，还给了 Alan Turing 一场迟到的致敬。</p>
     <div class="meta">
-      <span>⏱ 约 50 分钟</span><span>🧩 5 个互动装置</span><span>🔐 RSA Playground</span><span>📖 原书第 289–328 页</span>
+      <span>⏱ 约 50 分钟</span><span>🧩 5 个互动装置</span><span>🔐 RSA Playground</span><span>📖 原书第 289–366 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch08.html">上一章：无限集</a></div>
@@ -266,7 +266,7 @@ footer p{margin:6px 0}
       <span class="label">定理 9.4.1 · 算术基本定理</span>
       <p style="margin:4px 0">每个正整数都是<b>唯一</b>一个弱递减素数序列的乘积。例：75237393 = 23·17·17·11·7·7·7·3，别无他法。</p>
     </div>
-    <p>定理 2.3.1 证过"存在性"（良序），现在证"唯一性"：反设存在两种分解的最小整数 n，比较两个素数序列的首项，用引理 9.4.2（<b>p 素且 p | ab ⇒ p | a 或 p | b</b>）导出矛盾。注意引理 9.4.2 本身用 gcd 线性组合证明——<b>刻意绕开唯一分解，避免循环论证</b>。顺带一提：唯一分解在复数域的 m + m√−5 整数里会失效——它根本不是"显然"的。</p>
+    <p>定理 2.3.1 证过"存在性"（良序），现在证"唯一性"：反设存在两种分解的最小整数 n，比较两个素数序列的首项，用引理 9.4.2（<b>p 素且 p | ab ⇒ p | a 或 p | b</b>）导出矛盾。注意引理 9.4.2 本身用 gcd 线性组合证明——<b>刻意绕开唯一分解，避免循环论证</b>。顺带一提：唯一分解在复数域的 n + m√−5（m、n 取遍 ℤ，互相独立）整数里会失效——它根本不是“显然”的。</p>
   </div>
 </section>
 
@@ -357,19 +357,19 @@ footer p{margin:6px 0}
   <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
   <div class="reveal">
     <details class="egg">
-      <summary>Hardy 的乌鸦与 Turing 的苹果（原书 9.0 / 9.9.4）</summary>
+      <summary>Hardy 的乌鸦与 Turing 的苹果（原书章首引言 / 9.9.5 Turing Postscript）</summary>
       <div class="body">
         <p>数论学家 Hardy 曾庆幸数论"因远离军事而洁净"，还担心它被用于战争——他错了两次：数论是现代密码学的地基，而图灵（Turing's Code 的构想者）后来在布莱切利园领衔破解 Enigma，拯救了无数生命。图灵本人的结局则令人心碎：因同性恋被定罪、接受"化学治疗"，1954 年死于氰化物与一只苹果——他的母亲至死相信那是意外。2009 年英国政府正式道歉，2013 年女王赦免。</p>
       </div>
     </details>
     <details class="egg">
-      <summary>Google 的素数广告牌（原书 9.3 节文框）</summary>
+      <summary>Google 的素数广告牌（原书 9.4 节文框）</summary>
       <div class="body">
         <p>2004 年美国多地的广告牌写着："{first 10-digit prime found in consecutive digits of e}.com"。解出 7427466391 就能到达 Google 的招聘页。素数定理保证 10 位数中约每 ln(10¹⁰) ≈ 23 个就有一个素数——所以这题其实不难，难的是想到用素数定理。Google 要雇的正是"会想到"的人。</p>
       </div>
     </details>
     <details class="egg">
-      <summary>完美数与黎曼假设（原书 9.1 / 9.10 文框）</summary>
+      <summary>完美数与黎曼假设（原书 9.1 / 9.9.5 末尾）</summary>
       <div class="body">
         <p>毕达哥拉斯学派的"完美数"（等于自身真因子之和：6 = 1+2+3, 28 = 1+2+4+7+14）——欧几里得刻画的都是偶完美数，<b>奇完美数存在吗？</b>两千三百年无解，已排除至 10¹⁵⁰⁰。另一边，Riemann 假设把素数分布写进 ζ 函数的零点——千禧年七大难题之一，同样悬赏百万美元。素数density的每一个转角都通向深渊。</p>
       </div>
@@ -379,7 +379,7 @@ footer p{margin:6px 0}
       <div class="body">
         <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
           <li><b>9.2</b> 用偶完美数的欧几里得刻画（2^(k−1))(2^k − 1)，2^k − 1 为素数）自己找几个完美数。</li>
-          <li><b>9.10</b> 把 Schröder-Bernstein 定理的构造双射补完（第八章伏笔回收）。</li>
+          <li><b>8.10</b> 把 Schröder-Bernstein 定理的构造双射补完（第八章伏笔回收）。</li>
           <li><b>9.14</b> 证明欧几里得算法至多 log_φ(a) 步（φ 是黄金比）——斐波那契最坏情形。</li>
           <li><b>9.81</b> 证明即使 m 与 n 不互素，RSA 解密依然还原 m（欧拉定理之外的补充论证）。</li>
         </ul>
@@ -391,7 +391,7 @@ footer p{margin:6px 0}
 <footer>
   <div class="wrap" style="padding:0">
     <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
-    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 9 章 = 第 289–328 页）。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 9 章 = 第 289–366 页）。</p>
     <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch08.html">上一章：无限集</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
   </div>
 </footer>
@@ -603,7 +603,7 @@ function gcd(a, b){ while (b) { [a, b] = [b, a % b]; } return a; }
      opts:[
        {t:"费马小定理：k^(p−1) ≡ 1 (mod p)", ok:false, fb:"费马小定理是欧拉定理的特例，RSA 用的是完整版。"},
        {t:"欧拉定理：m^(ed) = m·(m^φ(n))^k ≡ m (mod n)，其中 ed ≡ 1 (mod φ(n))", ok:true, fb:"对——ed ≡ 1 (mod φ(n)) ⇒ m^(ed) ≡ m (mod n)，解密还原（即使 m 与 n 不互素也成立，见习题 9.81）。"},
-       {t:"鸽笼原理", ok:false, fb:"那是第 4 章 mapping rules 与第 14 章的主角。"},
+       {t:"鸽笼原理", ok:false, fb:"那是第 4 章 mapping rules 与第 15 章（15.8 节）的主角。"},
        {t:"素数定理", ok:false, fb:"素数定理管密度，不管解密。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
