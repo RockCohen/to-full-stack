@@ -6,6 +6,7 @@
 <title>递归式 · 数学之旅第二十二章（终章） — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 22 章（全书终章）的中文交互式解读：猜测验证、代入法、Merge Sort 递归、爬楼梯与 Fibonacci、特征方程、非齐次线性递归与 Akra-Bazzi 公式。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -155,9 +156,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -171,7 +178,7 @@ footer p{margin:6px 0}
     <div class="en">Recurrences · Finale</div>
     <p class="lead">一条递归式藏着数列的全部未来，但不解开来它什么也不说。猜测验证需要灵感，代入法只要纪律；爬楼梯数出 Fibonacci，特征方程一锤定音；Merge Sort 的 n log n − n + 1，最后由 Akra-Bazzi 公式一积分收工——全书的机器在这装配完成。</p>
     <div class="meta">
-      <span>⏱ 约 60 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 931–960 页</span>
+      <span>⏱ 约 70 分钟</span><span>🧩 7 个互动装置</span><span>📖 原书第 931–960 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch21.html">上一章：随机游走</a></div>
@@ -186,6 +193,8 @@ footer p{margin:6px 0}
   <a href="#s3"><span class="toc-num">22.3</span>爬楼梯与特征方程</a>
   <a href="#s4"><span class="toc-num">22.3.3</span>非齐次五步法</a>
   <a href="#s5"><span class="toc-num">22.4</span>Akra-Bazzi 公式</a>
+  <a href="#sfin"><span class="toc-num">🎓</span>终章寄语</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -214,6 +223,18 @@ footer p{margin:6px 0}
     </div>
     <div class="fb info" id="pl-fb" style="display:block">灰字 = plug（代入递归式）。展开到模式出现时金色高亮，最后一行代入首项收工。</div>
   </div>
+
+  <!-- 互动② 上界陷阱实验台 -->
+  <div class="widget reveal" id="w-trap">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">🪤 上界陷阱实验台：弱假设撑不起弱结论</h4>
+    <p class="wdesc">22.1.1 的 "Uh-oh!" 现场：想用归纳证 Tₙ ≤ 2ⁿ（上界真命题），归纳步却当场翻车——除非把假设加强成 Tₙ ≤ 2ⁿ − 1。</p>
+    <div class="num-row">
+      <button class="btn trp primary" data-t="weak">尝试弱假设 Tₙ ≤ 2ⁿ</button>
+      <button class="btn trp" data-t="strong">改用强假设 Tₙ ≤ 2ⁿ − 1</button>
+    </div>
+    <div class="gen-expr" id="tr-out">选一个假设，看归纳步走不走得通（Tₙ = 2Tₙ₋₁ + 1，T₁ = 1）。</div>
+  </div>
 </section>
 
 <!-- ================= 22.2 ================= -->
@@ -225,9 +246,9 @@ footer p{margin:6px 0}
     <p>猜不好（0, 1, 5, 17, 49 看不出规律），代入法一锤定音。为什么归并只要 n−1 次？每出一个人至少比一次、最后一人免费——n 个数 n−1 次。</p>
   </div>
 
-  <!-- 互动② Merge Sort 演练 -->
+  <!-- 互动③ Merge Sort 演练 -->
   <div class="widget reveal" id="w-ms">
-    <span class="pill">互动 ②</span>
+    <span class="pill">互动 ③</span>
     <h4 class="wtitle">🔀 Merge Sort 演练台：数一数比较</h4>
     <div class="num-row">
       <button class="btn primary" id="ms-run">▶ 归并排序</button>
@@ -248,9 +269,9 @@ footer p{margin:6px 0}
       <p style="margin:4px 0">f(n) = a₁f(n−1)+⋯+a_d f(n−d)：写出特征方程 x^d = a₁x^{d−1}+⋯+a_d。非重根 r 贡献一项 crⁿ；k 重根贡献 rⁿ, nrⁿ, …, n^{k−1}rⁿ。全部线性组合仍是解，边界条件定常数。</p></div>
   </div>
 
-  <!-- 互动③ 特征方程求解器 -->
+  <!-- 互动④ 特征方程求解器 -->
   <div class="widget reveal" id="w-char">
-    <span class="pill">互动 ③</span>
+    <span class="pill">互动 ④</span>
     <h4 class="wtitle">🪜 特征方程求解器：f(n)=a·f(n−1)+b·f(n−2)</h4>
     <div class="num-row">
       <label class="small">a = <b id="ca-v" style="font-family:var(--mono)">1</b>　</label>
@@ -260,6 +281,16 @@ footer p{margin:6px 0}
       <button class="btn amber" id="char-fib">Fibonacci 预设</button>
     </div>
     <div class="char-out" id="char-out"></div>
+  </div>
+
+  <!-- 互动⑤ 爬楼梯枚举器 -->
+  <div class="widget reveal" id="w-stairs">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">🪗 爬楼梯枚举器：数出 Fibonacci（22.3.1）</h4>
+    <p class="wdesc">每次上一阶（1）或跳两阶（2），爬到第 n 阶。枚举全部路径（n ≤ 7 逐条列出），条数 f(n) 按 f(0)=f(1)=1 正是 Fibonacci——递归式"长"出数列。</p>
+    <label class="small">n = <b id="stn-n" style="font-family:var(--mono)">5</b>　</label>
+    <input type="range" id="stn-ns" min="1" max="7" value="5" />
+    <div class="gen-expr" id="stn-out"></div>
   </div>
 </section>
 
@@ -281,9 +312,9 @@ footer p{margin:6px 0}
     <p>Merge Sort：2·(1/2)^p = 1 → p=1；∫(u−1)/u² du = ln u → <b>Θ(n log n)</b>。吓人版 T(n)=2T(n/2)+(8/9)T(3n/4)+n²：p=2，积出 Θ(n² log n)。另一个惊喜：边界条件完全不影响结果——Tₙ = Θ(n log n) 对任何 T₁ 都成立。</p>
   </div>
 
-  <!-- 互动④ Akra-Bazzi 试算器 -->
+  <!-- 互动⑥ Akra-Bazzi 试算器 -->
   <div class="widget reveal" id="w-ab">
-    <span class="pill">互动 ④</span>
+    <span class="pill">互动 ⑥</span>
     <h4 class="wtitle">🧮 Akra-Bazzi 试算器：三道名题流水线</h4>
     <div class="num-row" id="ab-picks">
       <button class="btn primary" data-ab="ms">Merge Sort</button>
@@ -300,6 +331,23 @@ footer p{margin:6px 0}
   <div class="reveal">
     <p>从第 1 章"什么是证明"到这里，全书的暗线其实只有一条：<b>把大问题化小，直到基例出现</b>——归纳证明、递归算法、递归式求解，是同一个思想的三副面孔。现在 22 章全部装配完毕：命题与量词是语法，集合与关系是名词，归纳与良序是引擎，数论给了你 RSA，图论给了你网络与平面，计数给了你扑克与魔术，概率给了你赌场与 Google，而递归式把它们全部串成闭环（谁还记得第 16 章已经解过一次汉诺塔？）。</p>
     <p>原书到这里就停了。剩下的路——算法、复杂度、机器学习——用的全是这 22 章的语言。祝旅途愉快，常回来看看这些还能玩的装置。</p>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Verify-and-Solve</span></div>
+  <div class="reveal">
+    <p>终章核查题：给定递归式与候选闭式，代入前 6 项判定真假。</p>
+  </div>
+
+  <!-- 互动⑦ 闭式核查器 -->
+  <div class="widget reveal" id="w-ver">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">✅ 闭式核查器：谁真的是解？</h4>
+    <p class="wdesc">三道候选，各判"是 / 不是"对应递归式的（正确）闭式——判据：代回递归式验证 + 边界条件吻合。</p>
+    <div id="ver-list"></div>
+    <div style="margin-top:10px;font-size:14.5px">进度 <span class="score-pill" id="ver-score">0 / 3</span></div>
   </div>
 </section>
 
@@ -357,7 +405,7 @@ footer p{margin:6px 0}
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
     <a href="#s1">22.1 · 汉诺塔两把钥匙</a><a href="#s2">22.2 · Merge Sort</a><a href="#s3">22.3 · 爬楼梯与特征方程</a>
     <a href="#s4">22.3.3 · 非齐次五步法</a><a href="#s5">22.4 · Akra-Bazzi</a><a href="#sfin">🎓 · 终章寄语</a>
-    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#sp">⚔️ · 习题实战</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -556,6 +604,69 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
     b.classList.add("primary"); show(b.dataset.ab);
   }));
   show("ms");
+})();
+
+/* ---------- 互动⑤ 上界陷阱 ---------- */
+(() => {
+  $$(".trp").forEach(b => b.addEventListener("click", () => {
+    const out = $("#tr-out"), fb = b.dataset.t === "weak";
+    $$(".trp").forEach(o => o.classList.toggle("primary", o === b));
+    out.innerHTML = fb
+      ? `归纳假设：Tₙ₋₁ ≤ 2ⁿ⁻¹\n归纳步：Tₙ = 2Tₙ₋₁ + 1 ≤ 2·2ⁿ⁻¹ + 1 = 2ⁿ + 1\n⟹ 2ⁿ + 1 <span style="color:var(--bad)">≰</span> 2ⁿ　—— <b style="color:var(--bad)">Uh-oh!（原书标红）</b>\n结论：弱假设撑不起弱结论——归纳常常需要更强的假设。`
+      : `归纳假设（加强版）：Tₙ₋₁ ≤ 2ⁿ⁻¹ − 1\n归纳步：Tₙ = 2Tₙ₋₁ + 1 ≤ 2(2ⁿ⁻¹ − 1) + 1 = 2ⁿ − 1 ✓\n基例：T₁ = 1 = 2¹ − 1 ✓\n⟹ Tₙ ≤ 2ⁿ − 1 得证（顺手给出精确解 Tₙ = 2ⁿ − 1 的 hint）。`;
+  }));
+})();
+
+/* ---------- 互动⑥ 爬楼梯枚举 ---------- */
+(() => {
+  const NS = $("#stn-ns");
+  function paths(n){
+    if (n === 0) return [[]];
+    if (n < 0) return [];
+    const one = paths(n - 1).map(p => [1, ...p]);
+    const two = paths(n - 2).map(p => [2, ...p]);
+    return [...one, ...two];
+  }
+  function draw(){
+    const n = +NS.value;
+    $("#stn-n").textContent = n;
+    const ps = paths(n);
+    const fib = ps.length;
+    $("#stn-out").innerHTML = `f(${n}) = <b>${fib}</b> 种爬法（= Fibonacci 第 ${n + 1} 项，f(0)=f(1)=1）` +
+      (n <= 6 ? `<br><span style="color:var(--muted)">${ps.map(p => p.join("+")).join("　·　")}</span>` : "<br><span style='color:var(--muted)'>(路径太多，只报数)</span>");
+  }
+  NS.addEventListener("input", draw);
+  draw();
+})();
+
+/* ---------- 互动⑦ 闭式核查器 ---------- */
+(() => {
+  const QS = [
+    { q: "Tₙ = 2Tₙ₋₁ + 1，T₁ = 1 的闭式是 Tₙ = 2ⁿ − 1", is: true,
+      why: "✓ 代回：2(2ⁿ⁻¹−1)+1 = 2ⁿ−1 ✓；边界 T₁ = 1 ✓。" },
+    { q: "Merge Sort Tₙ = 2Tₙ/₂ + n − 1（n 为 2 的幂）的闭式是 Tₙ = n log₂n", is: false,
+      why: "✗ 少了 −n+1：正确闭式 Tₙ = n log₂n − n + 1。代 n=2 检验：递归给 2T₁+1 = 1，候选给 2 —— 当场出局。" },
+    { q: "爬楼梯 f(n) = f(n−1)+f(n−2)，f(0)=f(1)=1 的闭式含 φⁿ/√5（Binet 家族）", is: true,
+      why: "✓ 特征方程 x² = x+1 的两根 φ, ψ：f(n) = (φⁿ⁺¹−ψⁿ⁺¹)/√5 —— 与第 16 章 Binet 公式同族（指标差 1）。" },
+  ];
+  let done = 0, right = 0;
+  const list = $("#ver-list");
+  QS.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "pg-row";
+    d.innerHTML = `<div class="stmt"><b>${i+1}.</b> ${it.q}</div>
+      <div style="display:flex;gap:6px"><button class="btn">是</button><button class="btn">不是</button></div><div class="verdict"></div>`;
+    const vd = $(".verdict", d);
+    $$(".btn", d).forEach((b, k) => b.addEventListener("click", () => {
+      if (d.classList.contains("done")) return;
+      d.classList.add("done"); done++;
+      const said = k === 0, ok = said === it.is;
+      if (ok) right++;
+      vd.className = "verdict show"; vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+      $("#ver-score").textContent = done === 3 ? `完成！答对 ${right} / 3` : `${right} / ${done}`;
+    }));
+    list.appendChild(d);
+  });
 })();
 
 /* ---------- 终局自测 ---------- */

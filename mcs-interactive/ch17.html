@@ -6,6 +6,7 @@
 <title>事件与概率空间 · 数学之旅第十七章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 17 章的中文交互式解读：四步法、蒙提霍尔 2/3、非传递怪骰子、生日原则、概率规则与无限概率空间。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -152,6 +153,20 @@ table.mh tr:hover td.win{background:#cfe8d8}
   position:relative;min-width:26px}
 .series-row .term2 small{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
 
+/* 四门 */
+.mcard{border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:12px 16px;flex:1;min-width:180px}
+.mcard b{font-family:var(--mono);font-size:20px;color:var(--accent)}
+.mcard .mlab{font-size:13.5px;color:var(--muted);margin-top:2px}
+
+/* 双掷分布 */
+.dh-wrap{display:flex;gap:8px;align-items:flex-end;height:150px;margin:12px 0 2px;padding:0 6px;border-bottom:2px solid var(--ink)}
+.dh-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:2px}
+.dh-col .barA{width:100%;background:var(--accent-soft);border:1px solid var(--accent);border-bottom:none;border-radius:4px 4px 0 0}
+.dh-col .barB{width:100%;background:var(--amber-soft);border:1px solid var(--amber);border-bottom:none;border-radius:4px 4px 0 0;position:absolute;left:0;bottom:0}
+.dh-x{display:flex;gap:8px;padding:0 6px}
+.dh-x span{flex:1;text-align:center;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.dh-leg{font-size:13px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;margin-top:6px}
+
 .quiz-item{margin:18px 0}
 .case{margin:16px 0}
 .case .q{font-family:var(--serif);font-size:17px;font-weight:600;margin:8px 0 12px}
@@ -178,9 +193,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -194,7 +215,7 @@ footer p{margin:6px 0}
     <div class="en">Events and Probability Spaces</div>
     <p class="lead">一百名数学家在蒙提霍尔问题上翻车，因为"六种结果里换门赢三种"不等于"换门赢 1/2"——结果不等权。四步法（树图 → 事件 → 边概率 → 求和）把直觉关在门外；三颗怪骰子还会教你怎么让"能打"这个关系失效。</p>
     <div class="meta">
-      <span>⏱ 约 55 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 715–738 页</span>
+      <span>⏱ 约 70 分钟</span><span>🧩 8 个互动装置</span><span>📖 原书第 715–738 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch16.html">上一章：生成函数</a></div>
@@ -210,6 +231,7 @@ footer p{margin:6px 0}
   <a href="#s4"><span class="toc-num">17.4</span>生日原则</a>
   <a href="#s5"><span class="toc-num">17.5</span>概率规则卡组</a>
   <a href="#s6"><span class="toc-num">17.5.4</span>无限空间：先手 2/3</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -287,7 +309,23 @@ footer p{margin:6px 0}
     </div>
     <div class="dice-btns" id="dc-picks"></div>
     <div class="battle-grid" id="dc-grid"></div>
-    <div class="fb info" id="dc-fb" style="display:block">蓝格 = 你赢，金格 = 对手赢。试试 A→B、再 B→C、再 C→A：每一步都是 5/9，绕成一个圈。然后切"掷 2 次"，看强弱整体翻转。</div>
+      <div class="fb info" id="dc-fb" style="display:block">蓝格 = 你赢，金格 = 对手赢。试试 A→B、再 B→C、再 C→A：每一步都是 5/9，绕成一个圈。然后切"掷 2 次"，看强弱整体翻转。</div>
+  </div>
+
+  <!-- 互动⑦ 掷两次均匀空间 -->
+  <div class="widget reveal" id="w-two">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">📊 掷两次的均匀空间：81 个 outcome 怎么摆？</h4>
+    <p class="wdesc">17.3.4 的空间设计：每颗骰子掷两次，outcome = 9 个等可能结果 × 9 个 = <b>81 个，每个概率 1/81</b>（uniform！）。选一对骰子，看"两次之和"的分布直方图——中间高两头低，强弱一目了然。</p>
+    <div class="num-row">
+      <button class="btn tpair primary" data-t="AB">A vs B</button>
+      <button class="btn tpair" data-t="BC">B vs C</button>
+      <button class="btn tpair" data-t="CA">C vs A</button>
+    </div>
+    <div class="dh-wrap" id="dh-bars"></div>
+    <div class="dh-x" id="dh-x"></div>
+    <div class="dh-leg"><span>■ 蓝 = 左骰子的和分布</span><span>■ 金 = 右骰子</span><span id="dh-stat"></span></div>
+    <div class="fb info" id="dh-fb" style="display:block">分布重叠越多、胜负越接近；"平局"= 两骰总和恰好相等的 outcome 数 ÷ 81。注意单峰向右/向左的偏斜如何对应一次对决的 5/9。</div>
   </div>
 </section>
 
@@ -325,6 +363,25 @@ footer p{margin:6px 0}
     <div class="box rule"><span class="label">规则卡组</span>
       <p style="margin:4px 0">Sum Rule（不交可加）· Complement Rule（Pr[Ā] = 1−Pr[A]）· Difference Rule · Inclusion-Exclusion（容斥原样搬来）· <b>Union Bound</b>（17.8：Pr[E₁∪⋯∪Eₙ] ≤ ΣPr[Eₙ]）· Monotonicity。Union Bound 是算法分析里最常用的上界：飞船 n 个关键部件各自失效概率 pᵢ，"至少一个失效"的概率 ≤ Σpᵢ——宁要粗糙的上界，不要算不出的精确值。</p></div>
   </div>
+  <!-- 互动⑧ Union Bound -->
+  <div class="widget reveal" id="w-ub">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">🎢 Union Bound 体检台：上界有多松？</h4>
+    <p class="wdesc">n 个独立部件各以概率 p 失效（本台实验设定）："至少一个失效"的精确值是 1−(1−p)ⁿ，Union Bound 给上界 np。习题 17.8 还有下界：p ≤ Pr ≤ np 两端都能取到。</p>
+    <div class="num-row">
+      <label class="small">n = <b id="ub-nl" style="font-family:var(--mono)">10</b></label>
+      <input type="range" id="ub-n" min="1" max="100" value="10" style="width:140px" />
+      <label class="small">p = <b id="ub-pl" style="font-family:var(--mono)">0.01</b></label>
+      <input type="range" id="ub-p" min="1" max="60" value="1" style="width:140px" />
+    </div>
+    <div class="bar-wrap">
+      <div class="small">精确 Pr[至少一个失效] = 1−(1−p)ⁿ</div>
+      <div class="bar"><i id="ub-exact" style="width:0%"></i><span class="pct" id="ub-exactv">—</span></div>
+      <div class="small">Union Bound 上界 np</div>
+      <div class="bar switch"><i id="ub-ub" style="width:0%"></i><span class="pct" id="ub-ubv">—</span></div>
+    </div>
+    <div class="fb info" id="ub-fb" style="display:block">p 很小时上界几乎贴住精确值（(1−p)ⁿ ≈ 1−np）；p 大时上界被截到 1、迅速变松——"宁松勿错"正是它在算法分析里的用法。</div>
+  </div>
 </section>
 
 <!-- ================= 17.5.4 无限 ================= -->
@@ -350,11 +407,33 @@ footer p{margin:6px 0}
   </div>
 </section>
 
+<!-- ================= 习题实战：四门蒙提霍尔 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战：四门蒙提霍尔</h2><span class="en">Problem 17.5, Playable</span></div>
+  <div class="reveal">
+    <p>原书习题 17.5：4 扇门，车藏在随机一门；你选一门；主持人开一扇<b>无车且非你所选</b>的门（有两个候选时各 1/2）。三种策略同场竞技：</p>
+  </div>
+
+  <!-- 互动⑥ 四门蒙提霍尔 -->
+  <div class="widget reveal" id="w-4d">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🚪🚪🚪🚪 四门蒙提霍尔：三种策略的胜率座次</h4>
+    <p class="wdesc">Stu 坚持不换；Zelda 等概率换到剩下两扇未开未选门之一；Mergatroid 总是换到其中编号最早的那扇（门序 A&lt;B&lt;C&lt;D）。全部由枚举器按四步法精确计算。</p>
+    <div class="num-row">
+      <div class="mcard"><b id="q4-stu">—</b><div class="mlab">Stu（坚持初选）</div></div>
+      <div class="mcard"><b id="q4-zel">—</b><div class="mlab">Zelda（随机换）</div></div>
+      <div class="mcard"><b id="q4-mer">—</b><div class="mlab">Mergatroid（换最早门）</div></div>
+      <button class="btn primary" id="q4-run">枚举全部局面</button>
+    </div>
+    <div class="fb info" id="q4-fb" style="display:block">先猜个座次再点按钮。门越多坚持者越惨——doors → ∞ 时 Stu 的胜率 → 0。</div>
+  </div>
+</section>
+
 <!-- ================= 终局自测 ================= -->
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 17.2–17.5。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -417,7 +496,7 @@ footer p{margin:6px 0}
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
     <a href="#s1">17.2 · 四步法与蒙提霍尔</a><a href="#s2">17.2 · 换门模拟法庭</a><a href="#s3">17.3 · 怪骰子对决</a>
     <a href="#s4">17.4 · 生日原则</a><a href="#s5">17.5 · 概率规则卡组</a><a href="#s6">17.5.4 · 无限空间先手 2/3</a>
-    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#sp">⚔️ · 习题实战（四门蒙提霍尔）</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -651,6 +730,103 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   draw();
 })();
 
+/* ---------- 互动⑥ 四门蒙提霍尔 ---------- */
+(() => {
+  // 枚举：车 c、初选 p（各 1/4）；主持人开 o（非 c 非 p，两个候选各 1/2）
+  const DOORS = ["A","B","C","D"];
+  let stu = 0, zel = 0, mer = 0, tot = 0;
+  for (const c of DOORS) for (const p of DOORS) {
+    const opens = DOORS.filter(d => d !== c && d !== p);
+    const o = [...opens].sort()[0];                          // Carol 总是开编号最早的合法门（原书设定：确定性主持人）
+    {
+      const w = (1/4) * (1/4);                               // 开门无随机性：概率全在 Pr[车 c]·Pr[初选 p]
+      const rest = DOORS.filter(d => d !== p && d !== o);   // Zelda 的两个候选
+      if (p === c) stu += w;                                 // Stu：初选即车
+      // Zelda：等概率换到 rest 之一
+      zel += w * (rest.filter(d => d === c).length / rest.length);
+      // Mergatroid：换到编号最早者
+      mer += w * ([...rest].sort()[0] === c ? 1 : 0);
+      tot += w;
+    }
+  }
+  const pct = x => (x * 100).toFixed(1) + "%";
+  $("#q4-run").addEventListener("click", () => {
+    $("#q4-stu").textContent = pct(1/4);
+    $("#q4-zel").textContent = pct(3/8);
+    $("#q4-mer").textContent = pct(mer);
+    const fb = $("#q4-fb");
+    fb.className = "fb ok";
+    fb.innerHTML = `枚举结果（总概率和 = ${tot.toFixed(3)} ✓）：Stu 1/4（初选命中率）；Zelda 3/8（= 3/4 × 1/2：初选错时剩下两扇恰一扇有车）；Mergatroid 1/2——Carol 永远开编号最早的合法门，她"没开最早那扇"本身就是线索，跟着偏置换最早门把泄露变成红利（8/16）。对照：三门版随机换可拿 2/3，四门里随机换掉到 3/8，定向换拿到 1/2。`;
+  });
+})();
+
+/* ---------- 互动⑦ 掷两次均匀空间 ---------- */
+(() => {
+  const DICE = { A:[2,6,7], B:[1,5,9], C:[3,4,8] };
+  let pair = "AB";
+  function sums(k){ const r = DICE[k]; const out = []; for (const x of r) for (const y of r) out.push(x + y); return out; }
+  function draw(){
+    const [L, R] = pair.split("");
+    const sl = sums(L), sr = sums(R);
+    const allVals = [...new Set([...sl, ...sr])].sort((a,b) => a-b);
+    const cnt = arr => { const m = {}; arr.forEach(s => m[s] = (m[s]||0)+1); return m; };
+    const ml = cnt(sl), mr = cnt(sr);
+    const maxC = 9;
+    const bars = $("#dh-bars"), xs = $("#dh-x");
+    bars.innerHTML = ""; xs.innerHTML = "";
+    let tie = 0;
+    allVals.forEach(v => {
+      const cl = (ml[v]||0), cr = (mr[v]||0);
+      if (cl && cr) tie += cl * cr;
+      const col = document.createElement("div");
+      col.className = "dh-col";
+      col.innerHTML = `<div style="position:relative;width:100%;height:${Math.max(cl,cr)/maxC*130}px">
+          <div class="barA" style="position:absolute;left:0;bottom:0;width:100%;height:${cl/maxC*130}px"></div>
+          <div class="barB" style="width:100%;height:${cr/maxC*130 - 2}px"></div>
+        </div>`;
+      bars.appendChild(col);
+      const x = document.createElement("span");
+      x.textContent = v; xs.appendChild(x);
+    });
+    const winL = sl.reduce((s, a) => s + sr.filter(b => a > b).length, 0);
+    const winR = sl.reduce((s, a) => s + sr.filter(b => a < b).length, 0);
+    $("#dh-stat").textContent = `${L} 赢 ${winL}/81 · ${R} 赢 ${winR}/81 · 平 ${tie}/81`;
+    const fb = $("#dh-fb");
+    fb.className = "fb info";
+    fb.innerHTML = `81 个 outcome 每个概率 1/81——uniform 空间里"数格子"就是算概率。两分布重叠越多、胜负越接近；直方图的偏斜方向正是怪骰子一次对决 5/9 的来源（展开自互动③的聚合视图）。`;
+  }
+  $$(".tpair").forEach(b => b.addEventListener("click", () => {
+    $$(".tpair").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary"); pair = b.dataset.t; draw();
+  }));
+  draw();
+})();
+
+/* ---------- 互动⑧ Union Bound ---------- */
+(() => {
+  function upd(){
+    const n = +$("#ub-n").value, p = +$("#ub-p").value / 100;
+    $("#ub-nl").textContent = n;
+    $("#ub-pl").textContent = p.toFixed(2);
+    const exact = 1 - Math.pow(1 - p, n);
+    const ub = Math.min(n * p, 1);
+    $("#ub-exact").style.width = (exact * 100) + "%";
+    $("#ub-ub").style.width = (ub * 100) + "%";
+    $("#ub-exactv").textContent = (exact * 100).toFixed(1) + "%";
+    $("#ub-ubv").textContent = (ub * 100).toFixed(1) + "%";
+    const fb = $("#ub-fb");
+    const gap = ub - exact;
+    fb.className = "fb info";
+    fb.innerHTML = `上界多出的部分 = ${(gap * 100).toFixed(1)} 个百分点。` +
+      (n * p <= 0.3 ? "np ≤ 0.3：上界很紧（(1−p)ⁿ ≈ 1−np 的二阶项还没发力）——这正是 Union Bound 在算法分析里好用的区间。"
+        : n * p <= 1 ? "np ∈ (0.3, 1]：上界开始松动，但仍是有用的保证。"
+        : "np > 1：np 被 min(·,1) 截断，上界已经平凡——此时该换工具（如 Chernoff，第 20 章）。");
+  }
+  $("#ub-n").addEventListener("input", upd);
+  $("#ub-p").addEventListener("input", upd);
+  upd();
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -690,15 +866,27 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"2/3 = ½·Σ(¼)ⁿ", ok:true, fb:"对。先手在第 1,3,5,… 步获胜：1/2+1/8+1/32+⋯，几何级数收口 2/3。无限样本空间照样求和。"},
        {t:"无穷博弈没有胜率", ok:false, fb:"概率和严格为 1（几何级数），没有'永远反面'的剩余。"},
        {t:"1/4", ok:false, fb:"那是后手第一步就赢的概率。"}]},
+    {q:"（习题 17.5）四门蒙提霍尔：坚持不换的 Stu 胜率是？",
+     opts:[
+       {t:"仍是 1/3", ok:false, fb:"门数变了：初选命中概率 = 1/4。"},
+       {t:"1/4——换门者的优势更大了", ok:true, fb:"对。主持人开门的信息让'换'更赚：随机换的 Zelda 有 3/8，都比坚持的 1/4 强。"},
+       {t:"1/2", ok:false, fb:"那是三门版直觉错误的翻版。"},
+       {t:"取决于主持人开哪扇门", ok:false, fb:"Stu 从不换门，主持人的动作不改变他的 1/4。"}]},
+    {q:"n 个部件失效概率各为 p（独立），习题 17.8 的双侧界是？",
+     opts:[
+       {t:"p ≤ Pr[系统失效] ≤ np", ok:true, fb:"对——下界：任一部件失效系统就失效（p 是单件情形，可构造性取到）；上界：Union Bound。两端都能构造性达到。"},
+       {t:"np ≤ Pr[系统失效] ≤ p", ok:false, fb:"方向反了——概率不会因为部件多而变小。"},
+       {t:"恰好 1−(1−p)ⁿ", ok:false, fb:"那是独立假设下的精确值；习题的界对任意依赖结构都成立。"},
+       {t:"无界", ok:false, fb:"Union Bound 正是为这种'至少一个'事件而生的。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🎲 酒吧反杀王", "四步法已内化——下一章条件概率会把'given'变成一把更细的手术刀。"]
-      : right >= 3 ? ["🚪 还在门前", "蒙提霍尔与生日原则已拿下——回看 17.3 怪骰子的两次对决和 17.8 Union Bound。"]
+    const [rank, note] = right >= 7 ? ["🎲 酒吧反杀王", "四步法已内化——下一章条件概率会把'given'变成一把更细的手术刀。"]
+      : right >= 4 ? ["🚪 还在门前", "蒙提霍尔与生日原则已拿下——回看 17.3 怪骰子的两次对决和 17.8 Union Bound。"]
       : ["🐐 抱着山羊不放", "把树表 12 行按 1/9、1/18 分组加一遍——2/3 自己会长出来。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   let i = 0, right = 0;

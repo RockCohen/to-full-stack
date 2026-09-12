@@ -6,6 +6,7 @@
 <title>求和与渐近 · 数学之旅第十四章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 14 章的中文交互式解读：闭式、扰动法、几何级数、积分包围近似、书堆悬挑与调和数。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -131,6 +132,37 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
 .qc-row .verdict.show{display:block}
 .qc-row.done{opacity:.92}
 
+/* 幂和工坊 */
+.pguess{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.pguess label{font-size:14px}
+.pguess input{width:88px;border:1.5px solid var(--line);border-radius:9px;padding:6px 8px;font-family:var(--mono);font-size:14px;text-align:center}
+.pguess input:focus{outline:none;border-color:var(--accent)}
+.ptable{border-collapse:collapse;margin:10px auto;font-size:13.5px}
+.ptable th,.ptable td{border:1px solid var(--line);padding:4px 10px;text-align:center;font-family:var(--mono)}
+.ptable th{background:var(--accent-soft);color:var(--accent)}
+.ptable td.hit{background:var(--good-soft);color:var(--good);font-weight:700}
+.ptable td.miss{background:var(--bad-soft);color:var(--bad)}
+
+/* Stirling */
+.st-out{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+.st-bar{margin:8px 0}
+.st-bar .bar{height:14px;border-radius:7px;background:var(--accent-soft);position:relative;overflow:hidden}
+.st-bar .bar i{position:absolute;top:0;bottom:0;background:var(--amber);border-radius:7px}
+.st-bar .cap{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* 家族判别 */
+.famwrap{overflow-x:auto}
+.fam{border-collapse:collapse;margin:10px auto;font-size:13.5px}
+.fam th,.fam td{border:1px solid var(--line);padding:5px 8px;text-align:center}
+.fam th{background:var(--accent-soft);color:var(--accent)}
+.fam td.g{text-align:left;font-family:var(--mono)}
+.fam td.p{cursor:pointer;user-select:none;background:#fff;transition:.12s;min-width:52px}
+.fam td.p:hover{background:var(--amber-soft)}
+.fam td.p.T{background:var(--good-soft);color:var(--good);font-weight:700}
+.fam td.p.F{background:var(--bad-soft);color:var(--bad);font-weight:700}
+.fam td.good{background:var(--good-soft)}
+.fam td.wrong{background:var(--bad-soft)}
+
 .quiz-item{margin:18px 0}
 .case{margin:16px 0}
 .case .q{font-family:var(--serif);font-size:17px;font-weight:600;margin:8px 0 12px}
@@ -161,9 +193,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -177,7 +215,7 @@ footer p{margin:6px 0}
     <div class="en">Sums and Asymptotics</div>
     <p class="lead">彩票的"百万大奖"现值其实只有五十几万；一摞书能悬出桌沿任意远，但要 227 本才悬出 3 本长。闭式、扰动法、几何级数、积分包围与 Big-O——算法分析的数学语言从本章开始。</p>
     <div class="meta">
-      <span>⏱ 约 45 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 547–596 页</span>
+      <span>⏱ 约 60 分钟</span><span>🧩 9 个互动装置</span><span>📖 原书第 547–596 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch13.html">上一章：平面图</a></div>
@@ -191,7 +229,9 @@ footer p{margin:6px 0}
   <a href="#s2"><span class="toc-num">14.2</span>幂和与 Gauss</a>
   <a href="#s3"><span class="toc-num">14.3</span>积分包围近似</a>
   <a href="#s4"><span class="toc-num">14.4</span>书堆悬挑与调和数</a>
+  <a href="#s5"><span class="toc-num">14.5–6</span>乘积 · Stirling · 双求和</a>
   <a href="#s5"><span class="toc-num">14.7</span>渐近记号快判</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -255,7 +295,24 @@ footer p{margin:6px 0}
 <section class="ch" id="s2">
   <div class="ch-head reveal"><span class="no">14.2</span><h2>幂和：Gauss 的配对与系数猜法</h2><span class="en">Sums of Powers</span></div>
   <div class="reveal">
-    <p>高斯小学生的传说：把 1+2+⋯+n 正写一遍反写一遍，相加得 n(n+1)，所以和是 n(n+1)/2。平方和用不了这招，但可以<b>猜它是三次多项式 an³+bn²+cn+d</b>，代 n = 0..3 解线性方程组得 a=1/3, b=1/2, c=1/6——与 14.14 式吻合。原书警告：猜出来必须回头<b>证明</b>（归纳或生成函数），猜错形状就全错。</p>
+    <p>高斯小学生的传说：把 1+2+⋯+n 正写一遍反写一遍，相加得 n(n+1)，所以和是 n(n+1)/2。平方和用不了这招，但可以<b>猜它是三次多项式 an³+bn²+cn+d</b>：n=0 给 0=d，n=1 给 1=a+b+c+d，n=2 给 5=8a+4b+2c+d，n=3 给 14=27a+9b+3c+d——解出 a=1/3, b=1/2, c=1/6, d=0，即 n³/3+n²/2+n/6，与式 14.14 的 (2n+1)(n+1)n/6 吻合。原书正体警告框（Be careful!）：猜出来必须回头<b>证明</b>（归纳或生成函数），猜错形状就全错。</p>
+  </div>
+
+  <!-- 互动⑥ 幂和工坊 -->
+  <div class="widget reveal" id="w-pow">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🧮 幂和工坊：亲手解出平方和的系数</h4>
+    <p class="wdesc">假设 Σi² = an³ + bn² + cn + d。调 a、b、c、d（可填分数如 1/3），让 n=0…5 的预测值全部命中真值——命中即锁定原书方程组的解。</p>
+    <div class="pguess">
+      <label>a = <input id="pw-a" value="0" /></label>
+      <label>b = <input id="pw-b" value="0" /></label>
+      <label>c = <input id="pw-c" value="0" /></label>
+      <label>d = <input id="pw-d" value="0" /></label>
+      <button class="btn primary" id="pw-check">代入验算</button>
+      <button class="btn ghost" id="pw-ans">看原书的解</button>
+    </div>
+    <table class="ptable" id="pw-table"></table>
+    <div class="fb info" id="pw-fb" style="display:block">提示：真值来自直接硬算 Σi²。四个未知数只需要 n=0..3 四条方程——多出来的 n=4、5 是给你"回头证明"用的免费验证。</div>
   </div>
 </section>
 
@@ -303,11 +360,37 @@ footer p{margin:6px 0}
   </div>
 </section>
 
-<!-- ================= 渐近快判 ================= -->
+<!-- ================= 14.5-14.7 乘积 · 双和 · 渐近 ================= -->
 <section class="ch" id="s5">
-  <div class="ch-head reveal"><span class="no">14.7</span><h2>渐近记号快判</h2><span class="en">Asymptotic Notation</span></div>
+  <div class="ch-head reveal"><span class="no">14.5–7</span><h2>乘积、Stirling 与渐近记号</h2><span class="en">Products · Stirling · Asymptotics</span></div>
   <div class="reveal">
-    <p><span class="term">渐近相等 f ~ g</span>：lim f(x)/g(x) = 1。Hₙ ~ ln n（欧拉常数 γ 与 ε(n) 都被 ~ 吸收——注意 Hₙ ~ ln n + γ 写法不对，常数被 ~ 的定义吞掉）。Big-O 与家族成员在算法分析中的正式登场。四道快判：</p>
+    <h3 class="sub"><span class="tag">14.5</span>乘积：取对数变求和</h3>
+    <p>乘积不需要新工具——取对数就变求和：<b>ln(n!) = Σᵢ₌₁ⁿ ln i</b>。对它用积分包围（∫ln x dx = x ln x − x + 1），再指数回去，得 nⁿ/eⁿ⁻¹ ≤ n! ≤ nⁿ⁺¹/eⁿ⁻¹（式 14.23）。最常用的是 <span class="term">Stirling 公式（定理 14.5.1）</span>：</p>
+    <div class="eq math">n! ~ √(2πn)·(n/e)ⁿ　　（n≥10 误差 &lt;1%，n≥100 误差 &lt;0.1%）</div>
+    <p>π 和 e 居然同时出现在 n! 的渐近式里——谁能想到。</p>
+  </div>
+
+  <!-- 互动⑦ Stirling 实验台 -->
+  <div class="widget reveal" id="w-stir">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🎰 Stirling 近似实验台：误差被定理焊死</h4>
+    <p class="wdesc">拖动 n：橙条是实测相对误差 |n! − 近似|/n!（对数尺度），蓝区是定理 14.5.1 的保证区间 [0, 1/(12n)]。原书 Table 14.1：n≥10 实测必进 1%，n≥100 进 0.1%。</p>
+    <input type="range" id="st-n" min="1" max="200" value="10" />
+    <div class="small muted">n = <b id="st-nl" style="font-family:var(--mono)">10</b> · n! = <b id="st-fact" style="font-family:var(--mono)">—</b> · √(2πn)(n/e)ⁿ = <b id="st-approx" style="font-family:var(--mono)">—</b></div>
+    <div class="st-bar">
+      <div class="bar" id="st-bar"></div>
+      <div class="cap" id="st-cap"></div>
+    </div>
+    <div class="fb info" id="st-fb" style="display:block"></div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">14.6</span>Double Trouble：双重求和</h3>
+    <p>和的和听起来吓人，常规操作是"先算内和、换闭式，再算外和"；没有现成闭式时还有一招<span class="term">交换求和次序</span>。经典战例：Σₖ₌₁ⁿ Hₖ 写成三角形表格（第 k 行是 1, 1/2, …, 1/k），按列而不是按行加，立得</p>
+    <div class="eq math">Σₖ₌₁ⁿ Hₖ = (n+1)Hₙ − n　　（式 14.27）</div>
+    <p>这条结论并入了下面的渐近自测题。</p>
+    <h3 class="sub"><span class="tag">14.7</span>渐近记号</h3>
+    <p><span class="term">渐近相等 f ~ g</span>：lim f(x)/g(x) = 1。Hₙ ~ ln n（欧拉常数 γ 与 ε(n) 都被 ~ 吸收——注意 Hₙ ~ ln n + γ 写法不对，常数被 ~ 的定义吞掉）。<span class="term">小 o</span>：f=o(g) ⟺ f/g→0（幂次镇压：xᵃ=o(xᵇ) 当 a&lt;b；log x = o(xᵉ)；xᵇ=o(aˣ) 当 a&gt;1）。<span class="term">Big-O</span>：比值 limsup 有限（等价定义：存在 c 与 x₀ 使 |f|≤c·g 对 x≥x₀）。<span class="term">Θ</span>：互为 Big-O。四道快判热身：</p>
   </div>
 
   <!-- 互动⑤ 渐近快判 -->
@@ -319,11 +402,39 @@ footer p{margin:6px 0}
   </div>
 </section>
 
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Practice Problems, Playable</span></div>
+  <div class="reveal">
+    <p>两道原书 Practice Problem 做成解题器。</p>
+  </div>
+
+  <!-- 习题 14.17 家族判别 -->
+  <div class="widget reveal" id="w-fam">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">🧬 习题 14.17：渐近家族判别台</h4>
+    <p class="wdesc">原书题目：f(n) = n³。对表中每个 g(n)，判四个关系是否成立（点格子切换 ✓/✗，判满 24 格再判定）。提示：算 g/f 或 f/g 的极限（或 limsup）。</p>
+    <div class="famwrap"><table class="fam" id="fam-table"></table></div>
+    <div style="margin-top:10px"><button class="btn primary" id="fam-check">判定</button> <button class="btn ghost" id="fam-reset">重来</button></div>
+    <div class="fb" id="fam-fb"></div>
+  </div>
+
+  <!-- 习题 14.16 -->
+  <div class="widget reveal" id="w-p1416">
+    <span class="pill">互动 ⑨</span>
+    <h4 class="wtitle">🔢 习题 14.16：最小指数判敛器</h4>
+    <p class="wdesc">原书题目：对每个 f(x)，找出使 f(x) = O(xⁿ) 成立的<b>最小非负整数 n</b>——若不存在（指数函数碾压一切多项式）选"无"。</p>
+    <div id="p16-list"></div>
+    <div style="margin-top:10px"><button class="btn primary" id="p16-check">七题全判</button></div>
+    <div class="fb" id="p16-fb"></div>
+  </div>
+</section>
+
 <!-- ================= 终局自测 ================= -->
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 14.1–14.7。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -379,7 +490,7 @@ footer p{margin:6px 0}
     <button class="close" id="toc-close">×</button>
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
     <a href="#s1">14.1 · 年金与几何级数</a><a href="#s2">14.2 · 幂和与 Gauss</a><a href="#s3">14.3 · 积分包围近似</a>
-    <a href="#s4">14.4 · 书堆悬挑与调和数</a><a href="#s5">14.7 · 渐近记号快判</a>
+    <a href="#s4">14.4 · 书堆悬挑与调和数</a><a href="#s5">14.5–7 · 乘积 · 双和 · 渐近</a><a href="#sp">⚔️ · 习题实战</a>
     <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
@@ -594,6 +705,183 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   });
 })();
 
+/* ---------- 互动⑥ 幂和工坊 ---------- */
+(() => {
+  const TRUE = [0, 1, 5, 14, 30, 55]; // Σi², n=0..5
+  const parseFrac = s => {
+    s = (s || "").trim().replace("／", "/");
+    if (!s) return NaN;
+    const m = s.match(/^(-?\d+(?:\.\d+)?)\s*\/\s*(-?\d+(?:\.\d+)?)$/);
+    if (m) return +m[1] / +m[2];
+    const v = +s;
+    return Number.isFinite(v) ? v : NaN;
+  };
+  function draw(co){
+    const tbl = $("#pw-table");
+    let html = `<tr><th>n</th><th>预测 an³+bn²+cn+d</th><th>真值 Σi²</th><th>判定</th></tr>`;
+    TRUE.forEach((tv, n) => {
+      const pv = co.a * n ** 3 + co.b * n ** 2 + co.c * n + co.d;
+      const ok = Number.isFinite(pv) && Math.abs(pv - tv) < 1e-9;
+      html += `<tr><td>${n}</td><td class="${ok ? "hit" : "miss"}">${Number.isFinite(pv) ? +pv.toFixed(4) : "—"}</td><td>${tv}</td><td>${ok ? "✓" : "✗"}</td></tr>`;
+    });
+    tbl.innerHTML = html;
+  }
+  function check(){
+    const co = {a: parseFrac($("#pw-a").value), b: parseFrac($("#pw-b").value), c: parseFrac($("#pw-c").value), d: parseFrac($("#pw-d").value)};
+    const fb = $("#pw-fb");
+    if ([co.a, co.b, co.c, co.d].some(v => !Number.isFinite(v))) {
+      fb.className = "fb no"; fb.textContent = "四个系数都填上（支持分数，如 1/3）。"; draw(co); return;
+    }
+    draw(co);
+    const ok = TRUE.every((tv, n) => Math.abs(co.a * n ** 3 + co.b * n ** 2 + co.c * n + co.d - tv) < 1e-9);
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = ok
+      ? "🎯 全中！a=1/3, b=1/2, c=1/6, d=0 —— 正是原书方程组（n=0: 0=d；n=1: 1=a+b+c+d；n=2: 5=8a+4b+2c+d；n=3: 14=27a+9b+3c+d）的解，Σi² = n³/3+n²/2+n/6 = (2n+1)(n+1)n/6（式 14.14）。别忘了 Be careful 框：回头用归纳证明它！"
+      : "有格子没命中（红）。n=0 直接给 d=0；再用 n=1、2、3 三条方程联立。也可以直接点'看原书的解'。";
+  }
+  $("#pw-check").addEventListener("click", check);
+  $("#pw-ans").addEventListener("click", () => {
+    $("#pw-a").value = "1/3"; $("#pw-b").value = "1/2"; $("#pw-c").value = "1/6"; $("#pw-d").value = "0";
+    check();
+  });
+  ["pw-a","pw-b","pw-c","pw-d"].forEach(id => $("#" + id).addEventListener("keydown", e => { if (e.key === "Enter") check(); }));
+  draw({a:0,b:0,c:0,d:0});
+})();
+
+/* ---------- 互动⑦ Stirling 实验台 ---------- */
+(() => {
+  const slider = $("#st-n");
+  const sci = ln => {
+    if (!Number.isFinite(ln)) return "—";
+    const e10 = ln / Math.LN10;
+    const exp = Math.floor(e10), man = Math.pow(10, e10 - exp);
+    return man.toFixed(3) + "e" + exp;
+  };
+  function upd(){
+    const n = +slider.value;
+    $("#st-nl").textContent = n;
+    let lnFact = 0;
+    for (let i = 2; i <= n; i++) lnFact += Math.log(i);
+    const lnApprox = 0.5 * Math.log(2 * Math.PI * n) + n * (Math.log(n) - 1);
+    $("#st-fact").textContent = n <= 20 ? (lnFact > 0 ? sci(lnFact) : "1") : sci(lnFact);
+    $("#st-approx").textContent = sci(lnApprox);
+    const relErr = Math.abs(Math.exp(lnFact - lnApprox) - 1);
+    const bound = 1 / (12 * n);
+    const ratio = Math.min(relErr / bound, 1);
+    $("#st-bar").innerHTML = `<i style="left:0;width:${(ratio * 100).toFixed(1)}%"></i>`;
+    const pct = e => e < 0.001 ? (e * 100).toExponential(2) + "%" : (e * 100).toFixed(2) + "%";
+    $("#st-cap").textContent = `实测相对误差 ${pct(relErr)} ｜ 定理 14.5.1 保证上界 1/(12n) = ${pct(bound)} ｜ 橙条 = 实测占保证区的比例`;
+    const fb = $("#st-fb");
+    if (relErr <= bound) {
+      fb.className = "fb ok";
+      fb.innerHTML = `✅ 实测误差 ${pct(relErr)} 落在保证区间内。对照原书 Table 14.1：n ≥ 10 时近似误差 &lt; 1%，n ≥ 100 时 &lt; 0.1% —— 现在亲眼看到了。`;
+    } else {
+      fb.className = "fb info";
+      fb.innerHTML = `n = ${n} 还小，实测 ${pct(relErr)} 暂超 1/(12n)？不可能——检查一下：保证式是 ε(n) ≤ 1/(12n)（相对形式），把 n 拖大，橙条会一路缩进保证区。`;
+    }
+  }
+  slider.addEventListener("input", upd);
+  upd();
+})();
+
+/* ---------- 互动⑧ 习题 14.17 家族判别 ---------- */
+(() => {
+  const RELS = ["f = O(g)", "f = o(g)", "g = O(f)", "g = o(f)"];
+  // T/F 对照原书习题 14.17，f = n³
+  const GS = [
+    { g: "6 − 5n − 4n² + 3n⁴", ans: [true, true, false, false],
+      why: "g ~ 3n⁴ 高过 n³：f=O(g)✓ 且 f=o(g)✓（比值→0）；反向都不成立。" },
+    { g: "n³ log n", ans: [true, true, false, false],
+      why: "f/g = 1/log n → 0 ⇒ f=o(g)✓、f=O(g)✓；g/f = log n → ∞ ⇒ 反向皆否。" },
+    { g: "(sin(πn/2) + 2)·n³", ans: [true, false, true, false],
+      why: "g ∈ [n³, 3n³] 振荡：f/g ∈ [1/3, 1]——limsup 有限 ⇒ 两个 O 都✓；但比值不趋于 0 也不趋于 ∞ ⇒ 两个 o 都✗。" },
+    { g: "n^(sin(πn/2)+2)", ans: [false, false, true, true],
+      why: "指数 sin(πn/2)+2 ∈ [1,3]−{~}：g ∈ [2+1/n, n+2] ≤ n+2。g/f ≤ (n+2)/n³ → 0 ⇒ g=o(f)✓、g=O(f)✓；f/g 当 g≈3 时 → ∞ ⇒ f≠O(g)。" },
+    { g: "log n!", ans: [false, false, true, true],
+      why: "log n! ~ n log n（Stirling 取对数）= o(n³) ⇒ g=o(f)✓、g=O(f)✓；f/g ~ n/log n → ∞ ⇒ 反向皆否。" },
+    { g: "e^{0.2n} − 100n³", ans: [true, true, false, false],
+      why: "指数碾压多项式（Corollary 14.7.4 的镜像）：f/g → 0 ⇒ f=o(g)✓、f=O(g)✓。" },
+  ];
+  const tbl = $("#fam-table");
+  let head = `<tr><th style="text-align:left">g(n)</th>` + RELS.map(r => `<th>${r}</th>`).join("") + `</tr>`;
+  tbl.innerHTML = head;
+  const cells = [];
+  GS.forEach((row, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td class="g">${row.g}</td>`;
+    row.ans.forEach((_, j) => {
+      const td = document.createElement("td");
+      td.className = "p"; td.textContent = "?";
+      td.addEventListener("click", () => {
+        td.textContent = td.textContent === "✓" ? "✗" : td.textContent === "✗" ? "?" : "✓";
+        td.classList.toggle("T", td.textContent === "✓");
+        td.classList.toggle("F", td.textContent === "✗");
+      });
+      tr.appendChild(td); cells.push(td);
+    });
+    tbl.appendChild(tr);
+  });
+  $("#fam-check").addEventListener("click", () => {
+    const fb = $("#fam-fb");
+    if (cells.some(c => c.textContent === "?")) { fb.className = "fb no"; fb.textContent = "先把 24 个 '?' 全部点成 ✓ 或 ✗。"; return; }
+    let idx = 0, all = true; const badRows = new Set();
+    GS.forEach((row, i) => row.ans.forEach((a, j) => {
+      const td = cells[idx++];
+      const ok = (td.textContent === "✓") === a;
+      td.classList.toggle("good", ok); td.classList.toggle("wrong", !ok);
+      if (!ok) { all = false; badRows.add(i); }
+    }));
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.innerHTML = all
+      ? "🎯 24 格全对！" + GS.map((r, i) => `<br><b>${i+1}.</b> ${r.why}`).join("")
+      : "有判错的格子（红）。逐行提示：" + GS.map((r, i) => `<br><b>${i+1}.</b> ${r.why}`).join("");
+  });
+  $("#fam-reset").addEventListener("click", () => {
+    cells.forEach(c => { c.textContent = "?"; c.classList.remove("T","F","good","wrong"); });
+    $("#fam-fb").className = "fb";
+  });
+})();
+
+/* ---------- 互动⑨ 习题 14.16 ---------- */
+(() => {
+  const QS = [
+    { f: "2x³ + (log x)·x²", ans: "3", why: "log x·x² = o(x³)（log x = o(x)），被 x³ 吸收 ⇒ O(x³)，最小 n = 3。" },
+    { f: "2x² + (log x)·x³", ans: "3", why: "主导项 (log x)x³ 不是 O(x²)（比值 = log x → ∞），但显然 O(x³) ⇒ n = 3。" },
+    { f: "(1.1)ˣ", ans: "none", why: "指数函数不被任何多项式控制（xᵇ = o(aˣ)，Corollary 14.7.4）——不存在这样的 n。" },
+    { f: "(0.1)ˣ", ans: "0", why: "递减趋 0 ⇒ 有界 ⇒ O(1)，最小 n = 0。" },
+    { f: "(x⁴ + x² + 1)/(x³ + 1)", ans: "1", why: "分子 ~ x⁴、分母 ~ x³，比值 ~ x ⇒ O(x) 且不为 O(1) ⇒ n = 1。" },
+    { f: "(x⁴ + 5 log x)/(x⁴ + 1)", ans: "0", why: "比值 → 1 ⇒ 有界 ⇒ O(1)，最小 n = 0。" },
+    { f: "2^(3 log₂ x⁵)", ans: "15", why: "3·log₂x⁵ = 15 log₂ x，故 2^(15 log₂ x) = x¹⁵ ⇒ n = 15。" },
+  ];
+  const list = $("#p16-list");
+  QS.forEach((q, i) => {
+    const row = document.createElement("div");
+    row.className = "qc-row";
+    let opts = `<select data-i="${i}" style="border:1.5px solid var(--line);border-radius:9px;padding:6px 8px;font-family:var(--mono);font-size:14px;background:#fff"><option value="">n = ?</option>`;
+    for (let k = 0; k <= 15; k++) opts += `<option value="${k}">${k}</option>`;
+    opts += `<option value="none">不存在</option></select>`;
+    row.innerHTML = `<div class="stmt math">(${String.fromCharCode(97 + i)}) f(x) = ${q.f}</div><div>${opts}</div><div class="verdict"></div>`;
+    list.appendChild(row);
+  });
+  $("#p16-check").addEventListener("click", () => {
+    const fb = $("#p16-fb");
+    const sels = $$("#p16-list select");
+    if (sels.some(s => !s.value)) { fb.className = "fb no"; fb.textContent = "七题都选完再判定。"; return; }
+    let all = true;
+    QS.forEach((q, i) => {
+      const ok = sels[i].value === q.ans;
+      const tr = sels[i].closest(".qc-row");
+      tr.classList.toggle("done", true);
+      const vd = $(".verdict", tr);
+      vd.className = "verdict show";
+      vd.innerHTML = (ok ? "✅ " : "❌ 正确答案 " + (q.ans === "none" ? "不存在" : q.ans) + "。") + q.why;
+      if (!ok) all = false;
+    });
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.textContent = all ? "🎯 七题全对！最小指数 = 主导项的次数（记得 log 因子不升级、指数函数直接出局）。" : "有答错的——每题下方已给理由。";
+  });
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -633,15 +921,33 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"约等于最大项的两倍：和 = 2ⁿ − 1", ok:true, fb:"对（式 14.9）。公比 2 的几何递增和总约等于最大项的两倍。"},
        {t:"恰好等于最大项", ok:false, fb:"差一个最大项减一的量。"},
        {t:"无法计算——没有闭式", ok:false, fb:"几何和的闭式早就有了（式 14.2）。"}]},
+    {q:"Stirling 公式：n! ~ ？",
+     opts:[
+       {t:"nⁿ/eⁿ", ok:false, fb:"少了 √(2πn) 因子——那是积分包围给出的粗糙版（式 14.23）。"},
+       {t:"√(2πn)·(n/e)ⁿ", ok:true, fb:"对（定理 14.5.1）。π 与 e 同时现身；n≥10 误差 <1%，n≥100 <0.1%（Table 14.1）。"},
+       {t:"nⁿ", ok:false, fb:"过大——除以 eⁿ 才对。"},
+       {t:"2ⁿ", ok:false, fb:"量级都不对：n! 增长远快于 2ⁿ。"}]},
+    {q:"（式 14.27，交换求和次序）Σₖ₌₁ⁿ Hₖ = ？",
+     opts:[
+       {t:"n·Hₙ", ok:false, fb:"差两项——按列求和时每列 1/j 出现 (n−j+1) 次。"},
+       {t:"(n+1)Hₙ − n", ok:true, fb:"对。把 ΣHₖ 排成三角形按列加：Σⱼ (1/j)(n−j+1) = (n+1)Hₙ − n。"},
+       {t:"H₂ₙ − Hₙ", ok:false, fb:"那是 Σ 1/(n+j) 型望远镜的结果，与本题无关。"},
+       {t:"n²/2", ok:false, fb:"量级碰巧相近（~½n²+½n ln n），但精确闭式是 (n+1)Hₙ − n。"}]},
+    {q:"假定理 14.7.14 的'证明'（Σi = O(1)+O(1)+⋯+O(1) = O(n)）错在？",
+     opts:[
+       {t:"O(1) 相加不合法", ok:false, fb:"有限个 Big-O 相加是合法的——问题是这里的项数随 n 增长。"},
+       {t:"i 不是常数，i = O(1) 里的 c 无法统一", ok:true, fb:"对。对每个固定的 i 确实有 i=O(1)，但 n 个非常数项各有各的常数，没有统一的 c 能盖住 Σi = n(n+1)/2。Big-O 不能'边加边丢'增长中的项。"},
+       {t:"Σi 的正确答案其实是 O(n)", ok:false, fb:"Σi = n(n+1)/2 = Θ(n²)，不是 O(n)。"},
+       {t:"应改用 Ω 而不是 O", ok:false, fb:"符号选择不是问题所在——证明把随 n 增长的项当成了常数。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["📈 渐近分析师", "闭式、扰动、积分包围、调和数、~ 记号——算法分析的数学语言安装完毕。下一章计数规则：组合数学正式登场。"]
-      : right >= 3 ? ["💰 年金精算员", "几何级数已掌握——积分包围与 ~ 的精确定义回看 14.3 与 14.4.3。"]
+    const [rank, note] = right >= 7 ? ["📈 渐近分析师", "闭式、扰动、积分包围、调和数、Stirling、~ 记号——算法分析的数学语言安装完毕。下一章计数规则：组合数学正式登场。"]
+      : right >= 4 ? ["💰 年金精算员", "几何级数已掌握——积分包围与 ~ 的精确定义回看 14.3 与 14.4.3。"]
       : ["🌱 求和新丁", "先玩扰动法：S 与 xS 相减的'大规模抵消'是本章一切魔法的原型。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){

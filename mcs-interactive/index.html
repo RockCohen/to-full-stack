@@ -6,11 +6,12 @@
 <title>数学之旅 · 交互证明讲义 — 格致</title>
 <meta name="description" content="把 MIT《Mathematics for Computer Science》全书 22 章逐章做成可玩的中文交互网页：从"什么是证明"与良序原理，到 RSA、PageRank 与递归式，100+ 互动装置，已全部上线 · rockcohen.cc/mcs。">
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --ink:#1d1d1f; --sub:#6e6e73; --gray:#86868b;
   --hair:rgba(0,0,0,.08); --bg:#fbfbfd; --card:#fff;
-  --blue:#0071e3;
+  --blue:#2f6fdb;
   --paper:#f7f4ee; --accent:#0f4c81; --amber:#b4832a;
 }
 *{box-sizing:border-box}
@@ -63,16 +64,24 @@ footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--hair);
 footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
 @media (max-width:980px){ .grid{grid-template-columns:1fr} .card{grid-column:auto} }
 @media (max-width:640px){ body{font-size:16px} .card p{font-size:15px} h1{font-size:30px} }
+/* 门禁 v1.1：hero 极光化（左对齐变体，套玻璃卡） */
+.hero.aurora{display:block;margin:26px 0 0;padding:52px 40px 42px;
+  border:1px solid var(--glass-border);border-radius:20px;box-shadow:var(--shadow-glass)}
+@media (max-width:640px){ .hero.aurora{padding:36px 24px 30px} }
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="/">主站</a><a href="/paper/">论文精读</a><a href="/maoxuan/">毛选研读</a></div>
+</div></nav>
 <div class="wrap">
   <nav class="topbar">
     <span class="brand"><a href="/" style="color:inherit;text-decoration:none">格致</a> · 数学之旅</span>
     <span class="links"><a href="/">← 格致首页</a><a href="https://github.com/RockCohen">GitHub</a></span>
   </nav>
 
-  <header class="hero">
+  <header class="hero aurora">
     <div class="kicker">数学之旅 · 交互证明讲义 — 源自 MIT 6.042《Mathematics for Computer Science》</div>
     <h1>证明，可以亲手玩。</h1>
     <p class="lead">把 MIT 6.042 讲义逐章译写成可玩的中文交互网页：每个装置都是一次"格物"——拖一拖、判一判、审一审，证明就长在你自己手里。</p>
@@ -91,8 +100,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Recurrences · 全书终章</div>
       </div>
       <div class="body">
-        <p>Plug-and-Chug 机器（汉诺塔 2ⁿ−1 与 Merge Sort 逐行展开）、归并排序演练台（比较次数 vs n log n − n + 1）、特征方程求解器（爬楼梯爬出 Fibonacci）、Akra-Bazzi 试算器。全书 22 章至此装配完毕。</p>
-        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
+        <p>Plug-and-Chug 机器（汉诺塔 2ⁿ−1 与 Merge Sort 逐行展开）、归并排序演练台（比较次数 vs n log n − n + 1）、特征方程求解器（爬楼梯爬出 Fibonacci）、上界陷阱实验台、爬楼梯枚举器、闭式核查器、Akra-Bazzi 试算器。全书 22 章至此装配完毕。</p>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 70 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch21.html">
@@ -102,8 +111,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Random Walks · Part IV 收官</div>
       </div>
       <div class="body">
-        <p>赌徒破产模拟器（n/T 与轮盘 1/37,648 对拍蒙特卡洛）、轮盘胜率阶梯（本钱 50 亿也救不了你）、期望局长 n(T−n)、PageRank 实验台（杀页面、调传送概率、看稳态洗牌）。</p>
-        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
+        <p>赌徒破产模拟器（n/T 与轮盘 1/37,648 对拍蒙特卡洛）、轮盘胜率阶梯（本钱 50 亿也救不了你）、局长分布直方图（均值 vs 中位数）、无界破产剧场（概率 1 输光、期望却是 ∞）、PageRank 实验台与稳态小剧场。</p>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 65 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch20.html">
@@ -114,7 +123,7 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
       </div>
       <div class="body">
         <p>期望 $1 的两场赌局方差差一百万倍：方差对比器（Game B 拉满看 σ 爆表）、IQ 侦探三条界围捕正态尾巴（1/3 → 1/178）、生日配对分布仪 2000 班对拍、民调样本量 3125 实测验证、Chernoff 计算器三界对比。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 70 分钟</span></div>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 70 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch19.html">
@@ -125,7 +134,7 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
       </div>
       <div class="body">
         <p>信封猜数对上赌桌也必胜过半（可玩验证）、二项尾巴观测台、分池对赌串通模拟（公平 → 每局 −$0.50）、帽子问题期望恒为 1、优惠券收集 nHₙ 蒙特卡洛对拍。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch18.html">
@@ -136,7 +145,7 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
       </div>
       <div class="body">
         <p>95% 准确率的检测阳性后只有 15.4% 可信：检测器实验台三参数随便拨、贝叶斯因子更新器连阳翻案（×100 压不过 1:9999）、辛普森悖论实验台亲手凑数、三硬币 pairwise ✓ mutual ✗ 验证器。</p>
-        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch17.html">
@@ -146,8 +155,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Events and Probability Spaces · Part IV 开篇</div>
       </div>
       <div class="body">
-        <p>四步法处决蒙提霍尔错觉（树表 12 行逐行加权）、换门蒙特卡洛法庭（万局收敛 2/3）、非传递怪骰子对决台（掷一次 5/9 绕圈，掷两次整体翻转）、生日碰撞曲线（27 人过 0.63）、先手优势几何级数 2/3。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
+        <p>四步法处决蒙提霍尔错觉（树表 12 行逐行加权）、换门蒙特卡洛法庭、非传递怪骰子（掷两次整体翻转 + 81 格均匀空间直方图）、生日碰撞曲线、Union Bound 体检台、四门三策略（习题 17.5）。</p>
+        <div class="row"><span class="tag">8 个装置</span><span class="tag">⏱ 约 70 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch16.html">
@@ -157,8 +166,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Generating Functions · Part III 收官</div>
       </div>
       <div class="body">
-        <p>把数列穿在身上做代数：水果袋约束实验室（四条刁钻约束乘出 n+1 的 "Amazing!" 时刻）、卷积对角线观测台、换零钱实验室（50 美分 50 种）、Binet 公式验证器、斐波那契/河内塔递推步进求解。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
+        <p>把数列穿在身上做代数：水果袋约束实验室（四条刁钻约束乘出 n+1 的 "Amazing!" 时刻）、卷积对角线观测台、换零钱实验室（50 美分 50 种）、[xⁿ] 系数提取器、部分分式拆解器（三预设闭式与级数逐项对拍）、幂级数环实验台、Binet 公式验证器、递推步进求解。</p>
+        <div class="row"><span class="tag">9 个装置</span><span class="tag">⏱ 约 65 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch15.html">
@@ -168,8 +177,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Cardinality Rules</div>
       </div>
       <div class="body">
-        <p>六把尺子配齐：牌照 Sum×Product 连击、Bookkeeper 计数器（试试你的名字）、扑克牌型计数器（两对的 2-to-1 陷阱名场面）、五张牌魔术解码台（鸽笼+排列编码，不需要读心）、容斥文氏图。</p>
-        <div class="row"><span class="tag">6 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
+        <p>六把尺子配齐再加三件套：牌照 Sum×Product 连击、扑克 2-to-1 陷阱名场面、五张牌魔术解码台、缺陷钞票模拟器、圆桌折叠剧场、组合证明三幕、容斥文氏图。</p>
+        <div class="row"><span class="tag">10 个装置</span><span class="tag">⏱ 约 70 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch14.html">
@@ -179,8 +188,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Sums &amp; Asymptotics · Part III 开篇</div>
       </div>
       <div class="body">
-        <p>百万彩票现值只有半百万；227 本书才能悬出桌沿 3 本书长。年金计算器、扰动法步进器（中间项成对湮灭）、积分包围实验台、书堆悬挑 Hₙ/2 模拟、渐近记号快判——算法分析的数学语言开箱。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 45 分钟</span></div>
+        <p>百万彩票现值只有半百万；227 本书才能悬出桌沿 3 本书长。年金计算器、扰动法步进器、积分包围、幂和工坊、Stirling 近似实验台、渐近家族判别台——算法分析的数学语言开箱。</p>
+        <div class="row"><span class="tag">9 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch13.html">
@@ -190,8 +199,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Planar Graphs</div>
       </div>
       <div class="body">
-        <p>狗屋与 quadrapu 之谜的图论处决：欧拉公式 v−e+f=2 实验室、边数上界 e≤3v−6 检验器、五色定理步进剧场、正多面体只有五种的穷举表。Part II 图论三部曲收官。</p>
-        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
+        <p>K₃,₃ 与 K₅ 的双重审判：欧拉公式实验室、离散面清点器、嵌入面账本、五色定理步进、正多面体只有五种、Kuratowski minor 六步工坊——Part II 图论收官。</p>
+        <div class="row"><span class="tag">8 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch12.html">
@@ -237,8 +246,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Number Theory · Part II 开篇</div>
       </div>
       <div class="body">
-        <p>水壶终审判决、欧几里得算法与 Pulverizer、模算术、欧拉定理，以及完整的 RSA Playground——选素数、发密文、解密还原，亲手走一遍保护着互联网的数学。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 50 分钟</span></div>
+        <p>水壶终审判决、欧几里得算法与 Pulverizer、素数定理实验台、唯一分解器、Alan Turing 与图灵密码 1.0（一次 gcd 当场破产）、幂模循环引擎、欧拉定理，以及完整的 RSA Playground——亲手走一遍保护着互联网的数学。</p>
+        <div class="row"><span class="tag">9 个装置</span><span class="tag">⏱ 约 70 分钟</span></div>
       </div>
     </a>
 
@@ -249,8 +258,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Infinite Sets · 第一部分收官</div>
       </div>
       <div class="body">
-        <p>Cantor 对角论证剧场（揪出漏网之串）、无限旅馆、停机悖论五步引爆、Russell 悖论与 ZFC——证明 pow(ℕ) 与 ℝ 不可数，证明完美的程序分析器逻辑上不可能。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
+        <p>Cantor 对角论证剧场（揪出漏网之串）、无限旅馆、停机悖论五步引爆、对角子集构造器（亲手推出 A strict pow(A)）、ZFC 集合资格审判庭——证明 pow(ℕ) 与 ℝ 不可数，证明完美的程序分析器逻辑上不可能。</p>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 50 分钟</span></div>
       </div>
     </a>
     <a class="card" href="ch07.html">
@@ -260,8 +269,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">Recursive Data Types</div>
       </div>
       <div class="body">
-        <p>RecMatch 括号构造器、病态递归定义展览馆（含悬而未决的 Collatz）、Aexp 替换模型 vs 环境模型对赌——编译器按结构归纳过日子，这里给你看底牌。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 35 分钟</span></div>
+        <p>RecMatch 括号构造器、病态递归定义展览馆（含悬而未决的 Collatz）、Aexp 替换模型 vs 环境模型对赌、OBT 亲手造（展开叶子验 l = n+1）——编译器按结构归纳过日子，这里给你看底牌。</p>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 45 分钟</span></div>
       </div>
     </a>
 
@@ -272,8 +281,8 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
         <div class="en">State Machines</div>
       </div>
       <div class="body">
-        <p>对角机器人永远到不了 (1,0)？9 加仑壶永远量不出 4 加仑？不变量原理一次说清。含 Die Hard 水壶模拟器、快速幂单步机、稳定婚姻 Mating Ritual 单步模拟（男士最优定理亲手验证）。</p>
-        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 45 分钟</span></div>
+        <p>99 计数器（状态、转移与可达性）、对角机器人永远到不了 (1,0)？9 加仑壶永远量不出 4 加仑？不变量原理一次说清。含 Die Hard 水壶模拟器、快速幂单步机、稳定婚姻 Mating Ritual 单步模拟（男士最优定理亲手验证）。</p>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
       </div>
     </a>
 
@@ -285,7 +294,7 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
       </div>
       <div class="body">
         <p>糖果多米诺、归纳版模板拼图、同色马悬案（链条断在 P(1)→P(2)）、强/普通归纳选型、堆叠游戏——任意拆法总分恒为 n(n−1)/2，你的策略无关紧要。</p>
-        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
+        <div class="row"><span class="tag">8 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
       </div>
     </a>
 
@@ -297,7 +306,7 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
       </div>
       <div class="body">
         <p>集合、序列、函数、关系、基数——程序员的类型系统在数学里的原形。集合运算法官、幂集发电站、亲手连箭头的关系五性质鉴定器、映射规则实验室。</p>
-        <div class="row"><span class="tag">6 个装置</span><span class="tag">⏱ 约 35 分钟</span></div>
+        <div class="row"><span class="tag">8 个装置</span><span class="tag">⏱ 约 35 分钟</span></div>
       </div>
     </a>
 
@@ -350,6 +359,7 @@ footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
     <span>格致 · rockcohen.cc</span>
     <span><a href="https://github.com/RockCohen">GitHub</a></span>
     <span><a href="/">← 返回首页</a></span>
+    <span>引用皆可回原文 · 数据皆可复现</span>
   </footer>
 </div>
 </body>

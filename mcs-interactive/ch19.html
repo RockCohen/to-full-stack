@@ -6,6 +6,7 @@
 <title>随机变量与期望 · 数学之旅第十九章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 19 章的中文交互式解读：随机变量、PDF/CDF、信封猜数必胜策略、二项分布、期望与线性性、均故障时间、分池对赌与优惠券收集问题。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -159,9 +160,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -175,7 +182,7 @@ footer p{margin:6px 0}
     <div class="en">Random Variables &amp; Great Expectations</div>
     <p class="lead">两个信封里装着敌人挑的数，只许偷看一个——你仍有必胜过半的策略。三人对赌猜硬币看似公平，两人串通后你的期望回报悄悄变成 −$0.50。线性期望不需要独立性：n 个人拿帽子，平均恰好 1 人拿对，无论 n 多大。</p>
     <div class="meta">
-      <span>⏱ 约 60 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 799–828 页</span>
+      <span>⏱ 约 70 分钟</span><span>🧩 7 个互动装置</span><span>📖 原书第 799–828 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch18.html">上一章：条件概率</a></div>
@@ -215,6 +222,28 @@ footer p{margin:6px 0}
     <div class="box rule"><span class="label">定义 19.3.1</span>
       <p style="margin:4px 0">PDF_R(x) = Pr[R=x]；CDF_R(x) = Pr[R ≤ x]（左侧阶梯累加）。两枚骰子和的 PDF 是 2..12 上的金字塔（7 最可能 6/36），CDF 是爬向 1 的阶梯。PDF/CDF 完全确定"行为"——不同样本空间上的随机变量可以同分布。</p></div>
     <p>CS 三大常用分布：<span class="term">Bernoulli</span>（0/1，f_p(0)=p、f_p(1)=1−p）、<span class="term">Uniform</span>（n 个值各 1/n）、<span class="term">Binomial</span>（下一节）。还有无处不在的 randomized algorithms：Ethernet 的指数退避、quicksort 的随机主元——随机性是性能工具，不是缺陷。</p>
+  </div>
+
+  <!-- 互动⑥ PDF/CDF 联动 -->
+  <div class="widget reveal" id="w-pcdf">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">📐 PDF/CDF 联动器：同一分布的两种读法</h4>
+    <div class="num-row">
+      <select id="pc-dist" style="font-family:var(--mono);padding:6px 10px;border-radius:9px;border:1.5px solid var(--line);font-size:14px;background:#fff">
+        <option value="sum">两骰子和（2..12）</option>
+        <option value="bin">二项 J：n=8, p=1/2</option>
+        <option value="uni">均匀 U：{1..6}</option>
+      </select>
+      <label class="small">x = <b id="pc-xl" style="font-family:var(--mono)">7</b></label>
+      <input type="range" id="pc-x" min="0" max="12" value="7" style="width:150px" />
+    </div>
+    <svg class="hist-svg" id="pc-svg" viewBox="0 0 680 240"></svg>
+    <div class="num-row">
+      <div class="statcard">PDF：Pr[R = x] = <b id="pc-pdf">—</b></div>
+      <div class="statcard">CDF：Pr[R ≤ x] = <b id="pc-cdf">—</b></div>
+      <div class="statcard">Ex[R] = <b id="pc-mean">—</b></div>
+    </div>
+    <div class="fb info" id="pc-fb" style="display:block">蓝柱 = PDF（Pr[R=x]），金色阶梯折线 = CDF（Pr[R≤x]）——阶梯每上一级的高度恰是那根柱子。两骰和在 x=7 处：PDF 6/36，CDF 21/36。</div>
   </div>
 </section>
 
@@ -343,13 +372,33 @@ footer p{margin:6px 0}
     <div class="cp-seg" id="cp-segbar"></div>
     <div class="fb info" id="cp-fb" style="display:block">每段 Xₖ = 从拥有 k 种到集到新一种的期望购买数 = n/(n−k)（均故障时间规则的直系亲属）。线性期望把五段一加：n·Hₙ。骰子集齐 6 面 ≈ 14.7 次掷；把 365 个生日"集齐"要 2364.6 人。</div>
   </div>
+
+  <!-- 互动⑦ 条件期望实验台 -->
+  <div class="widget reveal" id="w-cexp">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🎚️ 条件期望实验台：缩小样本空间再平均（19.4.4）</h4>
+    <p class="wdesc">骰子 R（Ex[R] = 3.5）。选一个条件事件 A，看 Ex[R|A] 怎样被"切片"重算；再核对全期望定律：Ex[R] = Ex[R|A]·Pr[A] + Ex[R|Ā]·Pr[Ā]。</p>
+    <div class="num-row">
+      <button class="btn cex primary" data-c="none">无条件</button>
+      <button class="btn cex" data-c="ge4">A：R ≥ 4</button>
+      <button class="btn cex" data-c="even">A：R 为偶</button>
+      <button class="btn cex" data-c="le2">A：R ≤ 2</button>
+    </div>
+    <div class="num-row">
+      <div class="statcard">Ex[R|A] = <b id="cx-val">3.500</b></div>
+      <div class="statcard">Pr[A] = <b id="cx-pa">1.000</b></div>
+      <div class="statcard">全期望核对 = <b id="cx-check">3.500</b> ✓</div>
+      <button class="btn amber" id="cx-1928" style="margin-left:auto">习题 19.28 验证：Σk·pdf = np？</button>
+    </div>
+    <div class="fb info" id="cx-fb" style="display:block">骰子 ≥4 的切片是 {4,5,6}：(4+5+6)/3 = 5——比 3.5 高；反之 R≤2 切片给 1.5。两侧按 Pr 加权恰好拼回 3.5。</div>
+  </div>
 </section>
 
 <!-- ================= 终局自测 ================= -->
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 19.1–19.5。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -619,6 +668,98 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   upd();
 })();
 
+/* ---------- 互动⑥ PDF/CDF 联动 ---------- */
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = $("#pc-svg");
+  const el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const C = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return Math.round(r); };
+  const pdfOf = {
+    sum: (() => { const f = {}; for (let a = 1; a <= 6; a++) for (let b = 1; b <= 6; b++) f[a+b] = (f[a+b]||0) + 1/36; return f; })(),
+    bin: (() => { const f = {}; for (let k = 0; k <= 8; k++) f[k] = C(8,k) / 256; return f; })(),
+    uni: (() => { const f = {}; for (let k = 1; k <= 6; k++) f[k] = 1/6; return f; })(),
+  };
+  const keysOf = d => Object.keys(pdfOf[d]).map(Number).sort((a,b) => a-b);
+  let dist = "sum";
+  function draw(){
+    const x = +$("#pc-x").value;
+    const keys = keysOf(dist), f = pdfOf[dist];
+    $("#pc-xl").textContent = x;
+    const pdf = f[x] || 0;
+    const cdf = keys.filter(k => k <= x).reduce((s, k) => s + f[k], 0);
+    const mean = keys.reduce((s, k) => s + k * f[k], 0);
+    $("#pc-pdf").textContent = pdf.toFixed(4);
+    $("#pc-cdf").textContent = cdf.toFixed(4);
+    $("#pc-mean").textContent = mean.toFixed(3);
+    svg.innerHTML = "";
+    const W = 680, H = 240, L = 40, R = 10, T = 14, B = 26;
+    const kmin = keys[0] - 1, kmax = keys[keys.length-1] + 1;
+    const bw = (W - L - R) / (kmax - kmin);
+    const X = k => L + (k - kmin) * bw;
+    const ymax = Math.max(...Object.values(f)) * 1.25;
+    const Y = y => H - B - y / ymax * (H - T - B);
+    // CDF 阶梯（金）
+    let d = `M ${X(keys[0]-0.5)} ${Y(0)}`;
+    let acc = 0;
+    keys.forEach(k => { acc += f[k]; d += ` L ${X(k+0.5)} ${Y(acc).toFixed(1)}`; });
+    svg.appendChild(el("path", {d, fill:"none", stroke:"#b4832a", "stroke-width":2}));
+    // PDF 柱（蓝，≤x 加深）
+    keys.forEach(k => {
+      svg.appendChild(el("rect", {x: X(k)+2, y: Y(f[k]), width: bw-4, height: H-B-Y(f[k]),
+        fill: k <= x ? "#0f4c81" : "#9db8d2", opacity: k <= x ? .9 : .55}));
+      const t = el("text", {x: X(k)+bw/2, y: H-9, "text-anchor":"middle", "font-size":10, fill:"#6f6a5e"});
+      t.textContent = k; svg.appendChild(t);
+    });
+    // x 竖线
+    svg.appendChild(el("line", {x1: X(x+0.5), y1: T, x2: X(x+0.5), y2: H-B, stroke:"#b3372e", "stroke-width":1, "stroke-dasharray":"3 3"}));
+    const note = el("text", {x: L+6, y: T+4, "font-size": 11, fill: "#6f6a5e"});
+    note.textContent = `蓝柱 PDF · 金阶梯 CDF · 红虚线 = 当前 x（左侧柱全部计入 CDF）`;
+    svg.appendChild(note);
+  }
+  $("#pc-dist").addEventListener("change", e => { dist = e.target.value; draw(); });
+  $("#pc-x").addEventListener("input", draw);
+  draw();
+})();
+
+/* ---------- 互动⑦ 条件期望 ---------- */
+(() => {
+  const C = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return Math.round(r); };
+  const COND = {
+    none: { name: "无条件", keep: () => true },
+    ge4:  { name: "R ≥ 4", keep: r => r >= 4 },
+    even: { name: "R 为偶", keep: r => r % 2 === 0 },
+    le2:  { name: "R ≤ 2", keep: r => r <= 2 },
+  };
+  let cur = "none";
+  function upd(){
+    const keep = COND[cur].keep;
+    const inA = [1,2,3,4,5,6].filter(keep), outA = [1,2,3,4,5,6].filter(r => !keep(r));
+    const avg = arr => arr.reduce((s,r) => s+r, 0) / arr.length;
+    const exA = avg(inA), exNot = outA.length ? avg(outA) : 0, pA = inA.length / 6;
+    $("#cx-val").textContent = exA.toFixed(3);
+    $("#cx-pa").textContent = pA.toFixed(3);
+    $("#cx-check").textContent = (exA*pA + exNot*(1-pA)).toFixed(3);
+    const fb = $("#cx-fb");
+    fb.className = "fb " + (cur === "ge4" ? "ok" : "info");
+    fb.innerHTML = cur === "none"
+      ? "无条件：Ex[R] = (1+2+⋯+6)/6 = 3.5。选一个条件事件开始切片。"
+      : `切片 = {${inA.join(",")}}，Ex[R|A] = (${inA.join("+")})/${inA.length} = <b>${exA.toFixed(3)}</b>。全期望核对：${exA.toFixed(3)}×${pA.toFixed(2)} + ${exNot.toFixed(3)}×${(1-pA).toFixed(2)} = ${(exA*pA+exNot*(1-pA)).toFixed(3)} = Ex[R] ✓（定理 19.4.5）。`;
+  }
+  $$(".cex").forEach(b => b.addEventListener("click", () => {
+    $$(".cex").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary"); cur = b.dataset.c; upd();
+  }));
+  $("#cx-1928").addEventListener("click", () => {
+    const n = 6, p = 1/2;
+    let s = 0;
+    for (let k = 0; k <= n; k++) s += k * C(n,k) * Math.pow(p,k) * Math.pow(1-p, n-k);
+    const fb = $("#cx-fb");
+    fb.className = "fb ok";
+    fb.innerHTML = `习题 19.28 直算：Σₖ k·C(6,k)(½)⁶ = ${s.toFixed(3)} = np = ${n*p} ✓ —— 一行线性期望（二项 = n 个指示变量之和）省掉整个组合求和。`;
+  });
+  upd();
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -658,15 +799,27 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"n·Hₙ ~ n ln n", ok:true, fb:"对（式 19.14）：分段 Xₖ = n/(n−k)，线性期望一加就出 n·Hₙ。骰子 6 面 ≈ 14.7 次。"},
        {t:"n²", ok:false, fb:"过大了——调和数把增长压到 n log n。"},
        {t:"n ln n 仅当各图案均匀分布且独立", ok:false, fb:"均匀独立是题设；公式不额外需要各段独立——线性的功劳。"}]},
+    {q:"条件 Ex[R | R≥4]（R 是公平骰子）等于？",
+     opts:[
+       {t:"3.5——条件不改变期望", ok:false, fb:"切片把样本空间砍成了 {4,5,6}，重新归一化后平均值会动。"},
+       {t:"5：(4+5+6)/3", ok:true, fb:"对（19.4.4 的骰子例）。全期望定律：3.5 = 5·Pr[R≥4] + Ex[R|R<4]·Pr[R<4] = 5·(1/2) + 2·(1/2) ✓。"},
+       {t:"4", ok:false, fb:"4 只是切片里最小的值。"},
+       {t:"6", ok:false, fb:"那是切片里的最大值，不是平均。"}]},
+    {q:"两骰子和 R 的 CDF_​R(6) = ？",
+     opts:[
+       {t:"5/36", ok:false, fb:"那是 PDF_​R(6)——单个值的概率。CDF 要累加到 x。"},
+       {t:"21/36", ok:true, fb:"对。Pr[R≤6] = (1+2+3+4+5+6)/36 = 21/36。CDF 是 PDF 的左侧累加阶梯。"},
+       {t:"1/2", ok:false, fb:"中位在 7 附近（恰为 0.5 的是 CDF(6.5)）——离散分布 CDF 在 6 处还差一点。"},
+       {t:"1", ok:false, fb:"CDF(12) = 1——6 还在半山腰。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🎩 帽子洗净的期望师", "随机变量、分布、期望、线性性全部入袋。下一章把'偏离期望'量化——马尔可夫与切比雪夫不等式登场。"]
-      : right >= 3 ? ["✉️ 信封练手生", "信封与 1/p 已拿下——回看 19.5 线性期望与优惠券收集的分段法。"]
+    const [rank, note] = right >= 7 ? ["🎩 帽子洗净的期望师", "随机变量、分布、期望、条件期望、线性性全部入袋。下一章把'偏离期望'量化——马尔可夫与切比雪夫不等式登场。"]
+      : right >= 4 ? ["✉️ 信封练手生", "信封与 1/p 已拿下——回看 19.5 线性期望与优惠券收集的分段法。"]
       : ["🪙 还在数硬币", "先跑分池模拟器：勾上串通，亲眼看公平变掠夺。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   let i = 0, right = 0;

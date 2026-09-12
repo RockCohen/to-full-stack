@@ -6,6 +6,7 @@
 <title>状态机 · 数学之旅第六章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 6 章的中文交互式解读：状态机、不变量原理、Die Hard 水壶、快速幂与稳定婚姻。7 个互动装置 + 终局自测。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -111,6 +112,20 @@ code{font-family:var(--mono);font-size:.88em;background:#efece4;border-radius:6p
 .score-pill{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;
   padding:4px 14px;font-size:13.5px;font-weight:600;margin-left:8px}
 
+/* 99 计数器 */
+.ctr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(26px,1fr));gap:4px;margin:10px 0}
+.ctr-cell{border:1px solid var(--line);border-radius:6px;background:#fff;text-align:center;
+  font-family:var(--mono);font-size:10.5px;padding:4px 0;cursor:pointer;transition:.12s;user-select:none}
+.ctr-cell:hover{border-color:var(--accent)}
+.ctr-cell.cur{background:var(--accent);color:#fff;font-weight:700;border-color:var(--accent)}
+.ctr-cell.passed{background:var(--accent-soft);color:var(--muted)}
+.ctr-cell.ovf{background:var(--bad-soft);color:var(--bad);font-weight:700}
+.ctr-msg{border-radius:10px;padding:10px 16px;background:var(--accent-soft);border:1px solid #c4d6e8;font-size:14.5px;line-height:1.7}
+
+.qc-row{border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;background:#fff;display:flex;flex-direction:column;gap:10px}
+.verdict{display:none;border-radius:9px;padding:9px 14px;font-size:14px;line-height:1.7;background:var(--accent-soft);border:1px solid #c4d6e8}
+.verdict.show{display:block}
+
 /* 机器人网格 */
 .robot-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
 .robot-wrap svg{background:#fff;border:1px solid var(--line);border-radius:12px;max-width:100%;flex-shrink:0}
@@ -153,6 +168,14 @@ code{font-family:var(--mono);font-size:.88em;background:#efece4;border-radius:6p
   border:1px solid var(--line);border-radius:10px;padding:8px 14px;background:#fff}
 
 .quiz-item{margin:18px 0}
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.score-pill{font-family:var(--mono);background:var(--accent-soft);border-radius:999px;padding:2px 12px;color:var(--accent)}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
 .result-box.show{display:block;animation:fadein .5s}
 .result-box .rank{font-family:var(--serif);font-size:26px}
@@ -171,9 +194,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -187,7 +216,7 @@ footer p{margin:6px 0}
     <div class="en">State Machines</div>
     <p class="lead">程序就是一步步走的状态机。本章的主角是不变量原理（Floyd，1967）：抓住一个"每步都保持"的性质，就能证明程序正确、证明水壶无解、证明机器人永远到不了 (1,0)——还能证明相亲仪式必定人人成婚。</p>
     <div class="meta">
-      <span>⏱ 约 45 分钟</span><span>🧩 5 个互动装置</span><span>💍 稳定婚姻单步模拟</span><span>📖 原书第 159–202 页</span>
+      <span>⏱ 约 55 分钟</span><span>🧩 7 个互动装置</span><span>💍 稳定婚姻单步模拟</span><span>📖 原书第 159–202 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch05.html">上一章：归纳法</a></div>
@@ -202,6 +231,7 @@ footer p{margin:6px 0}
   <a href="#s3"><span class="toc-num">6.2.3</span>虎胆龙威水壶</a>
   <a href="#s4"><span class="toc-num">6.3</span>部分正确性与终止</a>
   <a href="#s5"><span class="toc-num">6.4</span>稳定婚姻</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -214,6 +244,20 @@ footer p{margin:6px 0}
     <p><span class="term">状态机</span>说白了就是第四章的二元关系再加两个名字：元素叫<b>状态（state）</b>，关系叫<b>转移（transition）</b>，外加一个指定的<b>起始状态</b>。99 计数器：状态 0…99 与 overflow，0 → 1 → 2 → ⋯ → 99 → overflow。程序 = 状态机；飞机高度、核反应堆温度、web 服务器负载，凡"一步步走"的过程皆可建模。</p>
     <p>第 2 章良序原理说过：给每步赋一个严格变小的良序值 ⇒ 过程必然停机。本章的主角是另一半：<b>给每步找一个"保持不变"的性质 ⇒ 它永远成立</b>。</p>
   </div>
+
+  <!-- 互动① 99 计数器 -->
+  <div class="widget reveal" id="w-ctr">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🎛️ 99 计数器：状态、转移与可达性</h4>
+    <p class="wdesc">原书 6.1 的例子：状态 {0, …, 99, overflow}，转移 n → n+1（99 → overflow），起始状态 0。点击任意格子问一句"从当前状态可达吗"——转移只增不减，从 50 永远回不到 30（这条"单调"正是 6.2 不变量的预告）。</p>
+    <div class="ctr-grid" id="ctr-grid"></div>
+    <div class="num-row" style="justify-content:center;margin-top:10px">
+      <button class="btn primary" id="ctr-step">执行转移 +1</button>
+      <button class="btn" id="ctr-auto">自动跑到 overflow</button>
+      <button class="btn ghost" id="ctr-reset">回到起始状态</button>
+    </div>
+    <div class="ctr-msg" id="ctr-msg">起始状态：0。共 101 个状态，只有一条转移链。</div>
+  </div>
 </section>
 
 <!-- ================= 6.2 ================= -->
@@ -223,9 +267,9 @@ footer p{margin:6px 0}
     <p>一台机器人从原点出发，在无限网格上只能走<b>对角线</b>（(m,n) → (m±1, n±1)）。它能到达 (1,0) 吗？玩玩就知道——注意格子按 m+n 的奇偶染了色，机器人每走一步……</p>
   </div>
 
-  <!-- 互动① 对角机器人（hero） -->
+  <!-- 互动② 对角机器人（hero） -->
   <div class="widget reveal" id="w-robot">
-    <span class="pill">互动 ①</span>
+    <span class="pill">互动 ②</span>
     <h4 class="wtitle">🤖 对角机器人：不变量的可视化</h4>
     <p class="wdesc">点击机器人所在格<b>对角相邻</b>的格子移动。目标：踩进红色的 (1,0)。蓝色格 = m+n 为偶，红色格 = 奇。</p>
     <div class="robot-wrap">
@@ -261,9 +305,9 @@ footer p{margin:6px 0}
     <p>Simon 放了炸弹：一个 5 加仑壶、一个 3 加仑壶，要你<b>精确量出 4 加仑</b>放在秤上。状态 = (大壶水量 b, 小壶水量 l)，六种操作：灌满任一壶、倒空任一壶、互相倾倒。这台机器是非确定性的——同一状态有多种走法。原书证 (4,3) 可达（电影里拆弹成功），而换 9 加仑壶的《Die Hard Permanently》里 (4,l) 永不可达——不变量：所有可达水量都是 <b>3 的倍数</b>。亲手玩：</p>
   </div>
 
-  <!-- 互动② Die Hard 水壶 -->
+  <!-- 互动③ Die Hard 水壶 -->
   <div class="widget reveal" id="w-jug">
-    <span class="pill">互动 ②</span>
+    <span class="pill">互动 ③</span>
     <h4 class="wtitle">💧 Die Hard 水壶模拟器</h4>
     <p class="wdesc">5 加仑 + 3 加仑。目标状态 (4, ·)。切换"永恒版"换成 9 加仑壶——试试目标 (4, ·)，然后想想"3 的倍数"这个不变量。</p>
     <div class="jug-wrap">
@@ -296,9 +340,9 @@ footer p{margin:6px 0}
     <p>Floyd 区分了验证程序的两大性质：<span class="term">部分正确性</span>——"如果程序停了，结果是正确的"；<span class="term">终止性</span>——"程序确实会停"。前者用不变量原理证（找出每步保持的断言），后者用良序原理证（找一个严格递减的非负整数派生变量）。原书的例子是<b>快速幂</b>：寄存器 x, y, z 从 (a, 1, b) 出发，z 减半、x 平方、视奇偶把 x 乘进 y，z = 0 时返回 y——不变量 <span class="math">y · xᶻ = a^b</span> 每步保持，z 严格递减必到 0。</p>
   </div>
 
-  <!-- 互动③ 快速幂单步机 -->
+  <!-- 互动④ 快速幂单步机 -->
   <div class="widget reveal" id="w-fp">
-    <span class="pill">互动 ③</span>
+    <span class="pill">互动 ④</span>
     <h4 class="wtitle">⚡ 快速幂单步机：盯住不变量 y·xᶻ = a^b</h4>
     <div class="num-row">
       <label class="small">a = <b id="fp-a" style="font-family:var(--mono)">3</b></label>
@@ -328,9 +372,9 @@ footer p{margin:6px 0}
     <p>Mating Ritual（相亲仪式）：每天早上，单身男士向自己名单上<b>排位最高</b>的女士唱小夜曲；下午，每位女士从追求者中留下最爱、对其余宣布"此生休想"；晚上，被拒男士把该女士划掉。直到每位女士都恰有一位追求者，全员成婚。三大定理：必在 n² 天内终止；人人结婚；结果稳定。还有一记反转：<b>这套仪式对男士最优、对女士最劣</b>（定理 6.4.9）——虽然看起来天天挑人的是女士。</p>
   </div>
 
-  <!-- 互动⑦ 稳定婚姻模拟器（hero） -->
+  <!-- 互动⑤ 稳定婚姻模拟器（hero） -->
   <div class="widget reveal" id="w-sm">
-    <span class="pill">互动 ⑦</span>
+    <span class="pill">互动 ⑤</span>
     <h4 class="wtitle">💍 Mating Ritual 单步模拟器</h4>
     <p class="wdesc">四男四女随机偏好。每天按"早晨求婚 → 午后留最爱 → 晚上划掉"推进一步；仪式结束后用"流氓对检测器"验证稳定，再切换求婚方向，看谁偷着乐。</p>
     <div class="sm-day" id="sm-day">第 0 天：仪式未开始</div>
@@ -347,6 +391,38 @@ footer p{margin:6px 0}
       <button class="btn" id="sm-optimal" disabled>👑 男士最优验证</button>
     </div>
     <div class="fb" id="sm-fb"></div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战：派生变量与可达性</h2><span class="en">6.3 &amp; 6.2.3, Playable</span></div>
+  <div class="reveal">
+    <p>6.3 的派生变量判定 + 6.2.3 的水壶可达性计算器。</p>
+  </div>
+
+  <!-- 互动⑥ 终止判定器 -->
+  <div class="widget reveal" id="w-term">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🛑 6.3 派生变量判定器：哪台机器必停？</h4>
+    <p class="wdesc">判据：若某派生变量 δ 在每次转移都严格变小、且取值范围良序，则机器必停（6.3.1）。三台机器，逐一判定。</p>
+    <div id="tm-list"></div>
+    <div style="margin-top:10px;font-size:14.5px">进度 <span class="score-pill" id="tm-score">0 / 3</span></div>
+  </div>
+
+  <!-- 互动⑦ 水壶可达性计算器 -->
+  <div class="widget reveal" id="w-jugbfs">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🫗 6.2.3 水壶可达性计算器：BFS 枚举一切</h4>
+    <p class="wdesc">容量 a、b 的两只壶（灌满 / 倒空 / 互倒）。BFS 枚举全部可达状态——数一数可达状态数、验证 gcd(a,b) 理论，并查任意目标格是否可达。</p>
+    <div class="num-row">
+      <label class="small">a = <b id="jg-a" style="font-family:var(--mono)">9</b></label>
+      <input type="range" id="jg-as" min="2" max="12" value="9" style="width:110px" />
+      <label class="small">b = <b id="jg-b" style="font-family:var(--mono)">5</b></label>
+      <input type="range" id="jg-bs" min="2" max="12" value="5" style="width:110px" />
+      <span class="small">目标量（大壶）：任意 0..a</span>
+    </div>
+    <div class="gen-expr" id="jg-out" style="border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 16px;font-family:var(--mono);font-size:14px;line-height:2;white-space:pre-wrap;word-break:break-word"></div>
   </div>
 </section>
 
@@ -453,7 +529,48 @@ $("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
 ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
 $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
 
-/* ---------- 互动① 对角机器人 ---------- */
+/* ---------- 互动① 99 计数器 ---------- */
+(() => {
+  let cur = 0;  // 0..99；100 表示 overflow
+  const grid = $("#ctr-grid"), msg = $("#ctr-msg");
+  const cells = [];
+  function render(){
+    cells.forEach((c, i) => {
+      c.className = "ctr-cell" + (i === 100 ? " ovf" : "") + (i === cur ? " cur" : (i < cur && i < 100 ? " passed" : ""));
+    });
+  }
+  function reachableInfo(t){
+    if (cur === 100) return t === 100 ? "就是当前状态——overflow 是死态，哪里也去不了。" : "不可达：overflow 没有出边，机器停转。";
+    if (t === cur) return "就是当前状态（零步可达）。";
+    if (t === 100) return `可达：继续执行 ${100 - cur} 次转移即溢出。`;
+    if (t > cur) return `可达——再执行 ${t - cur} 次 n → n+1 即到 ${t}。`;
+    return `不可达：转移只有 n → n+1，状态只增不减，${cur} 永远回不到 ${t}。`;
+  }
+  for (let i = 0; i <= 100; i++) {
+    const c = document.createElement("div");
+    c.className = "ctr-cell";
+    c.textContent = i === 100 ? "溢" : i;
+    c.title = i === 100 ? "overflow" : "状态 " + i;
+    c.addEventListener("click", () => {
+      msg.innerHTML = `问：从当前状态 ${cur === 100 ? "overflow" : cur} 到 ${i === 100 ? "overflow" : i}？<br><b>${reachableInfo(i)}</b>`;
+    });
+    grid.appendChild(c); cells.push(c);
+  }
+  $("#ctr-step").addEventListener("click", () => {
+    if (cur >= 100) { msg.textContent = "overflow 是死态——没有出边，机器停转。"; return; }
+    cur++;
+    if (cur === 100) msg.innerHTML = "<b>99 → overflow！</b>计数器溢出，机器终止（死态）。";
+    render();
+  });
+  $("#ctr-auto").addEventListener("click", () => {
+    cur = 100; render();
+    msg.innerHTML = "一路 +1 直达 overflow——共 100 步。<b>从起始状态 0 出发，链上每个状态恰好可达一次</b>；而任何小于当前值的状态都再不可达。";
+  });
+  $("#ctr-reset").addEventListener("click", () => { cur = 0; render(); msg.textContent = "起始状态：0。共 101 个状态，只有一条转移链。"; });
+  render();
+})();
+
+/* ---------- 互动② 对角机器人 ---------- */
 (() => {
   const svg = $("#robot-svg"), NS = "http://www.w3.org/2000/svg";
   const N = 7, C = 56, O = 20;
@@ -503,7 +620,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   $("#robot-reset").addEventListener("click", () => { pos = {m:0, n:0}; steps = 0; render(); });
 })();
 
-/* ---------- 互动② Die Hard 水壶 ---------- */
+/* ---------- 互动③ Die Hard 水壶 ---------- */
 (() => {
   let capB = 5, capL = 3, b = 0, l = 0;
   const hist = [];
@@ -555,7 +672,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   render();
 })();
 
-/* ---------- 互动③ 快速幂单步机 ---------- */
+/* ---------- 互动④ 快速幂单步机 ---------- */
 (() => {
   let a = 3, b = 13, x, y, z, steps;
   function reset(){
@@ -592,7 +709,7 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   reset();
 })();
 
-/* ---------- 互动⑦ 稳定婚姻模拟器 ---------- */
+/* ---------- 互动⑤ 稳定婚姻模拟器 ---------- */
 (() => {
   const men = ["Brad", "Billy Bob", "Tom", "George"];
   const women = ["Angelina", "Jennifer", "Nicole", "Penelope"];
@@ -731,6 +848,71 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   $("#sm-stable").addEventListener("click", rogueCheck);
   $("#sm-optimal").addEventListener("click", optimalCheck);
   init();
+})();
+
+/* ---------- 互动⑥ 终止判定器 ---------- */
+(() => {
+  const QS = [
+    { s: "机器 A：n → n − 1（n ≥ 1），n = 0 时停机。派生变量 δ = n。", ans: true,
+      why: "对——δ 每步严格减 1，取值 ⊆ ℕ（良序）⟹ 必然终止（最多 n₀ 步）。" },
+    { s: "机器 B：状态 0 ↔ 1 来回翻转。派生变量 δ = 状态值。", ans: false,
+      why: "✗ δ 不严格变下（0→1 反而变大）——找不到严格下降的派生变量，机器永不停。" },
+    { s: "机器 C：n → ⌊n/2⌋（n ≥ 1）。派生变量 δ = n。", ans: true,
+      why: "对——每步严格变小且非负 ⟹ 最多 log₂n₀ + 1 步必到 0 停机。" },
+  ];
+  let done = 0, right = 0;
+  const list = $("#tm-list");
+  QS.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "qc-row";
+    d.innerHTML = `<div class="stmt"><b>${String.fromCharCode(65+i)}.</b> ${it.s}　——必停吗？</div>
+      <div style="display:flex;gap:6px"><button class="btn">必停</button><button class="btn">不停</button></div><div class="verdict"></div>`;
+    const vd = $(".verdict", d);
+    $$(".btn", d).forEach((b, k) => b.addEventListener("click", () => {
+      if (d.classList.contains("done")) return;
+      d.classList.add("done"); done++;
+      const said = k === 0, ok = said === it.ans;
+      if (ok) right++;
+      vd.className = "verdict show"; vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+      $("#tm-score").textContent = done === 3 ? `完成！答对 ${right} / 3` : `${right} / ${done}`;
+    }));
+    list.appendChild(d);
+  });
+})();
+
+/* ---------- 互动⑦ 水壶可达性 ---------- */
+(() => {
+  function reach(a, b){
+    const start = "0,0", seen = new Set([start]), q = [start];
+    const targets = new Set();
+    while (q.length) {
+      const [x, y] = q.shift().split(",").map(Number);
+      targets.add(x);
+      const next = new Set([
+        `${a},${y}`, `${x},${b}`, `0,${y}`, `${x},0`,
+        // x → y
+        `${Math.max(0, x - (b - y))},${Math.min(b, y + x)}`,
+        // y → x
+        `${Math.min(a, x + y)},${Math.max(0, y - (a - x))}`,
+      ]);
+      next.forEach(s => { if (!seen.has(s)) { seen.add(s); q.push(s); } });
+    }
+    return { seen, targets };
+  }
+  function draw(){
+    const a = +$("#jg-as").value, b = +$("#jg-bs").value;
+    $("#jg-a").textContent = a; $("#jg-b").textContent = b;
+    const { seen, targets } = reach(a, b);
+    const g = (a, b) => { while (b) { [a, b] = [b, a % b]; } return a; };
+    const sorted = [...targets].sort((x, y) => x - y);
+    $("#jg-out").textContent =
+      `可达状态共 ${seen.size} 个（含 (0,0)）。\n大壶可达的水量：{${sorted.join(", ")}}\n` +
+      `gcd(${a},${b}) = ${g(a,b)}${g(a,b) === 1 ? " = 1 ⟹ 大壶 0..a 全部可达（互质情形）" : " ≠ 1 ⟹ 可达水量都是它的倍数"}\n` +
+      `验证：{${sorted.join(",")}} ${sorted.every(x => x % g(a,b) === 0) ? "全部是 gcd 的倍数 ✓" : "存在反例？！"}`;
+  }
+  $("#jg-as").addEventListener("input", draw);
+  $("#jg-bs").addEventListener("input", draw);
+  draw();
 })();
 
 /* ---------- 终局自测 ---------- */

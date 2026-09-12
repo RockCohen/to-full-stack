@@ -4,8 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>数论 · 数学之旅第九章 — 格致</title>
-<meta name="description" content="MIT《Mathematics for Computer Science》第 9 章的中文交互式解读：可除性、欧几里得算法、Pulverizer、模算术、欧拉定理与 RSA。Part II · Structures 开篇。" />
+<meta name="description" content="MIT《Mathematics for Computer Science》第 9 章的中文交互式解读：可除性、欧几里得算法、Pulverizer、Alan Turing 与两版图灵密码、模算术、欧拉定理与 RSA。Part II · Structures 开篇。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -86,7 +87,7 @@ h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-rig
 .box.method{border-left:4px solid var(--amber)} .box.method .label{background:var(--amber-soft);color:var(--amber)}
 .insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
 .insight .ico{font-size:20px;line-height:1.5}
-.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em;max-width:100%;overflow-x:auto;padding-bottom:4px}
 .math{font-family:var(--serif);white-space:nowrap}
 .term{color:var(--accent);font-weight:600}
 .muted{color:var(--muted)} .small{font-size:14px}
@@ -113,7 +114,7 @@ code{font-family:var(--mono);font-size:.88em;background:#efece4;border-radius:6p
 input[type=number]{font-family:var(--mono);font-size:15px;padding:7px 10px;border:1.5px solid var(--line);border-radius:9px;width:100px}
 input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
 .steps-box{font-family:var(--mono);font-size:13.5px;background:#fff;border:1px solid var(--line);
-  border-radius:10px;padding:10px 16px;margin-top:12px;line-height:2}
+  border-radius:10px;padding:10px 16px;margin-top:12px;line-height:2;overflow-wrap:anywhere}
 .steps-box .hl{color:var(--accent);font-weight:700}
 select{font-family:inherit;font-size:14.5px;padding:7px 10px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
 
@@ -128,6 +129,21 @@ select{font-family:inherit;font-size:14.5px;padding:7px 10px;border:1.5px solid 
 .rsa-card .big{font-family:var(--mono);font-size:20px;color:var(--accent);font-weight:700}
 .rsa-keys{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .rsa-keys .key{border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-family:var(--mono);font-size:13px;background:#fff}
+
+/* 习题实战与自测（与 ch10 同款） */
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.btn.amber{border-color:var(--amber);color:var(--amber)}
+.btn.amber:hover{background:var(--amber-soft)}
+.qc-row{border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;background:#fff;display:flex;flex-direction:column;gap:10px}
+.verdict{display:none;border-radius:9px;padding:9px 14px;font-size:14px;line-height:1.7;background:var(--accent-soft);border:1px solid #c4d6e8}
+.verdict.show{display:block}
+.score-pill{display:inline-block;font-family:var(--mono);font-size:13px;background:var(--amber-soft);border:1px solid var(--amber);color:var(--amber);border-radius:999px;padding:2px 12px}
 
 .quiz-item{margin:18px 0}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
@@ -148,9 +164,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -164,7 +186,7 @@ footer p{margin:6px 0}
     <div class="en">Number Theory</div>
     <p class="lead">Hardy 曾庆幸数论"远离人间烟火、洁净无害"——他错了。每次网购、每张证书、每个 PayPal 账户背后都是数论。本章从第六章的水壶讲到 RSA 密码系统，还给了 Alan Turing 一场迟到的致敬。</p>
     <div class="meta">
-      <span>⏱ 约 50 分钟</span><span>🧩 5 个互动装置</span><span>🔐 RSA Playground</span><span>📖 原书第 289–366 页</span>
+      <span>⏱ 约 70 分钟</span><span>🧩 9 个互动装置</span><span>🔐 RSA Playground</span><span>📖 原书第 289–366 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch08.html">上一章：无限集</a></div>
@@ -178,9 +200,13 @@ footer p{margin:6px 0}
   <a href="#s2"><span class="toc-num">9.2</span>欧几里得与 Pulverizer</a>
   <a href="#s3"><span class="toc-num">9.3</span>素数之谜</a>
   <a href="#s4"><span class="toc-num">9.4</span>算术基本定理</a>
-  <a href="#s5"><span class="toc-num">9.6–9.9</span>模算术与逆元</a>
-  <a href="#s6"><span class="toc-num">9.10</span>欧拉定理</a>
-  <a href="#s7"><span class="toc-num">9.11</span>RSA Playground</a>
+  <a href="#s5"><span class="toc-num">9.5</span>Alan Turing</a>
+  <a href="#s6"><span class="toc-num">9.6</span>模算术</a>
+  <a href="#s7"><span class="toc-num">9.7</span>余数算术与 ℤₙ</a>
+  <a href="#s8"><span class="toc-num">9.8–9.9</span>Turing 密码 2.0 与逆元</a>
+  <a href="#s9"><span class="toc-num">9.10</span>欧拉定理</a>
+  <a href="#s10"><span class="toc-num">9.11–9.12</span>RSA 与 SAT</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -256,6 +282,21 @@ footer p{margin:6px 0}
     </div>
     <p>但也有铁律：素数定理 π(n) ~ n/ln n（每 ln n 个数里约 1 个素数），切比雪夫给了初等下界 π(n) &gt; n/(3 ln n)。2004 年 Google 的招聘广告牌"e 中连续数字的第一个 10 位素数 .com"——答案 7427466391 出现得很早，正是这条密度的胜利。</p>
   </div>
+
+  <!-- 互动③ 素数定理实验台 -->
+  <div class="widget reveal" id="w-pnt">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">📈 素数定理实验台：π(n) 对拍 n/ln n</h4>
+    <p class="wdesc">π(n) = 不超过 n 的素数个数。埃氏筛当场数出真值，再与高斯近似 n/ln n、切比雪夫下界 n/(3 ln n) 对拍——9.3 节的两条铁律都给你验一遍。</p>
+    <div class="num-row">
+      <label class="small">n = <input type="number" id="pnt-n" min="10" max="3000000" value="1000" style="width:110px" /></label>
+      <button class="btn primary" id="pnt-go">筛一遍 ▶</button>
+      <button class="btn amber" data-pnt="10">n = 10</button>
+      <button class="btn amber" data-pnt="1000">n = 1000</button>
+      <button class="btn amber" data-pnt="1000000">n = 10⁶</button>
+    </div>
+    <div class="steps-box" id="pnt-out"></div>
+  </div>
 </section>
 
 <!-- ================= 9.4 ================= -->
@@ -268,25 +309,125 @@ footer p{margin:6px 0}
     </div>
     <p>定理 2.3.1 证过"存在性"（良序），现在证"唯一性"：反设存在两种分解的最小整数 n，比较两个素数序列的首项，用引理 9.4.2（<b>p 素且 p | ab ⇒ p | a 或 p | b</b>）导出矛盾。注意引理 9.4.2 本身用 gcd 线性组合证明——<b>刻意绕开唯一分解，避免循环论证</b>。顺带一提：唯一分解在复数域的 n + m√−5（m、n 取遍 ℤ，互相独立）整数里会失效——它根本不是“显然”的。</p>
   </div>
+
+  <!-- 互动④ 唯一分解器 -->
+  <div class="widget reveal" id="w-fac">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🧱 唯一分解器与"最小反例"反证</h4>
+    <p class="wdesc">试除法现场分解任意 n（预设是原书 9.4 节的 75237393），再把唯一性证明的反证骨架走一遍——最后看看它在 ℤ[√−5] 里怎么破产。</p>
+    <div class="num-row">
+      <label class="small">n = <input type="number" id="fac-n" min="2" max="999999999999" value="75237393" style="width:140px" /></label>
+      <button class="btn primary" id="fac-go">分解 ▶</button>
+      <button class="btn" id="fac-proof">唯一性反证骨架</button>
+      <button class="btn ghost" id="fac-z5">ℤ[√−5] 反例</button>
+    </div>
+    <div class="steps-box" id="fac-out"></div>
+  </div>
 </section>
 
-<!-- ================= 9.6-9.9 ================= -->
+<!-- ================= 9.5 ================= -->
 <section class="ch" id="s5">
-  <div class="ch-head reveal"><span class="no">9.6–9.9</span><h2>模算术、余数环与乘法逆</h2><span class="en">Modular Arithmetic, ℤₙ &amp; Inverses</span></div>
+  <div class="ch-head reveal"><span class="no">9.5</span><h2>Alan Turing 与图灵密码 1.0</h2><span class="en">Alan Turing</span></div>
   <div class="reveal">
-    <p>Gauss 的"同余"：a ≡ b (mod n) ⟺ n | (a − b) ⟺ 两者余数相等。同余对加法乘法<b>保持</b>（引理 9.6.4），于是诞生了<span class="term">余数算术一般原理</span>：算一大串加减乘的余数时，每步都可以取余，数字永不出 [0, n)。例：rem(3³⁴⁵⁶⁷⁸⁹, 36) = rem(3³, 36) = 27——因为 3 的幂的余数 3, 9, 27, 9, 27, … 两步一循环。<b>警告</b>：指数绝不能取余！</p>
-    <p>Turing 密码 2.0 就建在 ℤₙ 上：m̂ ::= m·k (ℤₙ)。但解密需要"除以 k"——什么时候能除？答案是<span class="term">乘法逆</span>：</p>
+    <p>24 岁那年（1936 年——比第一台电子计算机还早整整十年），图灵写下《论可计算数及其在判定问题上的应用》：用纯数学建模"计算机"，并立刻证明了<b>存在任何计算机都解决不了的问题</b>——无论程序员多聪明。"判定问题"（Entscheidungsproblem）是 Hilbert 1900 年列的 28 个数学问题之一，被他顺手解决；你听说过的"Church–Turing 论题"？同一篇论文。</p>
+    <p>1937 年秋，希特勒重整军备，世界大战在即。图灵和英国人一样忧心：他预见到军事通信保密将是胜负手，提出<b>用数论加密通信</b>。这个念头一路反弹到我们这个时代——今天数论是公钥密码、数字签名、哈希与电子支付的地基，军方也确实是密码学研究最大的金主之一。Sorry, Hardy！</p>
+    <div class="box method">
+      <span class="label">9.5.1 · Turing's Code (Version 1.0)</span>
+      <p style="margin:4px 0">先把消息翻译成整数：A = 01, B = 02, …；"victory" → 22 09 03 20 15 18 25。规则要求 m 本身是<b>素数</b>——素数定理保证末尾补几位数字即可（这里补 13：m = 2209032015182513 是素数）。<br>
+      <b>事先</b>：收发双方共享一个大素数 k 作密钥。<b>加密</b>：<span class="math">m̂ ::= m · k</span>。<b>解密</b>：m̂ / k = m。<br>
+      <span class="small muted">原书例子：k = 22801763489 时，m̂ = 2209032015182513 · 22801763489 = 50369825549820718594667857。</span></p>
+    </div>
+    <p>两个基本问题：<b>①怎么保证 m、k 是素数？</b>朴素试除到 ⌊√n⌋ 要跑指数级步数；1974 年 Strassen 发明了快速<b>概率</b>素性检验——素数必判对，合数只有小概率误判，错率比"硬件自己出错"还低；2002 年 Agrawal–Kayal–Saxena 用 13 行给出了多项式时间的确定性检验（次数从 12 降到 5，但实践中仍用更快的概率检验）。<b>②安全吗？</b>纳粹只看得见 m̂ = m·k，想还原 m 就得分解 m̂——"分解没有高效算法"是被普遍接受的猜想。图灵把"计算的极限"这个发现直接变成了武器。</p>
+    <p><b>但 1.0 有死刑级破绽</b>（9.5.2）：同一密钥发第二条消息，纳粹手里就有 m̂₁ = m₁·k 与 m̂₂ = m₂·k——<span class="math">gcd(m̂₁, m̂₂)</span> <b>就是密钥 k</b>，而 gcd 用欧几里得算法眨眼算完。第二条消息发出之日，全部通信沦陷。图灵这样的头脑不太可能漏掉这么显眼的问题——他心中的系统多半建在模算术上（9.8 节的 2.0 版再会）。亲手引爆它：</p>
+  </div>
+
+  <!-- 互动⑤ 图灵密码 1.0 -->
+  <div class="widget reveal" id="w-tc1">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">🕵️ 图灵密码 1.0：加密、解密与 gcd 破解</h4>
+    <p class="wdesc">默认就是原书的 victory 例子（留意解码末尾多出的字母 m——它正是为凑素数补位的 13）。先以收发双方身份发出两条消息，再切换到截获全部密文的纳粹——一次 gcd，密码破产。</p>
+    <div class="num-row">
+      <label class="small">密钥 k = <input type="number" id="tc-k" value="22801763489" style="width:150px" /></label>
+      <label class="small">消息 m₁ = <input type="number" id="tc-m1" value="2209032015182513" style="width:180px" /></label>
+      <label class="small">消息 m₂ = <input type="number" id="tc-m2" value="999983" style="width:110px" /></label>
+    </div>
+    <div class="num-row">
+      <button class="btn primary" id="tc-enc">📡 加密并发出两条消息</button>
+      <button class="btn" id="tc-dec">🔐 接收者解密 m̂₁</button>
+      <button class="btn" id="tc-crack" style="border-color:var(--bad);color:var(--bad)">🕵️ 纳粹截获：gcd(m̂₁, m̂₂)</button>
+    </div>
+    <div class="steps-box" id="tc-out">等待发报……</div>
+  </div>
+</section>
+
+<!-- ================= 9.6 ================= -->
+<section class="ch" id="s6">
+  <div class="ch-head reveal"><span class="no">9.6</span><h2>模算术：高斯的同余</h2><span class="en">Modular Arithmetic</span></div>
+  <div class="reveal">
+    <p>高斯在《算术研究》（<i>Disquisitiones Arithmeticae</i>）的第一页就引入了"同余"：<span class="math">a ≡ b (mod n)</span> ⟺ n | (a − b)。例：29 ≡ 15 (mod 7)，因为 7 | (29 − 15)。从此约定模数 n &gt; 1。</p>
+    <p>同余与余数是同一枚硬币的两面——<b>余数引理 9.6.1</b>：<span class="math">a ≡ b (mod n) ⟺ rem(a, n) = rem(b, n)</span>（带余除法 a = q₁n + r₁、b = q₂n + r₂ 相减，r₁ − r₂ ∈ (−n, n) 中 n 的倍数只有 0）。所以 29 ≡ 15 (mod 7) 也可以这样看：rem(29, 7) = 1 = rem(15, 7)。由此立刻得到：同余是<b>等价关系</b>（引理 9.6.2：自反/对称/传递——第十章细说），把整数划分成 n 个剩余类（mod 3 就分成 ≡0、≡1、≡2 三类）；以及推论 9.6.3：<span class="math">a ≡ rem(a, n) (mod n)</span>。</p>
+    <div class="box thm">
+      <span class="label">引理 9.6.4 · 同余保持引理</span>
+      <p style="margin:4px 0">若 a ≡ b 且 c ≡ d (mod n)，则 <span class="math">a + c ≡ b + d</span> 且 <span class="math">a·c ≡ b·d (mod n)</span>。<br>
+      <span class="small muted">同余与加减乘"兼容"——这条其貌不扬的引理是下一节"余数算术"的全部发动机。</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 9.7 ================= -->
+<section class="ch" id="s7">
+  <div class="ch-head reveal"><span class="no">9.7</span><h2>余数算术与环 ℤₙ</h2><span class="en">Remainder Arithmetic &amp; the Ring ℤₙ</span></div>
+  <div class="reveal">
+    <div class="box method">
+      <span class="label">余数算术一般原理（General Principle）</span>
+      <p style="margin:4px 0">求一串加减乘除 n 的余数：① 每个<b>操作数</b>先换成它除 n 的余数；② 每步结果一旦越出 [0..n) 立即取余——整个计算永远只碰小数字。</p>
+    </div>
+    <p>看原书的巨兽（式 9.9）：<span class="math">rem((44427<sup>3456789</sup> + 15555858<sup>5555</sup>)·403<sup>6666666</sup>, 36)</span>。44427<sup>3456789</sup> 写出来约有 2000 万位十进制数字，硬算绝望。但 rem(44427, 36) = 3、rem(15555858, 36) = 6、rem(403, 36) = 7，巨兽瞬间缩成 <span class="math">(3<sup>3456789</sup> + 6<sup>5555</sup>)·7<sup>6666666</sup></span>。再看幂的循环：3 的幂的余数 3, 9, 27, <b>9, 27, …</b>（从 3² 起两步一循环），3456789 是 ≥ 3 的奇数 ⇒ 3<sup>3456789</sup> ≡ 27；6² ≡ 0，之后全是 0 ⇒ 6<sup>5555</sup> ≡ 0；7 的幂六步一循环且 rem(7⁶, 36) = 1 ⇒ 7<sup>6666666</sup> = (7⁶)<sup>1111111</sup> ≡ 1。总计 (27 + 0)·1 = <b>27</b>。</p>
+    <div class="insight"><span class="ico">⚠️</span><div><b>灾难性错误警告</b>：指数绝不能取余！一般原理只管加减乘的<b>操作数</b>；指数是"乘多少次"的计数器——把 3456789 换成它 mod 36 的余数，答案立刻算错。</div></div>
+    <p>9.7.1 把这套把戏升级为代数：<span class="math">i +ₙ j ::= rem(i + j, n)</span>，<span class="math">i ·ₙ j ::= rem(i·j, n)</span>。[0..n) 配上 +ₙ、·ₙ 就是<b>环 ℤₙ</b>（引理 9.7.1 保证每步取余与先算再取余一致）。结合律、交换律、分配律、0 与 1 单位元、加法逆元 −k 全部照旧——"余数算术很像普通算术"，但有两个例外马上登场（9.9 的消去律）。</p>
+  </div>
+
+  <!-- 互动⑥ 幂模循环引擎 -->
+  <div class="widget reveal" id="w-pow">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🔁 幂模循环引擎：rem(aᵉ, n) 的循环捷径</h4>
+    <p class="wdesc">引擎先枚举 a 的幂的余数直到撞见循环，再用周期直接定位 rem(aᵉ, n)——并与快速幂结果双路对拍。前三个预设就是原书大例的三块拼图。</p>
+    <div class="num-row">
+      <label class="small">a = <input type="number" id="pw-a" min="0" value="3" style="width:90px" /></label>
+      <label class="small">e = <input type="number" id="pw-e" min="0" value="3456789" style="width:120px" /></label>
+      <label class="small">n = <input type="number" id="pw-n" min="2" max="100000" value="36" style="width:90px" /></label>
+      <button class="btn primary" id="pw-go">跑一遍 ▶</button>
+    </div>
+    <div class="num-row">
+      <button class="btn amber" data-pw="3,3456789,36">3³⁴⁵⁶⁷⁸⁹ mod 36</button>
+      <button class="btn amber" data-pw="7,6666666,36">7⁶⁶⁶⁶⁶⁶⁶ mod 36</button>
+      <button class="btn amber" data-pw="6,5555,36">6⁵⁵⁵⁵ mod 36</button>
+      <button class="btn amber" data-pw="2,100,7">2¹⁰⁰ mod 7</button>
+    </div>
+    <div class="steps-box" id="pw-out"></div>
+  </div>
+</section>
+
+<!-- ================= 9.8-9.9 ================= -->
+<section class="ch" id="s8">
+  <div class="ch-head reveal"><span class="no">9.8–9.9</span><h2>图灵密码 2.0 与乘法逆</h2><span class="en">Turing's Code v2.0 &amp; Multiplicative Inverses</span></div>
+  <div class="reveal">
+    <p>1940 年法国沦陷，英国独抗纳粹，补给全靠美国船队跨北大西洋——与德国 U-boat 潜艇的猫鼠游戏，胜负系于信息：谁能更准地定位对方？德国输了。关键原因直到 1974 年才公开：Enigma 早被<b>波兰密码局</b>攻破，1939 年入侵波兰前几周转交英国；图灵 1939 年加入布莱切利园（Bletchley Park），成为 Enigma 快速批量解密方法的首席开发者（英国政府 1996 年才公开全部细节）。</p>
+    <p>也许 1.0 的思路没错（消息乘密钥），错的只是用了普通算术而非模算术。<b>Version 2.0</b>：公开大模数 n，秘密素数 k &lt; n；加密 <span class="math">m̂ ::= m·k (ℤₙ)</span>。解密呢？（Uh-oh.）m̂ 是 mk 除 n 的<b>余数</b>——"除以 k"的结果连整数都不一定是。什么时候在 ℤₙ 里能"除"？答案是<span class="term">乘法逆</span>。</p>
+    <p>有理数里除 0 外每个数都有逆（3 的逆是 1/3）；整数里只有 ±1 有。ℤ₁₅ 里 2·8 = 1——8 是 2 的逆；而 <b>3 无逆</b>：若 3·j = 1 (ℤ₁₅)，两边乘 5 得 5 = 5·(3·j) = (5·3)·j = 0·j = 0——矛盾。判据是<b>互素</b>（9.9.1）：gcd(8, 15) = 1 有逆，gcd(3, 15) = 3 没有。<b>引理 9.9.1</b>：k 与 n 互素 ⇒ Pulverizer 给出 sn + tk = 1 ⇒ rem(t, n) 就是 k 的逆；<b>引理 9.9.2</b>：逆若存在必唯一（i = i·1 = i·(k·j) = (i·k)·j = 1·j = j）。</p>
+    <p>消去律也在这里触礁（9.9.2 小节）：<span class="math">3·10 = 3·5 (ℤ₁₅)</span>，消去 3 会推出 10 = 5 的荒谬结论——<b>不能消去公因子，是 ℤₙ 与普通算术最显著的不同</b>。好消息：有逆 ⇒ 可消去（引理 9.9.4，两边乘上逆元即可）。总结成三位一体：</p>
     <div class="box thm">
       <span class="label">定理 9.9.5 · 三位一体</span>
       <p style="margin:4px 0">对 k ∈ [0..n)：gcd(k, n) = 1 ⟺ k 在 ℤₙ 中有乘法逆 ⟺ k 可消去。<br>
       <span class="small muted">例：ℤ₁₅ 中 2·8 = 1（8 是 2 的逆）；3 与 15 不互素 ⇒ 3 无逆（否则 5 = 0）。逆存在时唯一，且可用 Pulverizer 直接算出 rem(t, n)。</span></p>
     </div>
-    <p>2.0 版还是被破解了——德国人自己发的不加密天气报告与 Enigma 密文对照（known-plaintext 攻击），j·m̂ = k 直接泄露密钥。密码学真是一场猫鼠游戏。</p>
+    <p>于是 2.0 的解密落地（9.9.3）：m̂·j = (m·k)·j = m·(k·j) = m·1 = m (ℤₙ)，j 是 k 的逆，Pulverizer 秒算；保证互素的省事办法是 n 取素数——ℤₚ 中每个非零元都有逆，像有理数一样舒服。</p>
+    <p><b>然而 2.0 也被破了</b>（9.9.4）：德军嫌天气报告无关紧要，不加密封发，却又从 U-boat 用 Enigma 把同一份报告发了一遍——盟军拿明文密文一比对，当日密钥直接推出来（<b>known-plaintext 攻击</b>，1941 年大西洋战局的英军关键优势）。同一招对 2.0 绝杀：知道一组明文 m 与密文 m̂ = m·k (ℤₙ)，用 Pulverizer 求 m 的逆 j，则 j·m̂ = k (ℤₙ)——密钥又泄露了，2.0 没有实用价值。好在图灵后来的密码学造诣远超这个早期构想：他的 Enigma 破译即便没拯救整个英国，也至少拯救了成千上万条生命。</p>
   </div>
 </section>
 
 <!-- ================= 9.10 ================= -->
-<section class="ch" id="s6">
+<section class="ch" id="s9">
   <div class="ch-head reveal"><span class="no">9.10</span><h2>欧拉定理</h2><span class="en">Euler's Theorem</span></div>
   <div class="reveal">
     <div class="box thm">
@@ -300,16 +441,16 @@ footer p{margin:6px 0}
 </section>
 
 <!-- ================= 9.11 RSA ================= -->
-<section class="ch" id="s7">
+<section class="ch" id="s10">
   <div class="ch-head reveal"><span class="no">9.11</span><h2>RSA 公钥加密</h2><span class="en">RSA Public Key Encryption</span></div>
   <div class="reveal">
     <p>1977 年，MIT 的 Rivest、Shamir、Adleman 把 Turing 的遗愿做成了现实：<b>公钥加密</b>。接收者生成两个数百位的大素数 p、q，公开 (e, n := pq)，私藏 d := e 在 ℤ₍ₚ₋₁₎₍q₋₁₎ 中的逆。任何人都能用公钥加密 m̂ ::= mᵉ (ℤₙ)，只有持有 d 的人能解密 m ::= m̂ᵈ——因为 e·d ≡ 1 (mod φ(n))，欧拉定理保证 m̂ᵈ = m。安全性押在"分解 n 为 p·q 是难事"这条未证猜想上——四十余年全球攻击无果。</p>
     <p>下面是真的 RSA（玩具尺寸）。选素数、发消息，走一遍完整流程：</p>
   </div>
 
-  <!-- 互动 RSA Playground -->
+  <!-- 互动⑦ RSA Playground -->
   <div class="widget reveal" id="w-rsa">
-    <span class="pill">互动 ⑤</span>
+    <span class="pill">互动 ⑦</span>
     <h4 class="wtitle">🔐 RSA Playground</h4>
     <div class="num-row">
       <label class="small">素数 p =
@@ -336,13 +477,51 @@ footer p{margin:6px 0}
     </div>
     <div class="fb" id="rsa-fb"></div>
   </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">9.12</span>SAT 与 RSA 的命运</h3>
+    <p>为什么相信 RSA 安全？知道 p、q 就能像接收者一样用 Pulverizer 求出 d；反过来，<b>知道私钥和公钥也同样容易分解 n</b>（习题 9.83）——所以"从公钥反推私钥"与"分解 n"同等困难。但这并不能排除绕过私钥直接解密的可能："任何破解 RSA 的方法都蕴含分解能力"仍是密码学重要的未证猜想。真正的信心来源很朴素：40 多年来全球最顶尖的密码学家轮番攻击，无一得手——数学界、金融界、情报界都把家当押在了上面。</p>
+    <p>与 SAT 的关联（3.5 节的悬念在此回收）：数字电路 ⇔ 命题公式，电路可满足性就是 SAT。造一台"乘积检验器"电路：4n 根输入线（n 位的 i、n 位的 j、2n 位的 k），输出 1 ⟺ ij = k 且 i, j &gt; 1，约 n² 个门即可实现。分解 2n 位的 m：把 k 的输入固定为 m，然后逐位敲定 i——第 1 位试置 1，问 SAT 求解器"剩余输入可满足吗"，可满足就定 1，否则定 0；依此逐位推进，<b>n 次 SAT 调用</b>后 i 的完整二进制表示到手，j = m / i。<b>结论：SAT 若有多项式（d 次）算法，分解 2n 位数就是 d + 1 次多项式——RSA 应声而破。</b>这就是"SAT 高效求解之日，全社会密码崩盘之时"的完整链条。</p>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战：费马检验与小定理</h2><span class="en">9.9 &amp; FLT, Playable</span></div>
+  <div class="reveal">
+    <p>9.9 的 Turing/费马素性检验做成互动器，再用两道模算术快题收尾。</p>
+  </div>
+
+  <!-- 互动⑧ 费马检验互动器 -->
+  <div class="widget reveal" id="w-fer">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">🧪 费马素性检验器：a^(n−1) mod n = 1 吗？</h4>
+    <p class="wdesc">n 为奇数、a ∈ [2, n−2]：若 n 素数则恒等式必然成立（费马小定理）；若不成立，a 叫"证人"，n 一定是合数。注意 Carmichael 数 561——对绝大多数 a 都蒙混过关的"惯犯"。</p>
+    <div class="num-row">
+      <label class="small">n = <input id="fm-n" type="number" min="5" max="99999" value="221" style="width:100px;font-family:var(--mono);border:1.5px solid var(--line);border-radius:8px;padding:5px 8px" /></label>
+      <label class="small">a = <input id="fm-a" type="number" min="2" max="9999" value="2" style="width:80px;font-family:var(--mono);border:1.5px solid var(--line);border-radius:8px;padding:5px 8px" /></label>
+      <button class="btn primary" id="fm-go">检验 ▶</button>
+      <button class="btn amber" data-fn="97" data-fa="5">n=97（素）</button>
+      <button class="btn amber" data-fn="221" data-fa="2">n=221（合，有证人）</button>
+      <button class="btn amber" data-fn="561" data-fa="2">n=561（Carmichael）</button>
+    </div>
+    <div class="gen-expr" id="fm-out" style="border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px 18px;font-family:var(--mono);font-size:14.5px;line-height:2;white-space:pre-wrap">Turing 在 1950 年一篇论文里提议的素性检验原型，即费马检验的雏形——9.9 节的迟到致敬。</div>
+  </div>
+
+  <!-- 互动⑨ 小定理快判 -->
+  <div class="widget reveal" id="w-flt">
+    <span class="pill">互动 ⑨</span>
+    <h4 class="wtitle">⚡ 费马小定理快判：p 素数时 aᵖ⁻¹ ≡ 1 (mod p)</h4>
+    <div id="flt-list"></div>
+    <div style="margin-top:10px;font-size:14.5px">进度 <span class="score-pill" id="flt-score">0 / 4</span></div>
+  </div>
 </section>
 
 <!-- ================= 终局自测 ================= -->
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖全章。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -404,8 +583,9 @@ footer p{margin:6px 0}
     <button class="close" id="toc-close">×</button>
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
     <a href="#s1">9.1 · 可除性与水壶终解</a><a href="#s2">9.2 · 欧几里得与 Pulverizer</a><a href="#s3">9.3 · 素数之谜</a>
-    <a href="#s4">9.4 · 算术基本定理</a><a href="#s5">9.6–9.9 · 模算术与逆元</a><a href="#s6">9.10 · 欧拉定理</a>
-    <a href="#s7">9.11 · RSA Playground</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#s4">9.4 · 算术基本定理</a><a href="#s5">9.5 · Alan Turing</a><a href="#s6">9.6 · 模算术</a>
+    <a href="#s7">9.7 · 余数算术与 ℤₙ</a><a href="#s8">9.8–9.9 · Turing 密码 2.0 与逆元</a><a href="#s9">9.10 · 欧拉定理</a>
+    <a href="#s10">9.11–9.12 · RSA 与 SAT</a><a href="#sp">⚔️ · 习题实战</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -566,6 +746,233 @@ function gcd(a, b){ while (b) { [a, b] = [b, a % b]; } return a; }
   gen();
 })();
 
+/* ---------- 互动③ 素数定理实验台 ---------- */
+(() => {
+  function sievePi(n){
+    const c = new Uint8Array(n + 1);
+    for (let i = 2; i * i <= n; i++) if (!c[i])
+      for (let j = i * i; j <= n; j += i) c[j] = 1;
+    let pi = 0;
+    for (let i = 2; i <= n; i++) if (!c[i]) pi++;
+    return pi;
+  }
+  function run(){
+    const n = Math.floor(+$("#pnt-n").value);
+    const out = $("#pnt-out");
+    if (!(n >= 10 && n <= 3000000)) { out.textContent = "范围：10 ≤ n ≤ 3,000,000（再大浏览器要喊累了）。"; return; }
+    const pi = sievePi(n);
+    const approx = n / Math.log(n);
+    const ratio = pi / approx;
+    const lb = n / (3 * Math.log(n));
+    out.innerHTML =
+      `筛到 ${n.toLocaleString()}：<span class="hl">π(n) = ${pi.toLocaleString()}</span>（真值，逐个数出）<br>` +
+      `&nbsp;&nbsp;高斯近似 n/ln n ≈ ${approx.toFixed(1)}　·　比值 π(n)·ln n/n = ${ratio.toFixed(3)} → 1（素数定理）<br>` +
+      `&nbsp;&nbsp;切比雪夫下界 n/(3 ln n) ≈ ${lb.toFixed(1)} ≤ π(n) ✓<br>` +
+      `&nbsp;&nbsp;彩蛋联动：ln(10¹⁰) ≈ 23.0——10 位数字串里约每 23 个出一个素数，所以 Google 广告牌的 7427466391 在 e 的前 100 位内就出现了。`;
+  }
+  $("#pnt-go").addEventListener("click", run);
+  $$("[data-pnt]").forEach(b => b.addEventListener("click", () => { $("#pnt-n").value = b.dataset.pnt; run(); }));
+  run();
+})();
+
+/* ---------- 互动④ 唯一分解器 ---------- */
+(() => {
+  function factor(n){
+    const f = [];
+    let m = n, d = 2;
+    while (d * d <= m) {
+      while (m % d === 0) { f.push(d); m /= d; }
+      d = d === 2 ? 3 : d + 2;
+    }
+    if (m > 1) f.push(m);
+    return f;
+  }
+  const group = f => {
+    const g = [];
+    for (const p of f) {
+      if (g.length && g[g.length - 1][0] === p) g[g.length - 1][1]++;
+      else g.push([p, 1]);
+    }
+    return g;
+  };
+  const sup = k => k > 1 ? `<sup>${k}</sup>` : "";
+  function run(){
+    const n = Math.floor(+$("#fac-n").value);
+    const out = $("#fac-out");
+    if (!(n >= 2 && n <= 999999999999)) { out.textContent = "范围：2 ≤ n ≤ 999,999,999,999。"; return; }
+    const f = factor(n);
+    const desc = f.slice().sort((a, b) => b - a);
+    const gDesc = group(desc);
+    out.innerHTML =
+      `<span class="hl">${n.toLocaleString()} = ${gDesc.map(([p, k]) => p + sup(k)).join(" · ")}</span><br>` +
+      `&nbsp;&nbsp;弱递减素数序列：${desc.join(", ")}<br>` +
+      `&nbsp;&nbsp;算术基本定理（定理 9.4.1）：这是它<b>唯一</b>的素数拼法——不只是因子集合唯一，连弱递减序列都唯一。`;
+  }
+  $("#fac-go").addEventListener("click", run);
+  $("#fac-proof").addEventListener("click", () => {
+    $("#fac-out").innerHTML =
+      `<b>唯一性 · 最小反例反证（定理 9.4.1 后半段）：</b><br>` +
+      `① 反设存在有两种弱递减素数分解的正整数，良序原理给出最小者 n = p₁·p₂⋯pⱼ = q₁·q₂⋯qₖ，不妨 p₁ ≤ q₁。<br>` +
+      `② 若 p₁ = q₁，则 n/q₁ 是更小的反例（p₂⋯pⱼ 与 q₂⋯qₖ 两种分解）——矛盾。故 p₁ &lt; q₁，由弱递减所有 pᵢ &lt; q₁。<br>` +
+      `③ 但 q₁ | n = p₁·p₂⋯pⱼ，引理 9.4.3（p 素且 p | ab ⇒ p | a 或 p | b）⇒ q₁ 整除某个 pᵢ——比 pᵢ 大的素数整除 pᵢ，矛盾。∎<br>` +
+      `<span class="muted">注意：引理 9.4.3 用 gcd 线性组合证明，刻意绕开唯一分解——不搞循环论证。</span>`;
+  });
+  $("#fac-z5").addEventListener("click", () => {
+    $("#fac-out").innerHTML =
+      `<b>唯一分解不是免费的：</b>在形如 n + m√−5（n, m ∈ ℤ）的"整数"里，<span class="hl">6 = 2·3 = (1+√−5)(1−√−5)</span>——两种分解，且 2、3、1±√−5 在其中都不可再分。<br>` +
+      `<span class="muted">唯一分解是 ℤ 的特权而非"显然"——这正是原书 9.4 节末尾的警告。</span>`;
+  });
+  run();
+})();
+
+/* ---------- 互动⑤ 图灵密码 1.0 ---------- */
+(() => {
+  const bgcdS = (a, b) => { let s = 0; while (b) { [a, b] = [b, a % b]; s++; } return { g: a, s }; };
+  const isPrimeB = m => { if (m < 2n) return false; for (let d = 2n; d * d <= m; d++) if (m % d === 0n) return false; return true; };
+  const decode = m => {  // 两位一字母：01→A … 26→Z
+    let s = m.toString();
+    if (s.length % 2) s = "0" + s;
+    let out = "";
+    for (let i = 0; i < s.length; i += 2) {
+      const v = +s.slice(i, i + 2);
+      if (v < 1 || v > 26) return null;
+      out += String.fromCharCode(96 + v);
+    }
+    return out;
+  };
+  let m1h = null, m2h = null, kk = 0n;
+  function getInputs(){
+    const k = BigInt($("#tc-k").value || 0), m1 = BigInt($("#tc-m1").value || 0), m2 = BigInt($("#tc-m2").value || 0);
+    if (k < 2n || m1 < 1n || m2 < 1n) return null;
+    return { k, m1, m2 };
+  }
+  $("#tc-enc").addEventListener("click", () => {
+    const out = $("#tc-out");
+    const v = getInputs();
+    if (!v) { out.textContent = "输入有误（k ≥ 2，m ≥ 1）。"; return; }
+    const { k, m1, m2 } = v;
+    m1h = m1 * k; m2h = m2 * k; kk = k;
+    const d1 = decode(m1);
+    const w1 = isPrimeB(m1) ? "" : "　⚠️ 原书要求 m 本身是素数（不够就补位）——你的 m₁ 不是素数，演示照常，记住这条规矩";
+    const w2 = isPrimeB(m2) ? "" : "　⚠️ m₂ 也不是素数";
+    const wk = isPrimeB(k) ? "" : "　⚠️ 密钥 k 按规矩应为大素数，当前 k 不是素数";
+    out.innerHTML =
+      `m̂₁ = m₁·k = ${m1} · ${k} = <span class="hl">${m1h}</span>${d1 ? `（m₁ 按 A=01,B=02,… 解码即 "${d1}"）` : ""}<br>` +
+      `m̂₂ = m₂·k = ${m2} · ${k} = <span class="hl">${m2h}</span><br>` +
+      `<span class="muted">两条密文已由公开信道发出，纳粹全部截获。${w1}${w2}${wk}</span>`;
+  });
+  $("#tc-dec").addEventListener("click", () => {
+    const out = $("#tc-out");
+    if (m1h === null) { out.textContent = "先加密发出消息。"; return; }
+    const m = m1h / kk;
+    const d1 = decode(m);
+    out.innerHTML = `🔐 接收者：m̂₁ / k = ${m1h} / ${kk} = <span class="hl">${m}</span>${d1 ? ` → 解码：<b>"${d1}"</b> ✓` : ""}<br>` +
+      `<span class="muted">有密钥的人一次除法搞定；没密钥的人想还原 m 就得分解 m̂——看起来难，但那颗红色按钮才是真正的死因。</span>`;
+  });
+  $("#tc-crack").addEventListener("click", () => {
+    const out = $("#tc-out");
+    if (m1h === null || m2h === null) { out.textContent = "先加密发出两条消息。"; return; }
+    const { g, s } = bgcdS(m1h, m2h);
+    const d = g / kk;  // m̂₁、m̂₂ 都含因子 k，故 g 恒为 k 的倍数
+    if (d === 1n) {
+      out.innerHTML = `🕵️ gcd(m̂₁, m̂₂) = gcd(${m1h}, ${m2h}) = <span class="hl">${g}</span> = k　<b>——密钥到手！</b><br>` +
+        `<span class="muted">欧几里得算法只用 ${s} 步。第二条消息发出之日，1.0 版破产：此后每条消息直接除以 k 即可读出。这就是图灵必须转向模算术的原因（9.8 节 2.0 版）。</span>`;
+    } else {
+      out.innerHTML = `🕵️ gcd(m̂₁, m̂₂) = <span class="hl">${g}</span> = k·d（d = ${d} 是 m₁、m₂ 的公因子）<br>` +
+        `<span class="muted">两条消息有公因子时 gcd 里混进了一个小 d——分解这个小家伙易如反掌，k = ${g}/${d} 依然暴露（${s} 步）。gcd 攻击无论如何都致命。</span>`;
+    }
+  });
+})();
+
+/* ---------- 互动⑥ 幂模循环引擎 ---------- */
+(() => {
+  const modpow = (a, e, m) => { let r = 1n; a %= m; while (e > 0n) { if (e & 1n) r = r * a % m; a = a * a % m; e >>= 1n; } return r; };
+  function run(){
+    const a = BigInt($("#pw-a").value || 0), e = BigInt($("#pw-e").value || 0), n = BigInt($("#pw-n").value || 0);
+    const out = $("#pw-out");
+    if (a < 0n || n < 2n || n > 100000n || e < 0n) { out.textContent = "范围：a ≥ 0，2 ≤ n ≤ 100000，e ≥ 0。"; return; }
+    if (e === 0n) { out.innerHTML = `任何数的 0 次幂 = 1，rem(1, ${n}) = <span class="hl">${1n % n}</span>。`; return; }
+    const seen = new Map();  // 余数 → 首次出现的指数（1-based，BigInt）
+    const seq = [];
+    let r = a % n;
+    while (!seen.has(r)) { seen.set(r, BigInt(seq.length) + 1n); seq.push(r); r = (r * a) % n; }
+    const start = seen.get(r);
+    const period = BigInt(seq.length) - start + 1n;
+    let ans;
+    if (e <= BigInt(seq.length)) ans = seq[Number(e) - 1];
+    else ans = seq[Number(start + ((e - start) % period)) - 1];
+    const chk = modpow(a, e, n);
+    const showSeq = seq.slice(0, 20).map((v, i) => `a^${i + 1}≡${v}`).join("，") + (seq.length > 20 ? "，…" : "");
+    out.innerHTML =
+      `余数序列：${showSeq}<br>` +
+      `&nbsp;&nbsp;从 a^${start} 起进入循环，周期 = ${period}（a^${start + period} ≡ a^${start} (mod ${n})）<br>` +
+      `&nbsp;&nbsp;e = ${e}：${e <= BigInt(seq.length) ? "落在枚举段内，直接查表" : `用周期定位：a^${e} ≡ a^${start + ((e - start) % period)} (mod ${n})`}<br>` +
+      `&nbsp;&nbsp;<span class="hl">rem(${a}^${e}, ${n}) = ${ans}</span>　·　快速幂双路对拍 = ${chk}　${ans === chk ? "✓ 一致" : "✗ 不一致（bug！）"}`;
+  }
+  $("#pw-go").addEventListener("click", run);
+  $$("[data-pw]").forEach(b => b.addEventListener("click", () => {
+    const [a, e, n] = b.dataset.pw.split(",");
+    $("#pw-a").value = a; $("#pw-e").value = e; $("#pw-n").value = n; run();
+  }));
+  run();
+})();
+
+/* ---------- 互动⑧ 费马检验 ---------- */
+(() => {
+  const modpow = (a, e, m) => { let r = 1n; a %= m; while (e > 0n) { if (e & 1n) r = r * a % m; a = a * a % m; e >>= 1n; } return r; };
+  function run(){
+    const n = BigInt($("#fm-n").value || 0), a = BigInt($("#fm-a").value || 0);
+    const out = $("#fm-out");
+    if (n < 5n || a < 2n || a > n - 2n) { out.textContent = "约束：n ≥ 5，2 ≤ a ≤ n−2。"; return; }
+    const v = modpow(a, n - 1n, n);
+    const isPrimeSmall = (m) => { if (m < 2n) return false; for (let d = 2n; d * d <= m; d++) if (m % d === 0n) return false; return true; };
+    const verdict = v === 1n
+      ? (isPrimeSmall(n) ? "≡ 1 ✓（n 本来就是素数，检验通过理所当然）" : "≡ 1 —— a 不是证人：n 是合数却蒙混过关（伪素数/Carmichael 行为）！")
+      : `≢ 1 —— <b>a 是 n 为合数的证人</b>，检验当场揭穿。`;
+    out.innerHTML = `${a}^${n - 1n} mod ${n} = <b>${v}</b>　⟹　${verdict}`;
+  }
+  $("#fm-go").addEventListener("click", run);
+  $$("[data-fn]").forEach(b => b.addEventListener("click", () => {
+    $("#fm-n").value = b.dataset.fn; $("#fm-a").value = b.dataset.fa; run();
+  }));
+  run();
+})();
+
+/* ---------- 互动⑨ 费马小定理快判 ---------- */
+(() => {
+  const modpow = (a, e, m) => { let r = 1n; a %= m; while (e > 0n) { if (e & 1n) r = r * a % m; a = a * a % m; e >>= 1n; } return Number(r); };
+  const QS = [
+    { s: "2⁶ mod 7 = ？（7 是素数）", opts: ["1", "2"], ans: 0,
+      why: "对——费马小定理：7 素 ⟹ 2⁶ ≡ 1 (mod 7)。直接算：64 mod 7 = 1 ✓。" },
+    { s: "2⁶ mod 8 = ？（8 不是素数，小心！）", opts: ["1", "0"], ans: 1,
+      why: "对——费马小定理不适用于合数：2⁶ = 64 ≡ 0 (mod 8)。'p 必须是素数'是使用定理的前置检查。" },
+    { s: "3⁶ mod 7 = ？", opts: ["1", "6"], ans: 0,
+      why: "对——7 素 ⟹ 3⁶ ≡ 1 (mod 7)。其实 3⁶ = 729 = 104·7 + 1。" },
+    { s: "由费马小定理，RSA 解密端 m^(ed) mod n = m 的链条里，ed ≡ 1 (mod p−1) 与 (mod q−1) 同时成立靠的是？",
+      opts: ["Pulverizer 求出的 d", "随机猜 d 直到碰上"], ans: 0,
+      why: "对——d 由扩展欧几里得（Pulverizer）从 e 与 (p−1)(q−1) 反解：e·d − k(p−1)(q−1) = 1，两处模同余同时成立。" },
+  ];
+  let done = 0, right = 0;
+  const list = $("#flt-list");
+  QS.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "qc-row";
+    d.innerHTML = `<div class="stmt" style="font-family:var(--mono)"><b>${i+1}.</b> ${it.s}</div>
+      <div style="display:flex;gap:6px">${it.opts.map((o,k) => `<button class="btn" data-k="${k}">${o}</button>`).join("")}</div><div class="verdict"></div>`;
+    const vd = $(".verdict", d);
+    $$(".btn", d).forEach(b => b.addEventListener("click", () => {
+      if (d.classList.contains("done")) return;
+      d.classList.add("done"); done++;
+      const ok = +b.dataset.k === it.ans;
+      if (ok) right++;
+      b.classList.add(ok ? "picked-ok" : "picked-no");
+      vd.className = "verdict show"; vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+      $("#flt-score").textContent = done === 4 ? `完成！答对 ${right} / 4` : `${right} / ${done}`;
+    }));
+    list.appendChild(d);
+  });
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -587,6 +994,18 @@ function gcd(a, b){ while (b) { [a, b] = [b, a % b]; } return a; }
        {t:"整数 s、t 使 sa + tb = gcd(a,b)", ok:true, fb:"对（定理 9.2.2）。gcd 是 a、b 的线性组合——逆元、水壶通解全部由此解锁。"},
        {t:"a、b 的最小公倍数", ok:false, fb:"lcm 可由 gcd 推出（ab/gcd），但不是 Pulverizer 的直接产出。"},
        {t:"a 除以 b 的商", ok:false, fb:"商只是中间量。"}]},
+    {q:"图灵密码 1.0（m̂ = m·k，k 为大素数密钥）为何在发送第二条消息后就破产？",
+     opts:[
+       {t:"gcd(m̂₁, m̂₂) = gcd(m₁k, m₂k) = k——欧几里得算法高效算出，密钥直接泄露", ok:true, fb:"对（9.5.2）。两个密文摆在一起，gcd 就是密钥——高效、致命。这就是图灵转向模算术（2.0 版）的原因。"},
+       {t:"密文 m̂ 位数太长，容易被截获", ok:false, fb:"长度与安全性无关——问题在于同一密钥的两次暴露。"},
+       {t:"素数 k 选得不够大", ok:false, fb:"再大也没用——gcd 攻击与 k 的大小无关。"},
+       {t:"消息 m 没有编码成数字", ok:false, fb:"编码只是格式问题，gcd 攻击照样成立。"}]},
+    {q:"原书大例 rem((44427³⁴⁵⁶⁷⁸⁹ + 15555858⁵⁵⁵⁵)·403⁶⁶⁶⁶⁶⁶⁶, 36) = 27 的求解中，哪一步会是灾难性错误？",
+     opts:[
+       {t:"把指数 3456789 换成它 mod 36 的余数", ok:true, fb:"对——一般原理只适用于加减乘的操作数；指数是'乘多少次'的计数器，取余直接算错。"},
+       {t:"把 44427 换成 rem(44427, 36) = 3", ok:false, fb:"这步完全合法——底数是乘法操作数，可取余。"},
+       {t:"发现 3 的幂余数从 3² 起以 9, 27 两步循环", ok:false, fb:"这正是正确解法的关键观察。"},
+       {t:"利用 rem(7⁶, 36) = 1 把 7⁶⁶⁶⁶⁶⁶⁶ 化为 (7⁶)¹¹¹¹¹¹¹", ok:false, fb:"合法且漂亮——这是幂的结合律，不是取余。"}]},
     {q:"ℤ₁₅ 中哪个数有乘法逆？",
      opts:[
        {t:"3——gcd(3, 15) = 3 ≠ 1，无逆", ok:false, fb:"若 3 有逆 j，则 5 = 5·(3j) = (5·3)·j = 0 (mod 15)，矛盾——3 无逆。"},
@@ -609,11 +1028,11 @@ function gcd(a, b){ while (b) { [a, b] = [b, a % b]; } return a; }
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🔐 RSA 铸钥师", "从水壶到密码系统，数论主线全部贯通——Hardy 泉下有知，也会为这门'无用之学'骄傲。下一章有向图与偏序。"]
-      : right >= 3 ? ["🧮 模环书记员", "余数算术已经上手——Pulverizer 与欧拉定理的细节回看 9.2 与 9.10 两节。"]
+    const [rank, note] = right >= 6 ? ["🔐 RSA 铸钥师", "从水壶到密码系统，数论主线全部贯通——Hardy 泉下有知，也会为这门'无用之学'骄傲。下一章有向图与偏序。"]
+      : right >= 4 ? ["🧮 模环书记员", "余数算术已经上手——Pulverizer 与欧拉定理的细节回看 9.2 与 9.10 两节。"]
       : ["🌱 整除见习生", "从水壶判决器重新出发：gcd 是本章一切的钥匙。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / 8 · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){

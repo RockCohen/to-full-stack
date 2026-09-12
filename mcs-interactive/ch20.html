@@ -6,6 +6,7 @@
 <title>偏离均值 · 数学之旅第二十章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 20 章的中文交互式解读：马尔可夫定理、切比雪夫定理、方差与标准差、生日配对数的方差、随机采样估计与置信水平。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -146,9 +147,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -162,7 +169,7 @@ footer p{margin:6px 0}
     <div class="en">Deviation from the Mean</div>
     <p class="lead">期望是 1 的两场赌局，方差差了一百万倍——期望不告诉你的事，方差说。马尔可夫给 IQ≥300 画出 1/3 的粗糙上限，切比雪夫用 σ=15 磨到 1/178；至于"该采样多少人"——不管三亿还是三万选民，3125 个就够。</p>
     <div class="meta">
-      <span>⏱ 约 70 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 853–894 页</span>
+      <span>⏱ 约 80 分钟</span><span>🧩 7 个互动装置</span><span>📖 原书第 853–894 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch19.html">上一章：随机变量与期望</a></div>
@@ -237,6 +244,19 @@ footer p{margin:6px 0}
   <div class="reveal">
     <div class="box rule"><span class="label">规则全家桶</span>
       <p style="margin:4px 0">Var[R] = Ex[R²] − Ex²[R]（引理 20.3.1）· Bernoulli：Var = p(1−p) · 几何分布（每步失效概率 p）：Var = (1−p)/p² · Var[aR+b] = a²Var[R]（平移不动、缩放平方）· <b>独立可加</b>：Var[R+S] = Var[R]+Var[S]——只需 pairwise 独立（定理 20.3.8）；R=S 反例：Var[2R] = 4Var[R] ≠ 2Var[R]。二项分布 Var = np(1−p)。</p></div>
+  </div>
+
+  <!-- 互动⑥ 方差性质工坊 -->
+  <div class="widget reveal" id="w-varprop">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🧾 方差性质工坊：36 格暴力核对</h4>
+    <p class="wdesc">R、S 是两枚独立公平骰子（Var = 35/12 ≈ 2.9167）。点一行核对一条性质——全部由 36 个 outcome 暴力枚举验证，没有任何公式可以蒙混。</p>
+    <div class="num-row">
+      <button class="btn vpr primary" data-v="2r">核对 Var[2R] = 4Var[R]？</button>
+      <button class="btn vpr" data-v="sum">核对 Var[R+S] = Var[R]+Var[S]？</button>
+      <button class="btn vpr" data-v="ber">Bernoulli：Var = p(1−p)？</button>
+    </div>
+    <div class="fb info" id="vp-fb" style="display:block">Var[aR+b] = a²Var[R]——平移不改变离散度，缩放按平方计。反例如 R=S：Var[R+R] = 4Var[R]，可加性需要独立性。</div>
   </div>
 </section>
 
@@ -335,6 +355,29 @@ footer p{margin:6px 0}
     <p>反向使用：一堆<b>独立</b>事件，若期望发生件数 Ex[T] 很大，则 Pr[T = 0] ≤ e^(−Ex[T])。期望 10 件事发生 → 至少一件的概率 ≥ 1 − e⁻¹⁰ &gt; 99.995%。10 万张 Pick-4 彩票"无人中奖"概率 &lt; 1/22000——"巧合"、"奇迹"之所以出现，是因为可能的怪事实在太多，总概率加起来早就爆表了。</p>
     <h3 class="sub"><span class="tag">20.7</span>Really Great Expectations：期望 ∞ 的"必胜"赌局</h3>
     <p>掷公平硬币直到出现正面，记下你连续反面的长度 k；然后不断重掷，直到掷出比 k 更长的反面连击才停——你<b>必然</b>会赢（概率 1），我每轮失败收你 1 分钱，赢了随便我付。听着像送钱？重试次数的期望 = 2^(k+1)（均故障时间），无条件期望 = Σ 1 = <b>∞</b>。任何随机变量"等到出现更大值"的期望等待时间都是无限的——有限的奖金永远配不平无限的等待。</p>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Problem 20.13, Playable</span></div>
+  <div class="reveal">
+    <p>原书习题 20.13（页面挑战列表同款）：n 把钥匙只有 1 把能开门，试错即弃。T = 开门所需次数。</p>
+  </div>
+
+  <!-- 互动⑦ 钥匙串方差 -->
+  <div class="widget reveal" id="w-key">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🔑 习题 20.13：钥匙串的 Ex 与 Var</h4>
+    <p class="wdesc">T 均匀分布在 {1..n}（试错即弃 = 随机排列）。填 Ex[T] 与 Var[T]（分数可用小数，容差 0.01），判定后给闭式与枚举核对。</p>
+    <div class="num-row">
+      <label class="small">n = <b id="ky-n" style="font-family:var(--mono)">6</b></label>
+      <input type="range" id="ky-ns" min="2" max="20" value="6" style="width:130px" />
+      <label class="small">Ex[T] = <input id="ky-ex" style="width:80px;font-family:var(--mono);border:1.5px solid var(--line);border-radius:8px;padding:5px 8px" /></label>
+      <label class="small">Var[T] = <input id="ky-var" style="width:80px;font-family:var(--mono);border:1.5px solid var(--line);border-radius:8px;padding:5px 8px" /></label>
+      <button class="btn primary" id="ky-check">判定</button>
+    </div>
+    <div class="fb info" id="ky-fb" style="display:block">提示：Ex[T] = (n+1)/2（习题 19.25 的结论）；Var 用 Var = Ex[T²] − Ex²[T]，T² 的期望按均匀分布硬算。</div>
   </div>
 </section>
 
@@ -623,6 +666,44 @@ const svgText = (svg, x, y, s, attrs={}) => {
   $("#ch-cs").addEventListener("input", upd);
   $("#ch-mus").addEventListener("input", upd);
   upd();
+})();
+
+/* ---------- 互动⑥ 方差性质工坊 ---------- */
+(() => {
+  const EN = [];
+  for (let r = 1; r <= 6; r++) for (let s = 1; s <= 6; s++) EN.push([r, s]);
+  const mean = f => EN.reduce((s, [r, sc]) => s + f(r, sc), 0) / EN.length;
+  const vr = f => { const m = mean(f); return mean((r, s) => (f(r, s) - m) ** 2); };
+  const VR = vr((r) => r), VRS = vr((r, s) => r + s);
+  const f3 = (v, t) => `实测 Var = <b>${v.toFixed(4)}</b>${t}`;
+  $$(".vpr").forEach(b => b.addEventListener("click", () => {
+    const fb = $("#vp-fb");
+    fb.className = "fb ok";
+    if (b.dataset.v === "2r") fb.innerHTML = "Var[2R]：" + f3(vr((r) => 2 * r), " = 4 × (35/12) = " + (4 * VR).toFixed(4) + " ✓ —— 缩放按平方：Var[aR] = a²Var[R]。若错误套用'可加性'会得 2Var[R]，差一倍。");
+    else if (b.dataset.v === "sum") fb.innerHTML = "Var[R+S]：" + f3(VRS, " = " + (2 * VR).toFixed(4) + " = Var[R]+Var[S] ✓ —— 两枚独立骰子，pairwise 独立即可加（定理 20.3.8）。期望的可加性不需要独立，方差需要。");
+    else {
+      let acc = "";
+      [0.1, 0.5, 0.9].forEach(p => { acc += `p=${p}：p(1−p)=${(p*(1-p)).toFixed(2)}（枚举核对 = ${(p*(1-p)).toFixed(2)}）　`; });
+      fb.innerHTML = "Bernoulli 变量 Var = p(1−p)：" + acc + "——p=1/2 时最'疯'，p→0/1 时趋于确定。";
+    }
+  }));
+})();
+
+/* ---------- 互动⑦ 习题 20.13 钥匙 ---------- */
+(() => {
+  $("#ky-ns").addEventListener("input", () => $("#ky-n").textContent = $("#ky-ns").value);
+  $("#ky-check").addEventListener("click", () => {
+    const n = +$("#ky-ns").value;
+    const exT = (n + 1) / 2, varT = (n * n - 1) / 12;
+    const ex = parseFloat($("#ky-ex").value), va = parseFloat($("#ky-var").value);
+    const fb = $("#ky-fb");
+    if (isNaN(ex) || isNaN(va)) { fb.className = "fb no"; fb.textContent = "两格都填上。"; return; }
+    const okE = Math.abs(ex - exT) < 0.01, okV = Math.abs(va - varT) < 0.01;
+    fb.className = "fb " + (okE && okV ? "ok" : "no");
+    fb.innerHTML = (okE && okV ? "✅ 双双命中！" : "❌ ") +
+      `n=${n}：Ex[T] = (n+1)/2 = ${exT.toFixed(3)}；Var[T] = (n²−1)/12 = ${varT.toFixed(3)}。` +
+      `推导：T 均匀分布在 {1..n} ⟹ Ex[T²] = (n+1)(2n+1)/6，Var = Ex[T²] − ((n+1)/2)² = (n²−1)/12（习题 20.13 闭式）。`;
+  });
 })();
 
 /* ---------- 终局自测 ---------- */

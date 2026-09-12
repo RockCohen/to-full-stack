@@ -6,6 +6,7 @@
 <title>平面图 · 数学之旅第十三章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 13 章的中文交互式解读：平面嵌入、欧拉公式 v−e+f=2、e≤3v−6、K₅ 与 K₃,₃ 非平面、五色定理与正多面体分类。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -87,8 +88,41 @@ h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-rig
 .insight .ico{font-size:20px;line-height:1.5}
 .eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
 .math{font-family:var(--serif);white-space:nowrap}
+.eq.math{white-space:normal}
 .term{color:var(--accent);font-weight:600}
 .muted{color:var(--muted)} .small{font-size:14px}
+
+/* 离散面清点器 */
+.face-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.face-wrap svg{background:#fff;border:1px solid var(--line);border-radius:12px;width:100%;max-width:330px;height:auto}
+.face-side{flex:1;min-width:250px}
+.facerow{display:flex;gap:8px;align-items:center;margin:7px 0;flex-wrap:wrap}
+.facerow .flabel{font-family:var(--serif);font-size:16px;font-weight:700;color:var(--accent);min-width:56px}
+.facerow select{border:1.5px solid var(--line);border-radius:9px;padding:5px 8px;font-family:var(--mono);font-size:14px;background:#fff;flex:1;min-width:170px}
+.facerow.hit{color:var(--good)}
+.facerow.miss{color:var(--bad)}
+.qcrow{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:12px;padding:11px 16px;margin:9px 0;background:#fff}
+.qcrow .stmt{flex:1;min-width:230px;font-size:15px}
+.qcrow .verdict{font-size:13.5px;display:none;border-top:1px dashed var(--line);padding-top:7px;margin-top:7px;width:100%;line-height:1.7}
+.qcrow .verdict.show{display:block}
+.qcrow.done{opacity:.92}
+
+/* 面账本步进 */
+.ledger{border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px 18px;margin-top:12px}
+.ledger .lz{font-family:var(--mono);font-size:14.5px;line-height:2}
+.ledger .lz .newf{background:var(--amber-soft);border-radius:6px;padding:1px 6px;font-weight:700;color:var(--amber)}
+.ledger .lz .deadf{color:#cfc8ba;text-decoration:line-through}
+.lg-nav{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.lg-cap{font-size:14.5px;margin-top:8px;line-height:1.75}
+
+/* Kuratowski 工坊 */
+.ksteps{display:flex;gap:10px;overflow-x:auto;padding:14px 4px;scroll-behavior:smooth}
+.kframe{flex:0 0 auto;border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:8px;text-align:center;opacity:.45;transition:.3s}
+.kframe.on{opacity:1;border-color:var(--amber)}
+.kframe svg{display:block;margin:0 auto}
+.kframe .kc{font-size:12px;color:var(--muted);margin-top:4px}
+.kframe .kop{font-size:12.5px;font-weight:600;color:var(--accent);min-height:18px}
 
 .widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
   padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
@@ -123,6 +157,24 @@ input[type=number]{font-family:var(--mono);font-size:15px;padding:7px 10px;borde
 .step .s-note{font-size:13.5px;color:var(--muted);margin-top:2px}
 
 .quiz-item{margin:18px 0}
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.ansrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+.ansrow input{width:76px;border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;
+  font-size:16px;font-family:var(--mono);text-align:center}
+.ansrow input:focus{outline:none;border-color:var(--accent)}
+.seqpick{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+.seqcard{font-family:var(--mono);font-size:14px;border:1.5px solid var(--line);background:#fff;
+  border-radius:9px;padding:6px 12px;cursor:pointer;transition:.15s;user-select:none}
+.seqcard:hover{border-color:var(--accent)}
+.seqcard.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+.seqcard.right{border-color:var(--good);background:var(--good-soft);color:var(--good)}
+.seqcard.wrongp{border-color:var(--bad);background:var(--bad-soft);color:var(--bad);text-decoration:line-through}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
 .result-box.show{display:block;animation:fadein .5s}
 .result-box .rank{font-family:var(--serif);font-size:26px}
@@ -140,9 +192,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -156,7 +214,7 @@ footer p{margin:6px 0}
     <div class="en">Planar Graphs</div>
     <p class="lead">三座狗屋与三户人家，每户狗屋到每户人家都要修路，路不能交叉——做不到！K₃,₃ 与 K₅ 这两个"最小障碍"背后，站着欧拉公式 v−e+f=2、边数上界 3v−6、五色定理，以及"正多面体只有五种"的古老秘密。</p>
     <div class="meta">
-      <span>⏱ 约 40 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 517–544 页</span>
+      <span>⏱ 约 55 分钟</span><span>🧩 8 个互动装置</span><span>📖 原书第 517–542 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch12.html">上一章：简单图</a></div>
@@ -167,9 +225,11 @@ footer p{margin:6px 0}
 <nav id="toc" aria-label="章节目录">
   <div class="toc-title">本章路线图</div>
   <a href="#s1"><span class="toc-num">13.1</span>狗屋、quadarpi 与平面性</a>
-  <a href="#s2"><span class="toc-num">13.3</span>欧拉公式</a>
-  <a href="#s3"><span class="toc-num">13.5</span>K₅ 与 K₃,₃ 审判</a>
-  <a href="#s4"><span class="toc-num">13.6</span>五色定理</a>
+  <a href="#s2"><span class="toc-num">13.2</span>离散面 · 嵌入构造</a>
+  <a href="#s3"><span class="toc-num">13.3–5</span>欧拉公式与 K₅/K₃,₃ 审判</a>
+  <a href="#s4"><span class="toc-num">13.6–7</span>五色定理 · 正多面体</a>
+  <a href="#s5"><span class="toc-num">13.8</span>Kuratowski minor 工坊</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -187,6 +247,45 @@ footer p{margin:6px 0}
       <p style="margin:4px 0"><b>欧拉公式（13.3.1）</b>：连通平面嵌入中 <span class="math">v − e + f = 2</span>。<br>
       <b>边数上界（13.4.3）</b>：v ≥ 3 的连通平面图 <span class="math">e ≤ 3v − 6</span>（二部版 e ≤ 2v − 4）。<br>
       <b>五色定理（13.6.4）</b>：每个平面图都可 5-着色。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 13.2 离散面与嵌入 ================= -->
+<section class="ch" id="s1b">
+  <div class="ch-head reveal"><span class="no">13.2</span><h2>离散面：不用几何公式的平面性</h2><span class="en">Faces &amp; Recursive Embeddings</span></div>
+  <div class="reveal">
+    <p>"边不交叉"的直觉定义（13.2.1）靠光滑曲线和拓扑——要证定理得先修一学期点集拓扑。原书的解法：把平面图重定义成<span class="term">递归数据类型</span>。平面画法把平面切成<span class="term">连续面</span>；每个连续面的边界是图里的一个<span class="term">闭合 walk</span>，叫<span class="term">离散面</span>。原书 Figure 13.6 的 K₄ 嵌入有 4 个离散面（式 13.1）：</p>
+    <div class="eq math">abca　abda　bcdb　acda</div>
+    <p>只有两种并发症：<span class="term">桥（bridge）</span>= 割边，它在<b>同一个</b>离散面的边界里出现两次（如 Figure 13.7 的外侧面 abcefgecda）；<span class="term">dangle</span> = 桥组成的树，每条边"一来一回"出现。Definition 13.2.2 的递归定义只有三条：<b>基例</b>单顶点（一个长 0 的闭合 walk）；<b>分裂一个面</b>（γ = α⁓β 中两个不相邻点 a、b 之间加边，γ 替换为 α⁓⟨b—a⟩ 与 ⟨a—b⟩⁓β）；<b>加一座桥</b>（两个嵌入各选一个起于端点的面，缝合新面 γ⁓⟨a—b⟩⁓δ⁓⟨b—a⟩）。第 7 章的结构归纳从此全面接管——13.2.4 还解释了"外面"根本不存在：把图画在球面上，任何面都能被戳成外面。</p>
+  </div>
+
+  <!-- 互动④ 离散面清点器 -->
+  <div class="widget reveal" id="w-faces">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🗂️ 离散面清点器：给四个面发对"身份证"</h4>
+    <p class="wdesc">左图是原书 Figure 13.6 的 K₄ 嵌入（点一点区域看它属于哪个面）。给每个连续面 I–IV 配对正确的离散面闭合 walk（原书式 13.1）。</p>
+    <div class="face-wrap">
+      <svg id="fc-svg" width="330" height="300" viewBox="0 0 330 300"></svg>
+      <div class="face-side" id="fc-rows"></div>
+    </div>
+    <div style="margin-top:10px"><button class="btn primary" id="fc-check">配对判定</button></div>
+    <div class="fb" id="fc-fb"></div>
+  </div>
+
+  <!-- 互动⑤ 面账本步进 -->
+  <div class="widget reveal" id="w-ledger">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">📒 嵌入构造面账本：两种构造，v−e+f 纹丝不动</h4>
+    <p class="wdesc">Definition 13.2.2 的两种构造，各走一遍账（数值全部来自原书 Figure 13.9/13.10 与 13.3 的归纳证明）。</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" id="lg-a">分裂一个面（Figure 13.9）</button>
+      <button class="btn" id="lg-b">加一座桥（Figure 13.10）</button>
+    </div>
+    <div class="ledger"><div class="lz" id="lg-body"></div><div class="lg-cap" id="lg-cap"></div></div>
+    <div class="lg-nav">
+      <button class="btn primary" id="lg-next">下一步 ▶</button>
+      <button class="btn ghost" id="lg-reset">回账首</button>
     </div>
   </div>
 </section>
@@ -276,11 +375,68 @@ footer p{margin:6px 0}
   </div>
 </section>
 
+<!-- ================= 13.8 Kuratowski ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">13.8</span><h2>Kuratowski 审判庭：非平面性的完整刻画</h2><span class="en">Kuratowski &amp; Minors</span></div>
+  <div class="reveal">
+    <p>本章选 K₅ 与 K₃,₃ 当主角，不是因为狗屋，而是因为 <span class="term">Kuratowski 定理（13.8.1）</span>：<b>图非平面 ⟺ 它包含 K₅ 或 K₃,₃ 作为 minor</b>。<span class="term">minor（Definition 13.8.2）</span>= 反复使用三种操作化简得到的图：删点、删边、合并相邻顶点。原书给了个热身例（Figure 13.16）：C₃ 是左图的 minor——注意 <b>C₃ 是连通图 G 的 minor ⟺ G 不是树</b>。亲手走一遍这六步：</p>
+  </div>
+
+  <!-- 互动⑥ Kuratowski minor 工坊 -->
+  <div class="widget reveal" id="w-minor">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🔧 minor 化简工坊：六步把图 (a) 炼成 C₃</h4>
+    <p class="wdesc">原书 Figure 13.16 的操作序列：合并 e₁ 两端 → 删 v₁ → 删 v₂ → 删边 e₂ → 删 v₃。逐步点亮，观察"化简"如何保留非平面性。</p>
+    <div class="ksteps" id="km-steps"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn primary" id="km-next">下一步 ▶</button>
+      <button class="btn ghost" id="km-reset">重来</button>
+    </div>
+    <div class="fb info" id="km-fb" style="display:block">C₃ 是连通图 G 的 minor ⟺ G 不是树。下面的快判对应 Kuratowski 的两个方向。</div>
+    <div id="km-quiz"></div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Practice Problems, Playable</span></div>
+  <div class="reveal">
+    <p>两道原书 Practice Problem 做成解题器。</p>
+  </div>
+
+  <!-- 习题 13.1 -->
+  <div class="widget reveal" id="w-p131">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🧾 习题 13.1：写出离散面</h4>
+    <p class="wdesc">原书题目：写出两个图的全部离散面（闭合 walk；格式：从字母序最早的顶点、顺时针方向开始）。图 (a) = 菱形 a-b-c-d + 桥 c—e + 三角形 e-f-g（Figure 13.7 同款）；图 (b) = 外圈 r-s-t-u + 中心 v 连 t 的 dangle 树（v—x—y、v—w），Figure 13.8 同款。</p>
+    <div class="small" style="margin-bottom:4px">图 (a) 共 <b>3 个</b>离散面，从卡片里点选：</div>
+    <div class="seqpick" id="p13a-pick"></div>
+    <div style="margin-top:8px"><button class="btn primary" id="p13a-check">判定图 (a)</button></div>
+    <div class="fb" id="p13a-fb"></div>
+    <hr style="border:none;border-top:1px dashed var(--line);margin:18px 0" />
+    <div class="small" style="margin-bottom:4px">图 (b) 只有两个面：外面与内面。内面的边界序列是？</div>
+    <div class="seqpick" id="p13b-pick"></div>
+    <div style="margin-top:8px"><button class="btn primary" id="p13b-check">判定图 (b)</button></div>
+    <div class="fb" id="p13b-fb"></div>
+  </div>
+
+  <!-- 习题 13.5 -->
+  <div class="widget reveal" id="w-p135">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">⚖️ 习题 13.5：欧拉公式两连问</h4>
+    <p class="wdesc">(a) 简单图 8 个顶点 24 条边，平均度是多少？(b) 连通平面简单图的边数比顶点数多 5，它有几个面？</p>
+    <div class="ansrow">(a) 平均度 = <input id="p135a" type="number" min="0" max="20" /> <span class="small muted">（提示：握手引理）</span></div>
+    <div class="ansrow">(b) 面数 f = <input id="p135b" type="number" min="0" max="30" /> <span class="small muted">（提示：f = 2 − v + e）</span></div>
+    <div style="margin-top:10px"><button class="btn primary" id="p135-check">两问全判</button></div>
+    <div class="fb" id="p135-fb"></div>
+  </div>
+</section>
+
 <!-- ================= 终局自测 ================= -->
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 13.1–13.8。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -323,7 +479,7 @@ footer p{margin:6px 0}
 <footer>
   <div class="wrap" style="padding:0">
     <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
-    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 13 章 = 第 517–544 页）。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 13 章正文 = 第 517–536 页，13.8 Kuratowski 与习题至 542 页）。</p>
     <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch12.html">上一章：简单图</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
   </div>
 </footer>
@@ -335,8 +491,9 @@ footer p{margin:6px 0}
   <div class="panel">
     <button class="close" id="toc-close">×</button>
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
-    <a href="#s1">13.1 · 狗屋与 quadarpi</a><a href="#s2">13.3 · 欧拉公式</a><a href="#s3">13.5 · K₅ 与 K₃,₃ 审判</a>
-    <a href="#s4">13.6 · 五色定理</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#s1">13.1 · 狗屋与 quadarpi</a><a href="#s2">13.2 · 离散面与嵌入</a><a href="#s3">13.3–5 · 欧拉公式与审判</a>
+    <a href="#s4">13.6–7 · 五色 · 多面体</a><a href="#s5">13.8 · Kuratowski</a><a href="#sp">⚔️ · 习题实战</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -486,6 +643,256 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
       <td>${r.name ? "✅ " + r.name : "—"}</td></tr>`).join("");
 })();
 
+/* ---------- 互动④ 离散面清点器 ---------- */
+(() => {
+  const svg = $("#fc-svg"), NS = "http://www.w3.org/2000/svg";
+  const el = (t, a) => { const x = document.createElementNS(NS, t); for (const k in a) x.setAttribute(k, a[k]); return x; };
+  const P = { a: [70, 150], c: [260, 150], d: [165, 262], b: [165, 92] };
+  // K₄ 嵌入（原书 Figure 13.6）：外圈三角 a-c-d，内点 b 连三外点
+  const FACES = [
+    { k: "I",   tri: ["b","c","d"], ans: "bcdb", fill: "rgba(180,131,42,.18)" },
+    { k: "II",  tri: ["a","b","d"], ans: "abda", fill: "rgba(15,76,129,.14)" },
+    { k: "III", tri: ["a","b","c"], ans: "abca", fill: "rgba(46,125,79,.14)" },
+    { k: "IV",  tri: ["a","c","d"], ans: "acda", fill: "rgba(179,55,46,.10)" },
+  ];
+  const EDGES = [["a","b"],["b","c"],["b","d"],["a","c"],["a","d"],["c","d"]];
+  let focus = null;
+  function render(){
+    svg.innerHTML = "";
+    FACES.forEach(f => {
+      const pts = f.tri.map(v => P[v].join(",")).join(" ");
+      const poly = el("polygon", {points: pts, fill: focus === f.k ? f.fill : "transparent", stroke: "none"});
+      poly.style.cursor = "pointer";
+      poly.addEventListener("click", () => { focus = focus === f.k ? null : f.k; render(); });
+      svg.appendChild(poly);
+    });
+    EDGES.forEach(([u, v]) => svg.appendChild(el("line", {x1:P[u][0], y1:P[u][1], x2:P[v][0], y2:P[v][1], stroke:"#2b2a26", "stroke-width":2})));
+    Object.keys(P).forEach(v => {
+      svg.appendChild(el("circle", {cx:P[v][0], cy:P[v][1], r:13, fill:"#fff", stroke:"#2b2a26", "stroke-width":2}));
+      const t = el("text", {x:P[v][0], y:P[v][1]+5, "text-anchor":"middle", "font-size":14, "font-weight":700, fill:"#2b2a26"});
+      t.textContent = v; svg.appendChild(t);
+    });
+    const cap = el("text", {x:165, y:290, "text-anchor":"middle", "font-size":12, fill:"#6f6a5e"});
+    cap.textContent = focus ? "高亮面 " + focus : "点击图中的面区域高亮（IV = 外圈三角 a-c-d）";
+    svg.appendChild(cap);
+  }
+  const OPTS = ["abca", "abda", "bcdb", "acda", "abcda"];
+  const rows = $("#fc-rows"), picks = {};
+  FACES.forEach(f => {
+    const d = document.createElement("div");
+    d.className = "facerow"; d.id = "fc-" + f.k;
+    d.innerHTML = `<span class="flabel">面 ${f.k}</span>`;
+    const sel = document.createElement("select");
+    sel.add(new Option("— 选择闭合 walk —", ""));
+    OPTS.forEach(o => sel.add(new Option(o, o)));
+    sel.addEventListener("change", () => picks[f.k] = sel.value);
+    d.appendChild(sel);
+    rows.appendChild(d);
+  });
+  $("#fc-check").addEventListener("click", () => {
+    const fb = $("#fc-fb");
+    if (FACES.some(f => !picks[f.k])) { fb.className = "fb no"; fb.textContent = "四个面都配上再判定。"; return; }
+    let all = true;
+    FACES.forEach(f => {
+      const ok = picks[f.k] === f.ans;
+      $("#fc-" + f.k).classList.toggle("hit", ok);
+      $("#fc-" + f.k).classList.toggle("miss", !ok);
+      if (!ok) all = false;
+    });
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.innerHTML = all
+      ? "🎯 四个离散面全部配对！正是原书式 13.1。注意外面 IV 的边界是外圈三角 a→c→d→a——'外面'在这个嵌入里没有任何特殊地位（13.2.4：画在球面上谁都能当外面）。"
+      : "有配错的面。提示：每个离散面 = 恰好沿一个区域边界走一圈的闭合 walk；外面 IV 沿外圈三角 a→c→d→a。干扰项 abcda 虽然每步都是真边（闭合 walk），但它斜切横跨了两个面，不是任何单一区域的边界。";
+  });
+  render();
+})();
+
+/* ---------- 互动⑤ 面账本步进 ---------- */
+(() => {
+  const SCRIPTS = {
+    A: [
+      { z: "账首：嵌入 ℰ 含离散面 γ = <b>awxyza</b>（原书 Figure 13.9：六边形 a-w-x-b-y-z）。γ 上有两组不相邻顶点，取 a 与 b。",
+        cap: "v − e + f = 2 在账上成立。" },
+      { z: "γ = α ⌢ β，其中 α = a w x b（a 走到 b）、β = b y z a（b 走回 a）。a 与 b 不相邻 ⇒ 可以分裂这个面：加边 ⟨a—b⟩。", cap: "边数 e 加 1。" },
+      { z: "γ 被替换为两个新离散面：<span class='newf'>a w x b a</span>（α ⌢ ⟨b—a⟩）与 <span class='newf'>a b y z a</span>（⟨a—b⟩ ⌢ β）——原书式 13.2。面数 f 加 1。", cap: "Δe = +1 且 Δf = +1 ⇒ v − e + f 纹丝不动（split face 构造的归纳核心）。" },
+    ],
+    B: [
+      { z: "账首：两个不相交的连通图各有平面嵌入。G 的离散面 = {<b>axyza</b>, axya, ayza}（原书 Figure 13.10），自检：v=4, e=5, f=3，4 − 5 + 3 = 2 ✓。H 同理 v_H − e_H + f_H = 2。", cap: "两本账各自为 2。" },
+      { z: "选 G 中起于 a 的面 γ = axyza，与 H 中起于 b 的面 δ。加桥 ⟨a—b⟩：e 加 1，两图合为一个连通图。", cap: "Δe = +1，顶点 v = v_G + v_H。" },
+      { z: "γ 与 δ 被缝合成一个新面 γ ⌢ ⟨a—b⟩ ⌢ δ ⌢ ⟨b—a⟩（原书：axyza 与 δ 缝成 axyzab···ba）——两个旧面换来一个新面，f 减 1。", cap: "Δf = −1 恰好抵消 Δe = +1 ⇒ v − e + f = 2 + 2 − 2 = 2 ✓（add bridge 构造的归纳核心，原书 13.3 证明原文）。" },
+    ],
+  };
+  let mode = "A", k = 0;
+  function render(){
+    const steps = SCRIPTS[mode];
+    $("#lg-body").innerHTML = steps.slice(0, k + 1).map(s => "<div style='margin:4px 0'>" + s.z + "</div>").join("<hr style='border:none;border-top:1px dashed var(--line);margin:6px 0'>");
+    $("#lg-cap").innerHTML = steps[k] ? "▸ " + steps[k].cap : "";
+    $("#lg-next").disabled = k >= steps.length - 1;
+    $("#lg-next").textContent = k >= steps.length - 1 ? "账毕 ■" : "下一步 ▶";
+  }
+  $("#lg-a").addEventListener("click", () => { mode = "A"; k = 0; render(); });
+  $("#lg-b").addEventListener("click", () => { mode = "B"; k = 0; render(); });
+  $("#lg-next").addEventListener("click", () => { if (k < SCRIPTS[mode].length - 1) { k++; render(); } });
+  $("#lg-reset").addEventListener("click", () => { k = 0; render(); });
+  render();
+})();
+
+/* ---------- 互动⑥ Kuratowski minor 工坊 ---------- */
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (t, a) => { const x = document.createElementNS(NS, t); for (const k in a) x.setAttribute(k, a[k]); return x; };
+  const pos = { P:[80,10], T:[80,48], L:[28,88], R:[132,88], B:[80,128], q:[145,122], r:[150,78], m:[106,68] };
+  const FRAMES = [
+    { label:"(a) 原图", op:"", pts:["P","T","L","R","B","q","r"],
+      edges:[["P","T"],["L","T"],["T","R","e₁"],["R","B"],["B","L"],["R","q"],["q","r"]] },
+    { label:"(b)", op:"合并 e₁ 两端 T、R → m", pts:["P","m","L","B","q","r"],
+      edges:[["P","m"],["L","m"],["m","B"],["m","q"],["q","r"]] },
+    { label:"(c)", op:"删 v₁ = q（带走 m—q、q—r）", pts:["P","m","L","B","r"],
+      edges:[["P","m"],["L","m"],["m","B"]], lone:["r"] },
+    { label:"(d)", op:"删 v₂ = r（孤点）", pts:["P","m","L","B"],
+      edges:[["P","m","e₂"],["L","m"],["m","B"]], lone:["P"] },
+    { label:"(e)", op:"删边 e₂ = ⟨P—m⟩", pts:["P","m","L","B"],
+      edges:[["L","m"],["m","B"],["B","L"]], lone:["P"] },
+    { label:"(f) = C₃", op:"删 v₃ = P（孤点）", pts:["m","L","B"],
+      edges:[["L","m"],["m","B"],["B","L"]] },
+  ];
+  const stepsBox = $("#km-steps");
+  FRAMES.forEach((f, i) => {
+    const d = document.createElement("div");
+    d.className = "kframe"; d.id = "km-" + i;
+    const svg = el("svg", {width:158, height:141, viewBox:"0 0 168 150"});
+    f.edges.forEach(([u, v, tag]) => {
+      svg.appendChild(el("line", {x1:pos[u][0], y1:pos[u][1], x2:pos[v][0], y2:pos[v][1],
+        stroke: tag ? "#b4832a" : "#2b2a26", "stroke-width": tag ? 3.5 : 2}));
+      if (tag) {
+        const t = el("text", {x:(pos[u][0]+pos[v][0])/2, y:(pos[u][1]+pos[v][1])/2 - 5, "text-anchor":"middle", "font-size":11, fill:"#b4832a"});
+        t.textContent = tag; svg.appendChild(t);
+      }
+    });
+    f.pts.forEach(v => {
+      svg.appendChild(el("circle", {cx:pos[v][0], cy:pos[v][1], r:9, fill:"#fff", stroke:"#2b2a26", "stroke-width":2}));
+      const t = el("text", {x:pos[v][0], y:pos[v][1]+3.5, "text-anchor":"middle", "font-size":9, "font-weight":700, fill:"#2b2a26"});
+      t.textContent = v; svg.appendChild(t);
+    });
+    (f.lone || []).forEach(v => {
+      const rightRoom = pos[v][0] + 16 + 10 <= 168;
+      const lx = rightRoom ? pos[v][0] + 17 : pos[v][0] - 17;
+      svg.appendChild(el("circle", {cx:lx, cy:pos[v][1] + 2, r:10, fill:"none", stroke:"#b3372e", "stroke-dasharray":"3,3", "stroke-width":1.5}));
+    });
+    d.appendChild(svg);
+    d.insertAdjacentHTML("beforeend", `<div class="kop">${f.op || "　"}</div><div class="kc">${f.label}</div>`);
+    stepsBox.appendChild(d);
+  });
+  let k = 0;
+  function refresh(){
+    FRAMES.forEach((_, i) => $("#km-" + i).classList.toggle("on", i <= k));
+    $("#km-next").disabled = k >= FRAMES.length - 1;
+    $("#km-next").textContent = k >= FRAMES.length - 1 ? "炼成 C₃ ■" : "下一步 ▶";
+    if (k === FRAMES.length - 1) {
+      const fb = $("#km-fb");
+      fb.className = "fb ok"; fb.style.display = "block";
+      fb.innerHTML = "🎯 六步炼成 C₃——所以 C₃ 是图 (a) 的 minor。原书借它说明：C₃ 是连通图 G 的 minor ⟺ G 不是树。Kuratowski 定理说，所有非平面性都能这样炼成 K₅ 或 K₃,₃。";
+    }
+  }
+  $("#km-next").addEventListener("click", () => { if (k < FRAMES.length - 1) { k++; refresh(); } });
+  $("#km-reset").addEventListener("click", () => { k = 0; refresh(); $("#km-fb").className = "fb info"; $("#km-fb").style.display = "block"; $("#km-fb").textContent = "C₃ 是连通图 G 的 minor ⟺ G 不是树。下面的快判对应 Kuratowski 的两个方向。"; });
+  // 快判三题
+  const QUIZ = [
+    { s: "K₅ 是 K₆ 的 minor。", ans: true, why: "对——K₆ 删掉一个顶点（及其关联边）就是 K₅。删点是 minor 三操作之一。" },
+    { s: "每棵树都以 C₃ 为 minor。", ans: false, why: "错——树没有圈，而删点/删边/合并相邻点都造不出新圈（合并相邻点恰似'缩短'路径）。原书：C₃ 是连通图 G 的 minor ⟺ G 不是树。" },
+    { s: "minor 的三种操作：删点、删边、合并相邻顶点，可任意次任意顺序使用。", ans: true, why: "对——Definition 13.8.2 原文（脚注 4：三种操作可以任意次数、任意顺序）。" },
+  ];
+  const qbox = $("#km-quiz");
+  QUIZ.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "qcrow";
+    div.innerHTML = `<div class="stmt">${i+1}. ${it.s}</div>
+      <div class="btns"><button class="btn">对</button><button class="btn">错</button></div><div class="verdict"></div>`;
+    const vd = $(".verdict", div);
+    $$(".btns .btn", div).forEach((b, kk) => b.addEventListener("click", () => {
+      if (div.classList.contains("done")) return;
+      div.classList.add("done");
+      const said = kk === 0, ok = said === it.ans;
+      vd.className = "verdict show";
+      vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+    }));
+    qbox.appendChild(div);
+  });
+  refresh();
+})();
+
+/* ---------- 互动⑦ 习题 13.1 ---------- */
+(() => {
+  const ANSA = ["abcda", "efge", "abcefgecda"];
+  const CARDSA = ["abcda", "efge", "abcefgecda", "abca", "abdca", "cefge", "abcdefgecda", "efg"];
+  const poolA = $("#p13a-pick"), selA = new Set();
+  CARDSA.forEach(s => {
+    const c = document.createElement("span");
+    c.className = "seqcard"; c.textContent = s;
+    c.addEventListener("click", () => {
+      if (c.classList.contains("right") || c.classList.contains("wrongp")) return;
+      selA.has(s) ? selA.delete(s) : selA.add(s);
+      c.classList.toggle("sel", selA.has(s));
+    });
+    poolA.appendChild(c);
+  });
+  $("#p13a-check").addEventListener("click", () => {
+    const fb = $("#p13a-fb");
+    if (!selA.size) { fb.className = "fb no"; fb.textContent = "先点选你认为是图 (a) 离散面的卡片。"; return; }
+    const ans = new Set(ANSA);
+    let ok = selA.size === ans.size && [...ans].every(s => selA.has(s));
+    [...new Set([...ans, ...selA])].forEach(s => {
+      const card = [...poolA.children].find(c => c.textContent === s);
+      if (!card) return;
+      if (selA.has(s) && ans.has(s)) card.classList.add("right");
+      else card.classList.add("wrongp");
+    });
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = (ok ? "✅ 三个离散面全中！" : "❌ 有出入（绿 = 应选，红 = 不该选）。") +
+      " 菱形内面 = abcda；三角形内面 = efge；外面沿边界走一圈 = abcefgecda——桥 ⟨c—e⟩ 在其中出现两次（引理 13.4.1）。";
+  });
+  const ANSB = "rstuvyxvvwtur";
+  const CARDSB = [ANSB, "rstuvwtur", "rstuvxyxwvur", "rstuvtur"];
+  const poolB = $("#p13b-pick"), doneB = { v: false };
+  CARDSB.forEach(s => {
+    const c = document.createElement("span");
+    c.className = "seqcard"; c.textContent = s;
+    c.addEventListener("click", () => {
+      if (doneB.v) return;
+      doneB.v = true;
+      const fb = $("#p13b-fb");
+      const ok = s === ANSB;
+      c.classList.add(ok ? "right" : "wrongp");
+      if (!ok) [...poolB.children].find(x => x.textContent === ANSB).classList.add("right");
+      fb.className = "fb " + (ok ? "ok" : "no");
+      fb.innerHTML = (ok ? "✅ " : "❌ ") + "图 (b)（原书 Figure 13.8 的 dangle 例）只有两个面：外面与内面。原书正文给出的内面边界即 <b>rstuvyxvvwtur</b>——注意 dangle 的每条边在序列里'一来一回'出现两次，这正是 dangle 的特征。";
+    });
+    poolB.appendChild(c);
+  });
+})();
+
+/* ---------- 互动⑧ 习题 13.5 ---------- */
+(() => {
+  const ANS = { a: 6, b: 7 };
+  const WHY = {
+    a: "握手引理：度和 = 2e = 48，平均度 = 48 / 8 = 6。（顺带：24 条边 > 3·8 − 6 = 18 ⟹ 这图必然非平面！）",
+    b: "欧拉公式：f = 2 − v + e = 2 + (e − v) = 2 + 5 = 7。边数比顶点数多 5 ⇒ 面数就是 7。",
+  };
+  $("#p135-check").addEventListener("click", () => {
+    const fb = $("#p135-fb");
+    const parts = [["a", "#p135a"], ["b", "#p135b"]];
+    const msgs = []; let all = true;
+    parts.forEach(([k, sel]) => {
+      const v = $(sel).value;
+      if (v === "") { msgs.push(`(${k}) 未填`); all = false; return; }
+      if (+v === ANS[k]) msgs.push(`(${k}) ✅ ${ANS[k]}。${WHY[k]}`);
+      else { msgs.push(`(${k}) ❌ 你答 ${v}。提示：(a) 用 Σdeg = 2e；(b) 用 f = 2 − v + e。`); all = false; }
+    });
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.innerHTML = msgs.join("<br>");
+  });
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -525,15 +932,27 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
        {t:"图非平面 ⟺ 包含奇圈", ok:false, fb:"那是 2-着色失败的刻画（二部图判据），与平面性无关。"},
        {t:"图非平面 ⟺ e > 3v − 6", ok:false, fb:"上界只是必要条件——很多图满足 e ≤ 3v−6 仍非平面（如 Petersen 图）。"},
        {t:"图非平面 ⟺ 无法上色", ok:false, fb:"着色与平面性是两套独立的理论。"}]},
+    {q:"引理 13.4.1：桥（割边）在平面嵌入的离散面边界中如何出现？",
+     opts:[
+       {t:"在两个不同面中各出现一次", ok:false, fb:"那是普通边的出现方式。桥只有一侧'贴着'同一个面。"},
+       {t:"恰在同一个面中出现两次", ok:true, fb:"对——原书 Figure 13.7 的桥 ⟨c—e⟩ 在外侧面 abcefgecda 里出现两次；普通边才是在两个面各一次。"},
+       {t:"只出现一次", ok:false, fb:"每条边在面边界的总出现次数恰为 2（引理 13.4.1）——桥的两份挤在同一个面里。"},
+       {t:"桥不参与任何面", ok:false, fb:"桥也在边界上——不然平面图上它画在哪儿？"}]},
+    {q:"（习题 13.4）非连通平面嵌入（c 个连通分量）满足？",
+     opts:[
+       {t:"v − e + f = 2c", ok:true, fb:"对——每个分量贡献 2，桥缝合两分量时 v−e+f 从 4 变 2 = 2×1。c = 1 时退化回欧拉公式。"},
+       {t:"v − e + f = 2", ok:false, fb:"那是连通版的公式；非连通时 f 少了（分量之间多出'共享'的外面）。"},
+       {t:"v − e + f = 0", ok:false, fb:"只在 c = 0（空图）的退化情形。"},
+       {t:"没有类似公式", ok:false, fb:"有——结构归纳照样走：collect disjoint graphs 构造时左右两侧各加 2。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🗺️ 平面测绘师", "欧拉公式、边数上界、五色定理、多面体分类——Part II 的图论章节全部收官。下一章计数：让组合数学接手。"]
-      : right >= 3 ? ["📐 欧拉公式记账员", "v−e+f=2 已入脑——回看 13.5 节两个推论（K₅、K₃,₃ 的判死过程）补上缺口。"]
+    const [rank, note] = right >= 7 ? ["🗺️ 平面测绘师", "欧拉公式、边数上界、五色定理、多面体分类、Kuratowski——Part II 的图论章节全部收官。下一章计数：让组合数学接手。"]
+      : right >= 4 ? ["📐 欧拉公式记账员", "v−e+f=2 已入脑——回看 13.5 节两个推论（K₅、K₃,₃ 的判死过程）补上缺口。"]
       : ["🌱 画图新丁", "先在欧拉公式实验室里把三个图数一遍：v、e、f 的清点要含'外面的无限面'。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){

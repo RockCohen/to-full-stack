@@ -6,6 +6,7 @@
 <title>条件概率 · 数学之旅第十八章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 18 章的中文交互式解读：条件概率定义、贝叶斯法则、乳腺癌检测悖论、自然频数、全概率定律、辛普森悖论、独立性与贝叶斯因子。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -171,9 +172,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -187,7 +194,7 @@ footer p{margin:6px 0}
     <div class="en">Conditional Probability</div>
     <p class="lead">准确率 95% 的乳腺癌检测，阳性后真患病的概率只有 15%——"检测错了"与"你病了"不是同一道题。选错条件会让 O.J. 辛普森的律师团和上万愤怒读者一起翻车；贝叶斯因子 ×100 也压不住 1:9999 的先验赔率。</p>
     <div class="meta">
-      <span>⏱ 约 60 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 747–775 页</span>
+      <span>⏱ 约 70 分钟</span><span>🧩 7 个互动装置</span><span>📖 原书第 747–775 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch17.html">上一章：事件与概率空间</a></div>
@@ -204,6 +211,7 @@ footer p{margin:6px 0}
   <a href="#s5"><span class="toc-num">18.9</span>贝叶斯因子更新器</a>
   <a href="#s6"><span class="toc-num">18.6</span>辛普森悖论</a>
   <a href="#s7"><span class="toc-num">18.7</span>独立性三连</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -228,6 +236,20 @@ footer p{margin:6px 0}
     <p>C 级冰球队三局两胜：首战胜率 1/2；赢了上一场则士气高涨（当战胜率 2/3），输了则泄气（当战胜率 1/3）。问：<b>给定赢了第一场，最终夺冠的概率？</b>老配方四步：树图 6 个 outcome，边概率随上一场结果切换 2/3 / 1/3：</p>
     <div class="eq math">Pr[夺冠 | 首胜] = (1/3 + 1/18) / (1/3 + 1/18 + 1/9) = 7/9</div>
     <p>反过来问"给定夺冠，首胜的概率"也是 7/9——条件概率没有时间方向（18.4.5 a posteriori：数学里不存在"谁先发生"）。</p>
+  </div>
+
+  <!-- 互动⑤ 冰球队树图 -->
+  <div class="widget reveal" id="w-hk">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">🏒 冰球队树图：6 个 outcome 的条件切片</h4>
+    <p class="wdesc">W/L 序列（系列赛 2 胜即止）。按钮切换"全部 / 只看首胜 / 只看夺冠"三档，看 7/9 怎样从 6 个 outcome 里切出来。</p>
+    <div class="num-row">
+      <button class="btn hkf primary" data-f="all">全部 outcome</button>
+      <button class="btn hkf" data-f="w1">条件：赢了首场</button>
+      <button class="btn hkf" data-f="w1c">条件：首胜 ∩ 夺冠</button>
+    </div>
+    <div class="med-tree" id="hk-tree"></div>
+    <div class="fb info" id="hk-fb" style="display:block">outcome 概率 = 树路径边概率之积：WW = ½·⅔ = 1/3；WLW = ½·⅓·⅓ = 1/18（1-1 后第三场士气低落）；LL = ½·⅔ = 1/3（两连败，第三场不打）。</div>
   </div>
 </section>
 
@@ -330,11 +352,55 @@ footer p{margin:6px 0}
   </div>
 </section>
 
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Problems 18.2 &amp; 18.12, Playable</span></div>
+  <div class="reveal">
+    <p>两道原书习题做成解题器：左轮枪的条件概率与桥牌的 A。</p>
+  </div>
+
+  <!-- 习题 18.2 -->
+  <div class="widget reveal" id="w-harry">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🔫 习题 18.2：Dirty Harry 的左轮</h4>
+    <p class="wdesc">6 弹膛 2 弹。Harry 对头扣扳机，第一枪咔哒（空）。他可以<b>直接再扣</b>（转轮进到下一膛），也可以<b>先甩轮重随机</b>。关键问题：两弹<b>相邻</b>还是<b>相对</b>，最优选择一样吗？先算再答。</p>
+    <div class="num-row">
+      <label class="small">布局：</label>
+      <button class="btn hry primary" data-h="adj">两弹相邻（1、2 膛）</button>
+      <button class="btn hry" data-h="opp">两弹相对（1、4 膛）</button>
+    </div>
+    <div class="num-row">
+      <div class="statcard">直接再扣：第二枪中弹 = <b id="hr-spin">—</b></div>
+      <div class="statcard">甩轮重随机：中弹 = <b id="hr-resh" style="color:var(--amber)">1/3</b>（恒为 2/6）</div>
+    </div>
+    <div class="num-row">
+      <button class="btn primary" id="hr-a">Harry 应该直接再扣</button>
+      <button class="btn primary" id="hr-b">Harry 应该先甩轮</button>
+    </div>
+    <div class="fb" id="hr-fb"></div>
+  </div>
+
+  <!-- 习题 18.12 -->
+  <div class="widget reveal" id="w-ace">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🂡 习题 18.12：一张 A 与一张黑桃 A 的区别</h4>
+    <p class="wdesc">13 张桥牌手。两问：① 已知手里<b>至少有一张 A</b>，再有一张 A 的概率？② 已知手里有<b>黑桃 A</b>，再有一张 A 的概率？直觉说一样——先选再看。</p>
+    <div class="num-row">
+      <button class="btn aceq primary" data-q="1">问①的条件是"≥1 张 A"</button>
+      <button class="btn aceq" data-q="2">问②的条件是"有黑桃 A"</button>
+    </div>
+    <div class="num-row">
+      <button class="btn primary" id="ac-ans">揭晓与对比</button>
+    </div>
+    <div class="fb" id="ac-fb"></div>
+  </div>
+</section>
+
 <!-- ================= 终局自测 ================= -->
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 18.1–18.9。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -391,7 +457,8 @@ footer p{margin:6px 0}
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
     <a href="#s1">18.1 · 选错条件</a><a href="#s2">18.3 · 冰球队 7/9</a><a href="#s3">18.4 · 乳腺癌检测器</a>
     <a href="#s4">18.5 · 全概率定律</a><a href="#s5">18.9 · 贝叶斯因子更新器</a><a href="#s6">18.6 · 辛普森悖论</a>
-    <a href="#s7">18.7 · 独立性三连</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#s7">18.7 · 独立性三连</a><a href="#sp">⚔️ · 习题实战（18.2 左轮 / 18.12 桥牌 A）</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -602,6 +669,98 @@ const fmt = n => n.toLocaleString("en-US");
   upd();
 })();
 
+/* ---------- 互动⑤ 冰球队树图 ---------- */
+(() => {
+  const OUT = [
+    { s: "W W",   p: "1/3",  v: 1/3,  w1: true,  champ: true,  note: "½·⅔：两连胜夺冠" },
+    { s: "W L W", p: "1/18", v: 1/18, w1: true,  champ: true,  note: "½·⅓·⅓：1-1 后第三场士气低落仍翻盘" },
+    { s: "W L L", p: "1/9",  v: 2/18, w1: true,  champ: false, note: "½·⅓·⅔：首胜后被翻盘" },
+    { s: "L W W", p: "1/9",  v: 2/18, w1: false, champ: true,  note: "½·⅓·⅔：输首场后连扳两局" },
+    { s: "L W L", p: "1/18", v: 1/18, w1: false, champ: false, note: "½·⅓·⅓" },
+    { s: "L L",   p: "1/3",  v: 6/18, w1: false, champ: false, note: "½·⅔：两连败横扫出局（第三场不打）" },
+  ];
+  let mode = "all";
+  function draw(){
+    const tree = $("#hk-tree"), fb = $("#hk-fb");
+    const show = OUT.filter(o => mode === "all" || (mode === "w1" && o.w1) || (mode === "w1c" && o.w1 && o.champ));
+    tree.innerHTML = show.map(o =>
+      `<div class="med-branch ${o.champ ? "sick" : ""}"><h6>${o.s}</h6><span class="v">${o.p}</span><br>${o.note}</div>`).join("");
+    const sum = show.reduce((s, o) => s + o.v, 0);
+    fb.className = "fb " + (mode === "w1c" ? "ok" : "info");
+    if (mode === "all") fb.innerHTML = `六个 outcome 概率和 = ${sum.toFixed(3)} = 1 ✓。绿色 = 最终夺冠的分支。`;
+    else if (mode === "w1") fb.innerHTML = `条件分母：Pr[赢首场] = 1/3 + 1/18 + 1/9 = 9/18 = <b>1/2</b> ✓（第一场边概率）。条件切片只留 3 个 outcome。`;
+    else fb.innerHTML = `分子 = Pr[首胜 ∩ 夺冠] = 1/3 + 1/18 = 7/18。⟹ Pr[夺冠 | 首胜] = (7/18) / (1/2) = <b>7/9</b> —— 原书答案复现。`;
+  }
+  $$(".hkf").forEach(b => b.addEventListener("click", () => {
+    $$(".hkf").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary"); mode = b.dataset.f; draw();
+  }));
+  draw();
+})();
+
+/* ---------- 互动⑥ 习题 18.2 左轮 ---------- */
+(() => {
+  let layout = "adj";
+  const draw = () => {
+    const direct = layout === "adj" ? "1/4" : "1/2";
+    $("#hr-spin").textContent = direct;
+    $("#hr-fb").className = "fb info";
+    $("#hr-fb").innerHTML = layout === "adj"
+      ? "相邻布局：空膛 3,4,5,6，它们的下一膛分别是 4,5,6,1 —— 只有 1 个有弹 ⟹ 条件命中 <b>1/4</b>。1/4 &lt; 甩轮的 2/6 = 1/3 ⟹ <b>直接再扣更安全</b>。"
+      : "相对布局：空膛 2,4,5,6，下一膛分别是 3,5,6,1 —— 其中 2 个有弹 ⟹ 条件命中 <b>1/2</b>。1/2 &gt; 甩轮的 1/3 ⟹ <b>先甩轮更安全</b>。";
+  };
+  $$(".hry").forEach(b => b.addEventListener("click", () => {
+    $$(".hry").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary"); layout = b.dataset.h;
+    $("#hr-fb").className = "fb info"; draw();
+  }));
+  $("#hr-a").addEventListener("click", () => {
+    const fb = $("#hr-fb");
+    const ok = layout === "adj";
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = (ok ? "✅ 正确（相邻布局）：" : "❌ 相对布局下恰恰相反：") +
+      (layout === "adj"
+        ? "条件命中 1/4 &lt; 重随机 1/3。第一枪空这个条件把 2/6 改写成了 1/4——条件概率的威力。"
+        : "相对布局下直接扣的命中是 2/4 = 1/2 &gt; 1/3，应该甩轮重随机。相邻/相对，最优解反转——这正是本题的考点。");
+  });
+  $("#hr-b").addEventListener("click", () => {
+    const fb = $("#hr-fb");
+    const ok = layout === "opp";
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = (ok ? "✅ 正确（相对布局）：" : "❌ 相邻布局下恰恰相反：") +
+      (layout === "opp"
+        ? "条件命中 1/2 &gt; 重随机 1/3，甩轮重随机把信息'洗掉'反而更安全。"
+        : "相邻布局直接扣只有 1/4 命中，比重随机的 1/3 更安全，应该直接再扣。");
+  });
+  draw();
+})();
+
+/* ---------- 互动⑦ 习题 18.12 桥牌 A ---------- */
+(() => {
+  // 组合数
+  const C = (n, k) => { if (k < 0 || k > n) return 0; let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return Math.round(r); };
+  // ① P(≥2A | ≥1A)：13 张牌
+  const num1 = C(4,2)*C(48,11) + C(4,3)*C(48,10) + C(4,4)*C(48,9);
+  const den1 = C(48,12)*4 + num1; // ≥1A = 恰1A + ≥2A
+  const p1 = num1 / den1;
+  // ② P(≥2A | 黑桃A在手)：剩 12 张从 51 张抽，需再中 ≥1 张非黑桃 A（3 张）
+  const p2 = 1 - C(48,12) / C(51,12);
+  let q = 1;
+  $("#ac-ans").addEventListener("click", () => {
+    const fb = $("#ac-fb");
+    fb.className = "fb ok";
+    fb.innerHTML = `两问答案不同——<br><b>① Pr[≥2A | ≥1A] ≈ ${(p1*100).toFixed(1)}%</b>（精确 ${num1.toLocaleString()} / ${den1.toLocaleString()}）<br>` +
+      `<b>② Pr[≥2A | 黑桃A] ≈ ${(p2*100).toFixed(1)}%</b>（= 1 − C(48,12)/C(51,12)）<br>` +
+      `②更大：指定黑桃 A 相当于把'那张 A'钉死在手里，剩下 12 张只需 51 选 12 里再捞一张 A；而'至少一张 A'的切片里大量样本是<b>恰好一张 A</b>（四分之三的可能花色都落空），把再有一张 A 的概率拉低。条件不同，切片不同——数字不会骗人，但表述会。${q++ > 0 ? "" : ""}`;
+  });
+  $$(".aceq").forEach(b => b.addEventListener("click", () => {
+    $$(".aceq").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary");
+    $("#ac-fb").className = "fb info";
+    $("#ac-fb").textContent = "选好两问的对应关系后，点'揭晓与对比'。直觉上两问一样？原书把它们并列就是为了打破这个直觉。";
+  }));
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -641,15 +800,27 @@ const fmt = n => n.toLocaleString("en-US");
        {t:"互不相交的事件永远不独立（除非某事件概率为 0）", ok:true, fb:"对。知道 A 发生 ⇒ B 必不发生，Pr[A|B] = 0 ≠ Pr[A]。"},
        {t:"独立可以从数据中检验出来", ok:false, fb:"独立是建模假设，不是观测量。"},
        {t:"天气预报每小时 10% 雨，12 小时全干概率 0.9¹²", ok:false, fb:"书里的反例：各小时降雨不独立，0.28 系统性偏低。"}]},
+    {q:"冰球队（18.3）：给定赢了第一场，最终夺冠的概率是？",
+     opts:[
+       {t:"2/3——首胜后士气在 2/3", ok:false, fb:"第二场确实 2/3，但如果第二场输了，第三场只剩 1/3。"},
+       {t:"7/9", ok:true, fb:"对。首胜切片 {WW=1/3, WLW=1/18, WLL=1/9}，夺冠 = 1/3+1/18 = 7/18，除以条件分母 1/2 得 7/9。"},
+       {t:"4/9", ok:false, fb:"那是无条件夺冠概率切片（分子忘了除以条件分母 1/2）。"},
+       {t:"3/4", ok:false, fb:"偏高——第三场的 1/3 拖了后腿。"}]},
+    {q:"（习题 18.2）6 弹膛 2 弹相邻，第一枪空后，Harry 的最优选择是？",
+     opts:[
+       {t:"直接再扣：第二枪中弹只有 1/4", ok:true, fb:"对。第一枪空 ⟹ 轮停在 4 个空膛之一；相邻布局下 4 个下一膛只有 1 个有弹（最末空膛的下一膛是弹）。1/4 < 甩轮重随机的 1/3，直接扣更安全。"},
+       {t:"甩轮重随机：1/3 比直接扣安全", ok:false, fb:"方向反了——相邻布局直接扣只有 1/4 命中，比重随机的 2/6=1/3 更优。"},
+       {t:"两者一样：都是 1/3", ok:false, fb:"直接扣的条件概率依赖'第一枪空'这一信息——它改变了轮位分布。"},
+       {t:"无法计算——信息不足", ok:false, fb:"四步法信息齐全：条件在'第一枪空'上，枚举 4 个空膛即可。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🩺 贝叶斯诊断科主任", "条件、全概率、贝叶斯因子、辛普森、独立性全部拿下。下一章：独立性单独成章，把'假设'拆开看。"]
-      : right >= 3 ? ["🔬 虚惊一场的阳性", "检测器与 15.4% 已到手——回看 18.9 赔率更新与 18.8.2 三硬币。"]
+    const [rank, note] = right >= 7 ? ["🩺 贝叶斯诊断科主任", "条件、全概率、贝叶斯因子、辛普森、独立性、冰球队全部拿下。下一章：随机变量登场。"]
+      : right >= 4 ? ["🔬 虚惊一场的阳性", "检测器与 15.4% 已到手——回看 18.9 赔率更新与 18.8.2 三硬币。"]
       : ["🧪 第一滴试剂", "玩检测器实验台：把发病率拉到 50%，看阳性怎么变得可信。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   let i = 0, right = 0;

@@ -6,6 +6,7 @@
 <title>无限集 · 数学之旅第八章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 8 章的中文交互式解读：无限基数、Cantor 对角论证、停机问题与 Russell 悖论。第一部分收官章。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -140,6 +141,40 @@ h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-rig
 .dilemma .side{border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;background:#fff}
 .dilemma .side.dead{background:var(--bad-soft);border-color:var(--bad)}
 
+/* 习题实战与自测（与 ch10 同款） */
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.btn.amber{border-color:var(--amber);color:var(--amber)}
+.btn.amber:hover{background:var(--amber-soft)}
+.qc-row{border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;background:#fff;display:flex;flex-direction:column;gap:10px}
+.verdict{display:none;border-radius:9px;padding:9px 14px;font-size:14px;line-height:1.7;background:var(--accent-soft);border:1px solid #c4d6e8}
+.verdict.show{display:block}
+.score-pill{display:inline-block;font-family:var(--mono);font-size:13px;background:var(--amber-soft);border:1px solid var(--amber);color:var(--amber);border-radius:999px;padding:2px 12px}
+
+/* 装置④ 对角子集构造器 */
+.gmap{border-collapse:collapse;margin:10px auto;font-family:var(--mono);font-size:14px}
+.gmap th,.gmap td{border:1px solid var(--line);width:42px;height:34px;text-align:center}
+.gmap th{background:var(--accent-soft);color:var(--accent)}
+.gmap td.rn{background:var(--surface);font-weight:700}
+.gmap td.cell{cursor:pointer;background:#fff;transition:.12s;user-select:none}
+.gmap td.cell:hover{background:var(--amber-soft)}
+.gmap td.cell.on{background:var(--accent-soft);color:var(--accent);font-weight:700}
+.gsteps{font-family:var(--mono);font-size:13.5px;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:10px 16px;margin-top:12px;line-height:2;overflow-wrap:anywhere}
+
+/* 装置⑤ ZFC 审判卡片 */
+.zfcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.zfc{border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:12px 14px;font-size:14.5px}
+.zfc .expr{font-family:var(--serif);font-size:15.5px;margin-bottom:8px;line-height:1.6}
+.zfc .zbtns{display:flex;gap:8px;flex-wrap:wrap}
+.zfc.yes{border-color:var(--good);background:var(--good-soft)}
+.zfc.non{border-color:var(--bad);background:var(--bad-soft)}
+
 .quiz-item{margin:18px 0}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
 .result-box.show{display:block;animation:fadein .5s}
@@ -158,9 +193,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -174,7 +215,7 @@ footer p{margin:6px 0}
     <div class="en">Infinite Sets</div>
     <p class="lead">计算机内存有限，为什么要在乎无穷？因为对无穷集合"较真"直接通向计算机科学的边界定理：停机问题不可解。Cantor 的对角论证、Russell 的悖论、Gödel 的乌云——第一部分在此收官。</p>
     <div class="meta">
-      <span>⏱ 约 40 分钟</span><span>🧩 5 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 245–286 页</span>
+      <span>⏱ 约 50 分钟</span><span>🧩 7 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 245–286 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch07.html">上一章：递归数据类型</a></div>
@@ -188,6 +229,7 @@ footer p{margin:6px 0}
   <a href="#s2"><span class="toc-num">8.1.4</span>对角论证剧场</a>
   <a href="#s3"><span class="toc-num">8.2</span>停机问题</a>
   <a href="#s4"><span class="toc-num">8.3</span>集合的逻辑</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -237,7 +279,7 @@ footer p{margin:6px 0}
     <h4 class="wtitle">🎭 对角论证剧场：揪出漏网之串</h4>
     <p class="wdesc">一张 6×6 的"号称完整"的位串清单。三步走：高亮对角线 → 逐位翻转生成 C → 逐行对照，看 C 如何与每一行都不同。</p>
     <div class="dg-wrap">
-      <div style="flex-shrink:0;overflow-x:auto"><table class="dg-table" id="dg-table"></table></div>
+      <div style="min-width:0;max-width:100%;overflow-x:auto"><table class="dg-table" id="dg-table"></table></div>
       <div class="dg-side">
         <div class="dg-msg" id="dg-msg">这就是那张"完整清单"。按下面的按钮启动三幕剧。</div>
         <div class="dg-btns">
@@ -282,12 +324,72 @@ footer p{margin:6px 0}
 <section class="ch" id="s4">
   <div class="ch-head reveal"><span class="no">8.3</span><h2>集合的逻辑：Russell 悖论与 ZFC</h2><span class="en">The Logic of Sets</span></div>
   <div class="reveal">
-    <p>1890 年代，Frege 的集合公理化刚要完工，Russell 用同一个对角思路把它打穿：<b>W ::= { S | S ∉ S }</b>——"所有不包含自身的集合"之集。问：W ∈ W 吗？是 ⇒ 它不该在 W 里；否 ⇒ 它就该在 W 里。数学的根基轰然作响。Russell 与 Whitehead 花了十二年写《数学原理》试图自救，最终由更简洁的 ZFC 公理体系接管（Foundation 公理禁止 W 这种自吞集合成为集合；第一章提过的 ZFC 在此正式露面）。</p>
-    <p>而对角论证的 CS 杀伤弹与 Russell 悖论是<b>同一个论证</b>：W 的定义里那句 "S ∉ S"，就是停机悖论里"程序对自己的判断取反"。</p>
+    <p>1890 年代，Frege 的集合公理化刚要完工，Russell 用同一个对角思路把它打穿：<b>W ::= { S | S ∉ S }</b>——"所有不包含自身的集合"之集。问：W ∈ W 吗？是 ⇒ 它不该在 W 里；否 ⇒ 它就该在 W 里。数学的根基轰然作响。Russell 与 Whitehead 花了十二年写《数学原理》试图自救，最终由更简洁的 ZFC 公理体系接管（第一章提过的 ZFC 在此正式露面）。</p>
+    <p>ZFC 共九条公理：外延、配对、并、无穷、<b>概括</b>（Subset，更常叫 Comprehension：从<b>已有</b>集合 x 中按性质 φ 筛出子集——不许凭空搜集）、幂集、替换、<b>基础</b>（Foundation：禁止 ⋯ ∈ xₙ ∈ ⋯ ∈ x₀ 的无限降链，于是没有集合是自己的成员）、选择。Russell 悖论的现代解法（8.3.3）干净利落：Foundation 保证一切 S 都满足 S ∉ S，于是 W 包含<b>每个</b>集合——它若是集合，就是自己的成员，矛盾。所以 <b>W 根本不是集合</b>，悖论消散。</p>
+    <p>而对角论证的 CS 杀伤弹与 Russell 悖论是<b>同一个论证</b>：W 的定义里那句 "S ∉ S"，就是停机悖论里"程序对自己的判断取反"。下面装置④把这个"同一个论证"做成有限沙盘——Cantor 定理 8.1.12 的证明内核，亲手推一遍：</p>
+  </div>
+
+  <!-- 互动④ 对角子集构造器 -->
+  <div class="widget reveal" id="w-ag">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🧬 对角子集构造器：A_g 永远不在值域里</h4>
+    <p class="wdesc">A = {1, 2, 3}。点亮格子定义映射 g: A → pow(A)（第 x 行第 y 列亮 ⟺ y ∈ g(x)）。引擎随即构造"对角子集" A_g ::= {x ∈ A | x ∉ g(x)}——看它与每一行都不同，怎么改 g 都没用。</p>
+    <div style="overflow-x:auto"><table class="gmap" id="ag-table"></table></div>
+    <div class="num-row" style="justify-content:center">
+      <button class="btn ghost" id="ag-rand">随机换一个 g</button>
+    </div>
+    <div class="gsteps" id="ag-out"></div>
+  </div>
+
+  <!-- 互动⑤ ZFC 集合资格审判 -->
+  <div class="widget reveal" id="w-zfc">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">⚖️ ZFC 审判庭：这个是"集合"吗？</h4>
+    <p class="wdesc">ZFC 的入场规则：只能用九条公理造集合（概括公理要求从已有集合里筛，不许凭空搜集）。六个构造式逐一过堂：</p>
+    <div class="zfcards" id="zfc-list"></div>
+    <div style="margin-top:10px;font-size:14.5px">进度 <span class="score-pill" id="zfc-score">0 / 6</span></div>
+  </div>
+
+  <div class="reveal">
     <div class="box thm">
       <span class="label">8.4 这一切真的成立吗？</span>
       <p style="margin:4px 0">三朵乌云：① ZFC 是人定的公理，可能有一天被"下一个 Russell"打穿；② <b>连续统假设</b>（ℕ 与 pow(ℕ) 之间没有别的无穷）在 ZFC 中<b>不可判定</b>——Gödel 与 Cohen 证明两边都能自洽；③ <b>Gödel 不完备性</b>：任何一致的系统都无法证明自身的一致性。数学的"真相"并未完全尘埃落定。</p>
     </div>
+    <div class="box method">
+      <span class="label">8.4 余波 · 听起来像悖论的定理与 CS 定心丸</span>
+      <p style="margin:4px 0">选择公理 ⟹ <b>Banach–Tarski 定理</b>：一个实心球可分成 6 块，刚体重排成<b>两个</b>与原球等大的实心球——ZFC 的推论并不都"符合直觉"。而 8.4.1 给计算机人递了颗定心丸：主流数学与 CS 只玩可数集（常常只是有限集），"太大"的搜集自有逻辑学家操心；但对这些遥远东西的较真，恰恰通向 8.2 节计算的逻辑极限——这才是本章真正要带走的。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战：双射练习与可数清单</h2><span class="en">8.1/8.3, Playable</span></div>
+  <div class="reveal">
+    <p>8.3 的映射关系练习 + 亲手把 ℤ 与 ℕ×ℕ 排成可数清单。</p>
+  </div>
+
+  <!-- 互动⑥ 双射练习器 -->
+  <div class="widget reveal" id="w-bij">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🔀 双射练习器：bij / surj / strict 三选一</h4>
+    <p class="wdesc">每个断言判断两个无限集的关系（可多句描述）。全部对拍本章正文定理。</p>
+    <div id="bj-list"></div>
+    <div style="margin-top:10px;font-size:14.5px">进度 <span class="score-pill" id="bj-score">0 / 5</span></div>
+  </div>
+
+  <!-- 互动⑦ 可数清单构造器 -->
+  <div class="widget reveal" id="w-cnt">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">📜 可数清单构造器：ℤ 与 ℕ×ℕ 排队</h4>
+    <p class="wdesc">"可数 = 能排成清单 c₀, c₁, c₂, …"。两套经典排队法逐步出列：ℤ 用 0,1,−1,2,−2,…；ℕ×ℕ 用对角线扫描（Cantor 配对）。</p>
+    <div class="num-row">
+      <button class="btn cnp primary" data-c="z">ℤ 的清单</button>
+      <button class="btn cnp" data-c="nn">ℕ×ℕ 对角线清单</button>
+      <button class="btn amber" id="cn-step">出列一位 →</button>
+      <button class="btn ghost" id="cn-reset">重来</button>
+    </div>
+    <div class="guess-log" id="cn-out">选一套清单，点"出列一位"。第 k 位出列的元素就是 cₖ——存在这样的排队 ⟹ 可数。</div>
   </div>
 </section>
 
@@ -501,6 +603,147 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
     btn.textContent = k >= 5 ? "爆炸完毕 💥" : `引爆第 ${k+1} 步 ▶`;
     if (k >= 5) btn.disabled = true;
   });
+})();
+
+/* ---------- 互动④ 对角子集构造器 ---------- */
+(() => {
+  const A = [1, 2, 3];
+  let g = [[1, 1, 0], [0, 1, 1], [0, 0, 0]];  // g[i][j] = 1 ⟺ (j+1) ∈ g(i+1)
+  const tbl = $("#ag-table"), out = $("#ag-out");
+  const fmt = set => set.length ? "{" + set.join(", ") + "}" : "∅";
+  function render(){
+    let html = `<tr><td class="rn">g</td>` + A.map(y => `<th>${y}</th>`).join("") + `<td class="rn">g(x) =</td></tr>`;
+    A.forEach((x, i) => {
+      html += `<tr><td class="rn">x = ${x}</td>`;
+      A.forEach((y, j) => {
+        const on = g[i][j] ? " on" : "";
+        const diag = i === j ? ` style="box-shadow:inset 0 0 0 2px var(--amber)"` : "";
+        html += `<td class="cell${on}" data-i="${i}" data-j="${j}"${diag}>${g[i][j] ? "✓" : ""}</td>`;
+      });
+      html += `<td class="rn">${fmt(A.filter(y => g[i][y - 1]))}</td></tr>`;
+    });
+    tbl.innerHTML = html;
+    $$(".cell", tbl).forEach(c => c.addEventListener("click", () => {
+      const i = +c.dataset.i, j = +c.dataset.j;
+      g[i][j] = g[i][j] ? 0 : 1;
+      render();
+    }));
+    const ag = A.filter(x => !g[x - 1][x - 1]);
+    const lines = [`<b>A_g = {x ∈ A | x ∉ g(x)}</b> 逐元素判定（对角位已用琥珀框标出）：`];
+    A.forEach(x => {
+      const gx = fmt(A.filter(y => g[x - 1][y - 1]));
+      lines.push(g[x - 1][x - 1]
+        ? `&nbsp;&nbsp;x = ${x}：${x} ∈ g(${x}) = ${gx} ⇒ 不入选`
+        : `&nbsp;&nbsp;x = ${x}：${x} ∉ g(${x}) = ${gx} ⇒ <b style="color:var(--accent)">入选</b>`);
+    });
+    lines.push(`<b>A_g = ${fmt(ag)}</b>　逐行对照：`);
+    A.forEach(x => lines.push(`&nbsp;&nbsp;A_g ≠ g(${x})——元素 ${x} 的归属恰好相反（对角位）`));
+    lines.push(`⇒ A_g 不在 g 的值域 ⇒ g 不可能是满射。g 是任意的 ⇒ <b>A strict pow(A)</b>（Cantor 定理 8.1.12）。`);
+    lines.push(`<span class="muted">把 A 换成"全体集合"、g 换成恒等映射，A_g 就是 Russell 的 W——同一个对角，第三次引爆。</span>`);
+    out.innerHTML = lines.join("<br>");
+  }
+  $("#ag-rand").addEventListener("click", () => {
+    g = A.map(() => A.map(() => Math.random() < .5 ? 1 : 0));
+    render();
+  });
+  render();
+})();
+
+/* ---------- 互动⑤ ZFC 集合资格审判 ---------- */
+(() => {
+  const CARDS = [
+    { e: "{x ∈ ℕ | x 是素数}", a: true, why: "✅ 是集合——概括（Subset）公理：从已有集合 ℕ 中按性质筛出的子集，是集合。" },
+    { e: "W = {S | S ∉ S}", a: false, why: "❌ 不是集合（8.3.3）：Foundation 保证一切 S 满足 S ∉ S，故 W 包含每个集合；它若是集合就是自己的成员——矛盾。" },
+    { e: "{x ∈ pow(ℕ) | x 是无限集}", a: true, why: "✅ 是集合——pow(ℕ) 是集合（幂集公理），再从中筛出无限子集（概括公理）。" },
+    { e: "V = 全体集合之集", a: false, why: "❌ 不是集合：否则 pow(V) 也是集合且 pow(V) ⊆ V，与 Cantor 定理 V strict pow(V) 矛盾。" },
+    { e: "{∅, {∅}, {∅,{∅}}}", a: true, why: "✅ 是集合——∅ 合法存在，配对与并公理可一步步搭出任何有限集。" },
+    { e: "无限降链 … ∈ x₂ ∈ x₁ ∈ x₀", a: false, why: "❌ 被 Foundation 直接禁止：每个非空集合都有 ∈-极小元，不存在无限自吞降链。" },
+  ];
+  let done = 0, right = 0;
+  const list = $("#zfc-list");
+  CARDS.forEach(c => {
+    const d = document.createElement("div");
+    d.className = "zfc";
+    d.innerHTML = `<div class="expr">${c.e}</div>
+      <div class="zbtns"><button class="btn" data-v="1">是集合</button><button class="btn" data-v="0">不是集合</button></div>
+      <div class="verdict"></div>`;
+    const vd = $(".verdict", d);
+    $$(".btn", d).forEach(b => b.addEventListener("click", () => {
+      if (d.dataset.done) return;
+      d.dataset.done = "1"; done++;
+      const ok = (b.dataset.v === "1") === c.a;
+      if (ok) right++;
+      d.classList.add(ok ? "yes" : "non");
+      vd.className = "verdict show"; vd.innerHTML = (ok ? "" : "<b>判错了。</b>") + c.why;
+      $("#zfc-score").textContent = done === 6 ? `完成！答对 ${right} / 6` : `${right} / ${done}`;
+    }));
+    list.appendChild(d);
+  });
+})();
+
+/* ---------- 互动⑥ 双射练习器 ---------- */
+(() => {
+  const QS = [
+    { s: "ℕ bij ℤ（正负整数全体）", opts: ["成立——0,1,−1,2,−2,… 就是清单", "不成立——ℤ 比 ℕ 多出一半"], ans: 0,
+      why: "对（引理 8.1.7 精神）：c = (0,1,−1,2,−2,…) 是双射清单。'多出负数'是有限直觉的滑坡。" },
+    { s: "ℕ strict pow(ℕ)", opts: ["成立——Cantor 对角论证", "不成立——都是无限大"], ans: 0,
+      why: "对（定理 8.1.12）：对角串 C 不在任何'全清单'上 ⟹ 不存在 ℕ → pow(ℕ) 的满射 ⟹ 严格更小。" },
+    { s: "ℕ×ℕ（整数对全体）可数", opts: ["成立——按 i+j 对角线一层层扫", "不成立——'对的个数'是平方级"], ans: 0,
+      why: "对（推论 8.1.10）：对角线扫描把每对 (i,j) 恰好扫到一次——平方级也可数。" },
+    { s: "A bij pow(A)（A 无限时）", opts: ["成立——都无限", "不成立——永远是 strict"], ans: 1,
+      why: "对（应选'不成立'）：Cantor 定理对任意集合 A 都给 A strict pow(A)，幂集塔无限攀升。" },
+    { s: "ℚ⁺（正有理数全体）可数吗？", opts: ["可数——按分子分母和排对角线，删掉重复约分", "不可数——有理数稠密到无穷"], ans: 0,
+      why: "对（推论 8.1.10）：ℕ×ℕ 可数且 ℚ⁺ 是它的像，无限子集剔除重复后仍是清单——稠密 ≠ 不可数。" },
+    { s: "A surj B 且 B surj A 能推出 A bij B 吗？", opts: ["能——这就是 Schröder-Bernstein 定理", "不能——两个'不小于'凑不出双射"], ans: 0,
+      why: "对——CSB 定理（原书 8.2 节证明）：双向满射必可拆出双射。注意它不是平凡的：'A ⪰ B 且 B ⪰ A ⟹ A ∼ B' 正是这条定理的内容。" },
+  ];
+  let done = 0, right = 0;
+  const list = $("#bj-list");
+  QS.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "qc-row";
+    d.innerHTML = `<div class="stmt" style="font-family:var(--mono)"><b>${i+1}.</b> ${it.s}</div>
+      <div style="flex:1 1 100%;display:flex;flex-direction:column;gap:6px">
+        ${it.opts.map((o,k) => `<button class="opt" data-k="${k}">${String.fromCharCode(65+k)}. ${o}</button>`).join("")}
+      </div><div class="verdict"></div>`;
+    const vd = $(".verdict", d);
+    $$(".opt", d).forEach(b => b.addEventListener("click", () => {
+      if (d.classList.contains("done")) return;
+      d.classList.add("done"); done++;
+      const ok = +b.dataset.k === it.ans;
+      if (ok) right++;
+      b.classList.add(ok ? "picked-ok" : "picked-no");
+      if (!ok) { const t = $(`.opt[data-k="${it.ans}"]`, d); if (t) t.classList.add("picked-ok"); }
+      vd.className = "verdict show"; vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+      $("#bj-score").textContent = done === 5 ? `完成！答对 ${right} / 5` : `${right} / ${done}`;
+    }));
+    list.appendChild(d);
+  });
+})();
+
+/* ---------- 互动⑦ 可数清单构造器 ---------- */
+(() => {
+  let mode = "z", k = 0;
+  const zAt = k => k === 0 ? 0 : (k % 2 === 1 ? (k + 1) / 2 : -(k / 2));
+  const nnAt = k => { // 对角线：d = 0,1,2…（i+j = d），每层 d+1 个
+    let d = 0, cnt = 0;
+    while (cnt + d + 1 <= k) { cnt += d + 1; d++; }
+    const off = k - cnt;
+    return `(${off}, ${d - off})`;
+  };
+  function draw(){
+    const out = $("#cn-out");
+    if (k === 0) { out.textContent = "选一套清单，点'出列一位'。"; return; }
+    const items = [];
+    for (let i = 0; i < k; i++) items.push(mode === "z" ? `c${i} = ${zAt(i)}` : `c${i} = ${nnAt(i)}`);
+    out.innerHTML = items.join("　·　");
+  }
+  $("#cn-step").addEventListener("click", () => { k++; draw(); });
+  $("#cn-reset").addEventListener("click", () => { k = 0; draw(); });
+  $$(".cnp").forEach(b => b.addEventListener("click", () => {
+    $$(".cnp").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary"); mode = b.dataset.c; k = 0; draw();
+  }));
 })();
 
 /* ---------- 终局自测 ---------- */

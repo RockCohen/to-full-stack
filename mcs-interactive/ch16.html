@@ -6,6 +6,7 @@
 <title>生成函数 · 数学之旅第十六章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 16 章的中文交互式解读：几何级数、卷积规则、荒诞水果袋、换零钱生成函数、部分分式、Binet 公式、河内塔递推与形式幂级数。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -159,6 +160,7 @@ table.conv td.dim{opacity:.35}
 .opt:hover{border-color:var(--accent);background:var(--accent-soft)}
 .opt.picked-ok{border-color:var(--good);background:var(--good-soft)}
 .opt.picked-no{border-color:var(--bad);background:var(--bad-soft)}
+#cv-table{max-width:100%;overflow-x:auto}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
 .result-box.show{display:block;animation:fadein .5s}
 .result-box .rank{font-family:var(--serif);font-size:26px}
@@ -176,9 +178,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -192,7 +200,7 @@ footer p{margin:6px 0}
     <div class="en">Generating Functions</div>
     <p class="lead">把数列装进多项式，把计数题变成代数题：苹果偶数、香蕉成五、橙子不过四、梨至多一——四条刁钻约束乘出一个 1/(1−x)²，答案竟是 n+1。斐波那契通项、河内塔 2ⁿ−1，也都在"求个倒数、拆个分式"之间掉出来。</p>
     <div class="meta">
-      <span>⏱ 约 55 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 675–694 页（正文）</span>
+      <span>⏱ 约 65 分钟</span><span>🧩 9 个互动装置</span><span>📖 原书第 675–694 页（正文）</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch15.html">上一章：计数规则</a></div>
@@ -202,16 +210,17 @@ footer p{margin:6px 0}
 <div class="layout">
 <nav id="toc" aria-label="章节目录">
   <div class="toc-title">本章路线图</div>
-  <a href="#s1"><span class="toc-num">16.1</span>无穷级数：把数列穿在身上</a>
-  <a href="#s2"><span class="toc-num">16.2</span>卷积规则与计数</a>
-  <a href="#s3"><span class="toc-num">16.2.6</span>荒诞水果袋</a>
-  <a href="#s4"><span class="toc-num">16.2 应用</span>换零钱实验室</a>
-  <a href="#s5"><span class="toc-num">16.3</span>部分分式</a>
-  <a href="#s6"><span class="toc-num">16.4</span>解线性递归</a>
-  <a href="#s7"><span class="toc-num">16.5</span>形式幂级数</a>
-  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
-  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
-</nav>
+      <a href="#s1"><span class="toc-num">16.1</span>无穷级数：把数列穿在身上</a>
+      <a href="#s2"><span class="toc-num">16.2</span>卷积规则与计数</a>
+      <a href="#s3"><span class="toc-num">16.2.6</span>荒诞水果袋</a>
+      <a href="#s4"><span class="toc-num">16.2 应用</span>换零钱实验室</a>
+      <a href="#s5"><span class="toc-num">16.3</span>部分分式</a>
+      <a href="#s6"><span class="toc-num">16.4</span>解线性递归</a>
+      <a href="#s7"><span class="toc-num">16.5</span>形式幂级数</a>
+      <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
+      <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+      <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+    </nav>
 
 <main>
 <!-- ================= 16.1 ================= -->
@@ -222,6 +231,30 @@ footer p{margin:6px 0}
     <div class="eq math">G(x) = 1 + x + x² + ⋯　⟹　G − xG = 1　⟹　G(x) = 1/(1−x)</div>
     <div class="eq math">N(x) = 1 + 2x + 3x² + ⋯　⟹　N − xN = G　⟹　N(x) = 1/(1−x)²，[xⁿ] = n+1</div>
     <p>最反直觉的一句话（16.1.1）：<b>收敛与否无关紧要</b>。n! 的生成函数在整个实数轴上只在 x=0 收敛，但它照样是合法的代数对象、照样能推出恒等式——16.5 会把这句话 axiom 化。</p>
+  </div>
+
+  <!-- 互动① [xⁿ] 系数提取器 -->
+  <div class="widget reveal" id="w-coef">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🏷️ [xⁿ] 系数提取器：脱衣服练习</h4>
+    <p class="wdesc">选一个挂衣架，拨动 n，心算 [xⁿ] 再对答案——六个表达式覆盖本章最常用的全部零件。</p>
+    <div class="num-row">
+      <select id="cf-expr" style="font-family:var(--mono);padding:7px 10px;border-radius:9px;border:1.5px solid var(--line);font-size:14.5px;background:#fff">
+        <option value="g">1/(1−x)</option>
+        <option value="n" selected>1/(1−x)²</option>
+        <option value="c3">1/(1−3x)</option>
+        <option value="bin">(1+x)¹⁰</option>
+        <option value="shift">x³/(1−x)</option>
+        <option value="k3">1/(1−x)³</option>
+        <option value="162">(1+x)/(1−x)²（习题 16.2）</option>
+      </select>
+      <label class="small">n = <b id="cf-nl" style="font-family:var(--mono)">4</b></label>
+      <input type="range" id="cf-n" min="0" max="12" value="4" style="width:130px" />
+      <input id="cf-ans" placeholder="[xⁿ] = ?" style="width:90px;border:1.5px solid var(--line);border-radius:9px;padding:7px 10px;font-family:var(--mono);font-size:15px" />
+      <button class="btn primary" id="cf-check">对答案</button>
+    </div>
+    <div class="gen-expr" id="cf-series"></div>
+    <div class="fb info" id="cf-fb" style="display:block">提示：先展开前几项找规律，再套公式。支持填分数（如 45）。</div>
   </div>
 </section>
 
@@ -257,9 +290,9 @@ footer p{margin:6px 0}
     <p>几乎全部约掉了！于是答案平凡得可笑：<b>n+1</b>。原书感叹 "Amazing!"——随即诚实地补一句：这个特例其实有初等证明（习题 16.8），生成函数的真正威力在下面换零钱那种<b>没有</b>简单答案的场合。</p>
   </div>
 
-  <!-- 互动① 荒诞水果袋 -->
+  <!-- 互动③ 荒诞水果袋 -->
   <div class="widget reveal" id="w-fruit">
-    <span class="pill">互动 ①</span>
+    <span class="pill">互动 ③</span>
     <h4 class="wtitle">🍎 水果袋约束实验室：系数会说真话</h4>
     <div class="fruit-row" id="fruit-row"></div>
     <div class="gen-expr" id="fruit-expr"></div>
@@ -275,9 +308,9 @@ footer p{margin:6px 0}
     <p>n 美分用 {1, 5, 10, 25, 50} 换零（习题 16.7）：每种面额的生成函数是 1/(1−x^d)（第 d 面额用几个都行），乘积的 [xⁿ] 就是方法数。这一次乘积<b>不会</b>约分成任何已知名状——生成函数给出的是"问题的指纹"，配合一点 DP 就能榨出每一个系数。</p>
   </div>
 
-  <!-- 互动③ 换零钱 -->
+  <!-- 互动④ 换零钱 -->
   <div class="widget reveal" id="w-coin">
-    <span class="pill">互动 ③</span>
+    <span class="pill">互动 ④</span>
     <h4 class="wtitle">🪙 换零钱生成函数实验室</h4>
     <div class="coin-row" id="coin-row"></div>
     <input type="range" id="cn-n" min="0" max="99" value="50" />
@@ -293,7 +326,29 @@ footer p{margin:6px 0}
 <section class="ch" id="s5">
   <div class="ch-head reveal"><span class="no">16.3</span><h2>部分分式：通项的自动售货机</h2><span class="en">Partial Fractions</span></div>
   <div class="reveal">
-    <p>有理式 1/(1−αx) 的系数是 αⁿ——几何级数换了个方向读。任何"多项式之比"都能拆成这种零件之和（引理 16.3.1；重根用 1/(1−αx)ᵏ，系数 c·αⁿ·(n+k−1 / n)）。流程全自动：<b>求根 → 拆分式 → 读系数</b>。演示台用本章最著名的乘客练手——</p>
+    <p>荒诞水果袋的顺利纯属巧合——生成函数恰好约成 1/(1−x)²。一般问题没这么乖。Maclaurin 定理 16.2.1 倒是通用，但它要求你会求任意阶导数的闭式（往往没有）。而初等微积分里的<b>部分分式法</b>对"多项式之比"是全自动的：</p>
+    <div class="box thm">
+      <span class="label">引理 16.3.1 · 互异根拆分</span>
+      <p style="margin:4px 0">p(x) 次数 &lt; n，α₁,…,αₙ 互不相同且非零，则存在常数 c₁,…,cₙ：<br>
+      <span class="math" style="white-space:normal">p(x) / ((1−α₁x)(1−α₂x)⋯(1−αₙx)) = c₁/(1−α₁x) + c₂/(1−α₂x) + ⋯ + cₙ/(1−αₙx)</span></p>
+    </div>
+    <p>每项 1/(1−αᵢx) 的系数就是 αᵢⁿ（几何级数反向读）——拆完分式，通项直接读出来。原书的示范正是斐波那契的生成函数 R(x) = x/(1−x−x²)：分母求根得 α₁ = (1+√5)/2、α₂ = (1−√5)/2；由 x = c₁(1−α₂x) + c₂(1−α₁x)，分别代入 x = 1/α₁ 与 x = 1/α₂，得 c₁ = 1/√5、c₂ = −1/√5：</p>
+    <div class="eq math">R(x) = (1/√5)( 1/(1−α₁x) − 1/(1−α₂x) )　⟹　[xⁿ]R(x) = (α₁ⁿ − α₂ⁿ)/√5　—— Binet 公式（式 16.12）提前到货</div>
+    <p><b>重根也不怕</b>（16.3.1）：分母含 m 重非零根时，展开改用 c/(1−αx)ᵏ（k ≤ m，α 是根的倒数），系数由 donut 公式给出：<span class="math">[xⁿ] c/(1−αx)ᵏ = c·αⁿ·C(n+k−1, n)</span>（式 16.13；α = 1 时就是 donut 公式 16.10 乘常数 c，一般 α 来自代入 [xⁿ]F(αx) = αⁿ·[xⁿ]F(x)）。</p>
+    <p>流程全自动：<b>求根 → 拆分式 → 读系数</b>。拆解器在此，三个预设覆盖互异根与重根——末尾把闭式与级数展开逐项对拍：</p>
+  </div>
+
+  <!-- 互动⑤ 部分分式拆解器 -->
+  <div class="widget reveal" id="w-pf">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">🧮 部分分式拆解器：求根 → 拆分 → 读通项</h4>
+    <p class="wdesc">三个预设：斐波那契 R(x)、河内塔 T(x)、一条重根分母。每个都给出拆分与 [xⁿ] 闭式，并把闭式直算的前 8 项与级数卷积展开逐项对拍。</p>
+    <div class="num-row" id="pf-picks">
+      <button class="btn pfp primary" data-pf="fib">x/(1−x−x²)</button>
+      <button class="btn pfp" data-pf="han">x/((1−2x)(1−x))</button>
+      <button class="btn pfp" data-pf="rep">2/((1−x)²(1−3x))</button>
+    </div>
+    <div class="gen-expr" id="pf-out" style="border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px 18px;font-family:var(--mono);font-size:14px;line-height:2;white-space:pre-wrap;overflow-wrap:anywhere"></div>
   </div>
 </section>
 
@@ -308,9 +363,9 @@ footer p{margin:6px 0}
     <div class="eq math">tₙ = 2ⁿ − 1　　64 盘 = 2⁶⁴−1 ≈ 1.8×10¹⁹ 步 —— 传说中世界末日的数学根据</div>
   </div>
 
-  <!-- 互动④ Binet 验证器 -->
+  <!-- 互动⑥ Binet 验证器 -->
   <div class="widget reveal" id="w-binet">
-    <span class="pill">互动 ④</span>
+    <span class="pill">互动 ⑥</span>
     <h4 class="wtitle">🌀 Binet 公式验证器：无理数的整数独裁</h4>
     <input type="range" id="bn-n" min="0" max="70" value="10" />
     <div class="small muted">n = <b id="bn-nlabel" style="font-family:var(--mono)">10</b></div>
@@ -322,9 +377,9 @@ footer p{margin:6px 0}
     <div class="fb info" id="bn-fb" style="display:block">两个无理数 φⁿ 与 ψⁿ 相减再除以 √5，误差项 |ψⁿ/√5| 一路衰减——第 39 项之后就小于 1e-8 了。整数从无理数的夹缝里准确浮现。</div>
   </div>
 
-  <!-- 互动⑤ 递推求解器 -->
+  <!-- 互动⑦ 递推求解器 -->
   <div class="widget reveal" id="w-solver">
-    <span class="pill">互动 ⑤</span>
+    <span class="pill">互动 ⑦</span>
     <h4 class="wtitle">🪜 递推 → 生成函数 → 闭式：三案步进</h4>
     <div class="num-row" id="sv-picks">
       <button class="btn svpick primary" data-sv="fib">斐波那契 fₙ=fₙ₋₁+fₙ₋₂</button>
@@ -344,6 +399,42 @@ footer p{margin:6px 0}
   <div class="reveal">
     <p>n! 的生成函数 F(x) = 1 + x + 2x² + 6x³ + ⋯ 在 x ≠ 0 处<b>处处发散</b>，但本章所有操作照样合法。理由：把无穷数列当作<b>形式对象</b>，配上加法 ⊕（逐位加）与乘法 ⊗（卷积），构成一个<b>交换环</b>——"幂级数环"。x 只是占位符，1/(1−x) = 1+x+x²+⋯ 只是陈述"K = 1/J"（J = (1,−1,0,…) 的倒数恰是全 1 序列）这个纯代数事实。收敛半径是分析学的事，与组合计数无关。</p>
     <div class="insight"><span class="ico">🧘</span><div>原书给的姿势：生成函数 = 给数列穿衣服，[xⁿ] = 脱衣服。本章全部魔法就一句话——<b>穿衣服做代数，脱衣服拿答案</b>。</div></div>
+    <p>16.5.2 给了它严谨的家：数列配上逐位加 ⊕ 与卷积乘 ⊗，构成<b>交换环</b>——零元 Z=(0,0,…)、单位元 I=(1,0,…)。J=(1,−1,0,…) 的逆恰是 K=(1,1,1,…)（所以 1/(1−x) = 全 1 序列只是"K = 1/J"的穿衣服写法）；级数有逆 ⟺ 首项非零（Problem 16.25），Z 永远没有逆。亲手玩玩这个环：</p>
+  </div>
+
+  <!-- 互动⑧ 幂级数环 -->
+  <div class="widget reveal" id="w-ring">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">💠 幂级数环实验台：⊕ 逐位加，⊗ 卷积乘</h4>
+    <div class="num-row">
+      <button class="btn rpair primary" data-r="jk">示范：J=(1,−1,0,…) ⊗ K=(1,1,1,…) = I</button>
+      <button class="btn rpair" data-r="free">自由输入两条数列</button>
+    </div>
+    <div id="ring-io" style="margin:8px 0"></div>
+    <div class="gen-expr" id="ring-out"></div>
+    <div class="fb info" id="ring-fb" style="display:block">在幂级数环里，"1/(1−x) = 1 + x + x² + ⋯"只是一句代数：K = 1/J。没有收敛，没有极限，只有卷积。</div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Practice Problems, Playable</span></div>
+  <div class="reveal">
+    <p>原书 Homework 16.10 的"McGillcuddy 小姐的宠物"做成两问解题器——部分分式法的完整实战。</p>
+  </div>
+
+  <!-- 习题 16.10 -->
+  <div class="widget reveal" id="w-p1610">
+    <span class="pill">互动 ⑨</span>
+    <h4 class="wtitle">🐈 习题 16.10：宠物数列解题器</h4>
+    <p class="wdesc">McGillcuddy 小姐养了 2 只猫、1 条狗、一对 mysteries……总之 Pₙ 满足 P(x) = 4x⁶/((1−x)²(1−2x))。先 DP 硬算两针见血，再看部分分式给闭式。</p>
+    <div class="num-row">
+      <b>(a)</b> P₆ = <input id="p10a" type="number" style="width:80px" /> <span class="small muted">（生成函数的最低次项）</span></div>
+    <div class="num-row">
+      <b>(b)</b> P₇ = <input id="p10b" type="number" style="width:80px" /> <span class="small muted">（提示：先算 Q=1/((1−x)²(1−2x)) 的前两项）</span></div>
+    <div style="margin-top:10px"><button class="btn primary" id="p10-check">判定</button></div>
+    <div class="fb" id="p10-fb"></div>
+    <div class="gen-expr" id="p10-table" style="display:none"></div>
   </div>
 </section>
 
@@ -351,7 +442,7 @@ footer p{margin:6px 0}
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 16.1–16.5。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -415,7 +506,7 @@ footer p{margin:6px 0}
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
     <a href="#s1">16.1 · 无穷级数</a><a href="#s2">16.2 · 卷积规则</a><a href="#s3">16.2.6 · 荒诞水果袋</a>
     <a href="#s4">16.2 · 换零钱实验室</a><a href="#s5">16.3 · 部分分式</a><a href="#s6">16.4 · 解线性递归</a>
-    <a href="#s7">16.5 · 形式幂级数</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#s7">16.5 · 形式幂级数</a><a href="#sp">⚔️ · 习题实战</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -461,7 +552,7 @@ const mulSeries = (A, B, N) => {
   return C;
 };
 
-/* ---------- 互动① 水果袋 ---------- */
+/* ---------- 互动③ 水果袋 ---------- */
 (() => {
   const FRUITS = [
     { name:"🍎 苹果", key:"apple",
@@ -562,7 +653,7 @@ const mulSeries = (A, B, N) => {
   draw();
 })();
 
-/* ---------- 互动③ 换零钱 ---------- */
+/* ---------- 互动④ 换零钱 ---------- */
 (() => {
   const COINS = [ {d:1, lab:"1¢ penny"}, {d:5, lab:"5¢ nickel"}, {d:10, lab:"10¢ dime"}, {d:25, lab:"25¢ quarter"}, {d:50, lab:"50¢ half"} ];
   const on = new Set(COINS.map(c => c.d));
@@ -595,7 +686,54 @@ const mulSeries = (A, B, N) => {
   upd();
 })();
 
-/* ---------- 互动④ Binet ---------- */
+/* ---------- 互动⑤ 部分分式拆解器 ---------- */
+(() => {
+  const PRESETS = {
+    fib: {
+      split: "x/(1−x−x²) = (1/√5)·1/(1−α₁x) − (1/√5)·1/(1−α₂x)，其中 α₁=(1+√5)/2, α₂=(1−√5)/2",
+      closed: "[xⁿ] = (α₁ⁿ − α₂ⁿ)/√5　—— Binet 公式（式 16.12）",
+      fn: n => { const a = (1 + Math.sqrt(5)) / 2, b = (1 - Math.sqrt(5)) / 2; return (Math.pow(a, n) - Math.pow(b, n)) / Math.sqrt(5); },
+      d: [-1, -1, 0], p: [0, 1],
+    },
+    han: {
+      split: "x/((1−2x)(1−x)) = 1/(1−2x) − 1/(1−x)　（代 x=1/2 得 c₁=1，代 x=1 得 c₂=−1）",
+      closed: "[xⁿ] = 2ⁿ − 1　—— 河内塔 tₙ",
+      fn: n => Math.pow(2, n) - 1,
+      d: [-3, 2, 0], p: [0, 1],
+    },
+    rep: {
+      split: "2/((1−x)²(1−3x)) = (−3/2)/(1−x) − 1/(1−x)² + (9/2)/(1−3x)　（重根：代 x=1 得 −1，代 x=1/3 得 9/2，比常数项得 −3/2）",
+      closed: "[xⁿ] = (9/2)·3ⁿ − (n+1) − 3/2　（重根项用式 16.13：[xⁿ]1/(1−x)² = n+1）",
+      fn: n => 4.5 * Math.pow(3, n) - (n + 1) - 1.5,
+      d: [-5, 7, -3], p: [2, 0],
+    },
+  };
+  function series(d, p, K){
+    const h = [];
+    for (let n = 0; n < K; n++) {
+      let v = (p[n] || 0);
+      if (n >= 1) v -= d[0] * h[n - 1];
+      if (n >= 2) v -= d[1] * h[n - 2];
+      if (n >= 3) v -= d[2] * h[n - 3];
+      h.push(v);
+    }
+    return h;
+  }
+  function show(key){
+    const P = PRESETS[key];
+    const h = series(P.d, P.p, 8);
+    const rows = h.map((v, n) => {
+      const c = P.fn(n);
+      return `n=${n}　级数展开=${v}　闭式直算=${Math.round(c * 1e6) / 1e6}　${Math.abs(c - v) < 1e-6 ? "✓" : "✗"}`;
+    });
+    $("#pf-out").textContent = `【拆分】${P.split}\n【通项】${P.closed}\n【对拍：级数卷积展开 vs 闭式直算】\n` + rows.join("\n") + `\n—— 8 项全 ✓：求根 → 拆分式 → 读系数，全自动。`;
+    $$(".pfp").forEach(o => o.classList.toggle("primary", o.dataset.pf === key));
+  }
+  $$(".pfp").forEach(b => b.addEventListener("click", () => show(b.dataset.pf)));
+  show("fib");
+})();
+
+/* ---------- 互动⑥ Binet ---------- */
 (() => {
   const SQRT5 = Math.sqrt(5);
   const PHI = (1 + SQRT5) / 2, PSI = (1 - SQRT5) / 2;
@@ -616,7 +754,7 @@ const mulSeries = (A, B, N) => {
   upd();
 })();
 
-/* ---------- 互动⑤ 递推求解器 ---------- */
+/* ---------- 互动⑦ 递推求解器 ---------- */
 (() => {
   const SCRIPTS = {
     fib: [
@@ -647,6 +785,114 @@ const mulSeries = (A, B, N) => {
     b.classList.add("primary"); cur = b.dataset.sv; step = 0; render();
   }));
   render();
+})();
+
+/* ---------- 互动① [xⁿ] 系数提取器 ---------- */
+(() => {
+  const C = (n, k) => { if (k < 0 || k > n) return 0; let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return Math.round(r); };
+  const EXPRS = {
+    g:    { name: "1/(1−x)",        coef: n => 1,                       why: "全 1 序列（式 16.3）——每个系数都是 1。" },
+    n:    { name: "1/(1−x)²",       coef: n => n + 1,                   why: "[xⁿ] = n+1（式 16.5）；双味甜甜圈。" },
+    c3:   { name: "1/(1−3x)",       coef: n => Math.pow(3, n),          why: "1/(1−αx) 的系数是 αⁿ——这里 α = 3。" },
+    bin:  { name: "(1+x)¹⁰",        coef: n => C(10, n),                why: "二项式定理：[xⁿ](1+x)¹⁰ = C(10, n)，n > 10 时为 0。" },
+    shift: { name: "x³/(1−x)",      coef: n => n >= 3 ? 1 : 0,          why: "乘 x³ 把整个序列右移 3 位：[xⁿ] = [xⁿ⁻³](1/(1−x))。" },
+    k3:   { name: "1/(1−x)³",       coef: n => C(n + 2, 2),             why: "三味甜甜圈（式 16.10，k=3）：[xⁿ] = C(n+2, 2) = (n+1)(n+2)/2。" },
+    "162": { name: "(1+x)/(1−x)²",  coef: n => n === 0 ? 1 : 2 * n + 1, why: "习题 16.2：乘 (1+x) = 错位相加 ⇒ n≥1 时 (n+1)+n = 2n+1（n=0 时 1）。" },
+  };
+  let cur = "n", n = 4;
+  function truth(){ return EXPRS[cur].coef(n); }
+  function draw(){
+    $("#cf-nl").textContent = n;
+    const coefs = [];
+    for (let k = 0; k <= 8; k++) coefs.push(`[x${"⁰¹²³⁴⁵⁶⁷⁸"[k]}]=${EXPRS[cur].coef(k)}`);
+    $("#cf-series").textContent = EXPRS[cur].name + "　⟶　" + coefs.join("  ") + " …";
+  }
+  $("#cf-expr").addEventListener("change", e => { cur = e.target.value; $("#cf-ans").value = ""; $("#cf-fb").className = "fb info"; draw(); });
+  $("#cf-n").addEventListener("input", () => { n = +$("#cf-n").value; $("#cf-ans").value = ""; $("#cf-fb").className = "fb info"; draw(); });
+  $("#cf-check").addEventListener("click", () => {
+    const fb = $("#cf-fb");
+    const v = $("#cf-ans").value.trim();
+    if (!v) { fb.className = "fb no"; fb.textContent = "先填一个数。"; return; }
+    const t = truth();
+    const ok = Math.abs(parseFloat(v) - t) < 1e-9;
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = (ok ? "✅ " : "❌ 正确答案是 " + t + "。") + EXPRS[cur].why;
+  });
+  draw();
+})();
+
+/* ---------- 互动⑧ 幂级数环 ---------- */
+(() => {
+  const N = 6;
+  const addV = (g, h) => [...Array(N)].map((_, i) => (g[i] || 0) + (h[i] || 0));
+  const mulV = (g, h) => {
+    const r = new Array(N).fill(0);
+    for (let i = 0; i < N; i++) for (let j = 0; i + j < N; j++) r[i + j] += (g[i] || 0) * (h[j] || 0);
+    return r;
+  };
+  const show = v => "(" + v.map(x => +x.toFixed(6)).join(", ") + ", …)";
+  function render(mode){
+    const io = $("#ring-io"), out = $("#ring-out"), fb = $("#ring-fb");
+    if (mode === "jk") {
+      const J = [1, -1, 0, 0, 0, 0], K = [1, 1, 1, 1, 1, 1];
+      const prod = mulV(J, K);
+      io.innerHTML = `
+        <label class="small">J = <b style="font-family:var(--mono)">(1, −1, 0, …)</b>（即 1−x）</label><br/>
+        <label class="small">K = <b style="font-family:var(--mono)">(1, 1, 1, …)</b>（即 1+x+x²+⋯）</label>`;
+      out.textContent =
+        `J ⊕ K = ${show(addV(J, K))}\n` +
+        `J ⊗ K = ${show(prod)}\n` +
+        `I      = (1, 0, 0, 0, 0, 0, …)　← 单位元\n` +
+        `∴ K = 1/J —— "1/(1−x) = 全1序列" 的环内真身（式 16.21）`;
+      fb.className = "fb ok";
+      fb.textContent = "✅ J⊗K 的每一项都是Σᵢⱼᵢⱼᵢ = 1−1+1−1+… 的前缀和？不——卷积给出 (1, 0, 0, …)：第 k 项是 Σⱼ₌₀ᵏ (1)·(−1)^(k−j) 交错和，恰好消失。这就是'逆'的代数含义。";
+    } else {
+      io.innerHTML = ["G", "H"].map(k =>
+        `<label class="small">${k} 前 6 项（逗号分隔）：<input id="ring-${k}" value="${k === "G" ? "1, 1, 0, 0, 0, 0" : "1, 1, 1, 0, 0, 0"}" style="width:230px;border:1.5px solid var(--line);border-radius:8px;padding:5px 8px;font-family:var(--mono);font-size:14px"/></label>`).join("<br/>") +
+        `<button class="btn primary" id="ring-go" style="margin-top:8px">⊕ 与 ⊗</button>`;
+      $("#ring-go").addEventListener("click", () => {
+        const parse = s => s.split(/[,,\s]+/).filter(x => x !== "").slice(0, N).map(Number);
+        const G = parse($("#ring-G").value), H = parse($("#ring-H").value);
+        out.textContent =
+          `G ⊕ H = ${show(addV(G, H))}　（逐位加）\nG ⊗ H = ${show(mulV(G, H))}　（卷积 = 生成函数乘法）`;
+        fb.className = "fb info";
+        fb.textContent = "试试 (1,1,0,…)⊗自己：(1, 2, 1, 0, …)——(1+x)²！环里的乘法自动做多项式乘法。首项非零的序列才有逆（Problem 16.25）；Z=(0,0,…) 永远没有。";
+      });
+      out.textContent = "编辑两条数列（不足补 0），点 ⊕ 与 ⊗。";
+    }
+  }
+  $$(".rpair").forEach(b => b.addEventListener("click", () => {
+    $$(".rpair").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary");
+    render(b.dataset.r);
+  }));
+  render("jk");
+})();
+
+/* ---------- 互动⑨ 习题 16.10 ---------- */
+(() => {
+  const ANS = { a: 4, b: 16 };
+  function dpTable(){
+    // Q = 1/((1−x)²(1−2x))，Pₙ = 4·Qₙ₋₆
+    const N = 14, Q = new Array(N).fill(0);
+    // Q = (1/(1−x)²)·(1/(1−2x))：两种系数卷积
+    const A = [...Array(N)].map((_, i) => i + 1);
+    const B = [...Array(N)].map((_, i) => Math.pow(2, i));
+    for (let i = 0; i < N; i++) { let s = 0; for (let j = 0; i - j >= 0; j++) s += A[i - j] * B[j]; Q[i] = s; }
+    return { Q, P: n => n >= 6 ? 4 * Q[n - 6] : 0 };
+  }
+  $("#p10-check").addEventListener("click", () => {
+    const fb = $("#p10-fb"), tbl = $("#p10-table");
+    const a = $("#p10a").value, b = $("#p10b").value;
+    if (a === "" || b === "") { fb.className = "fb no"; fb.textContent = "两问都填上。"; return; }
+    const ok = +a === ANS.a && +b === ANS.b;
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = (ok ? "✅ 两针都中！P₆ = 4（最低次就是 4x⁶）、P₇ = 16。" : "❌ 再算算：P₆ = 4·[x⁰]Q、P₇ = 4·[x¹]Q，Q = 1/((1−x)²(1−2x))。") +
+      " 部分分式：Q = 4/(1−2x) − 2/(1−x) − 1/(1−x)²，故 [xⁿ]Q = 4·2ⁿ − n − 3，闭式 <b>Pₙ = 2ⁿ⁻² − 4n + 12（n ≥ 6）</b>。";
+    tbl.style.display = "block";
+    const { P } = dpTable();
+    tbl.textContent = "DP 对照（P₆…P₁₃）：" + [...Array(8)].map((_, i) => "P" + (6 + i) + "=" + P(6 + i)).join("  ") + "  ← 全部等于 2ⁿ⁻²−4n+12";
+  });
 })();
 
 /* ---------- 终局自测 ---------- */
@@ -688,15 +934,27 @@ const mulSeries = (A, B, N) => {
        {t:"tₙ = 2ⁿ，还有更快的算法", ok:false, fb:"常数项 +1 不可省；且下界证明最优。"},
        {t:"tₙ = n²−1", ok:false, fb:"代入 t₃：应该 7，n²−1 给 8。"},
        {t:"无闭式——只能递推", ok:false, fb:"线性递归全部有理生成函数化，部分分式必给闭式。"}]},
+    {q:"幂级数环里 J = (1, −1, 0, 0, …)，它的乘法逆元 J⁻¹ 是？",
+     opts:[
+       {t:"J 自身（J⊗J = I）", ok:false, fb:"J⊗J = (1,−2,1,0,…) ≠ I。"},
+       {t:"K = (1, 1, 1, …)——这正是 1/(1−x) 的'真身'", ok:true, fb:"对（16.5.2）：J⊗K 卷积 = (1, 0, 0, …) = I。所谓 1/(1−x) = 1+x+x²+⋯ 只是 K = 1/J 的穿衣服写法。"},
+       {t:"级数首项是 1，逆一定还是 (1,0,0,…)", ok:false, fb:"(1,0,0,…) = I 是单位元，I⊗J = J ≠ I。"},
+       {t:"J 没有逆——它收敛半径为零", ok:false, fb:"收敛与逆无关！环里判据只有一条：首项非零（Problem 16.25）就有逆。"}]},
+    {q:"（荒诞水果袋，16.2.6）n = 6 的水果袋有几种装法？",
+     opts:[
+       {t:"7", ok:true, fb:"对——原书表格列全了 7 种（苹果 6 或 4、4、2、2、0、0 配橙/梨）；生成函数约成 1/(1−x)² 后 [x⁶] = 7，两路对上。"},
+       {t:"C(9,3) = 84", ok:false, fb:"那是无约束四选的公式，四条约束砍掉了绝大多数。"},
+       {t:"13", ok:false, fb:"n+1 的公式给 7——13 是 n=12 的系数。"},
+       {t:"0——约束太苛，凑不出 6 个", ok:false, fb:"苹果 6 个单独就成袋——至少 7 种。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🧙 幂级数法师", "穿衣服做代数、脱衣服拿答案——Part III 计数三部曲就此收官。下一站 Part IV：概率开场。"]
-      : right >= 3 ? ["🍩 甜甜圈选果师", "卷积与甜甜圈公式已到手——回看 16.3 部分分式与 16.4 的两次错位相减。"]
+    const [rank, note] = right >= 7 ? ["🧙 幂级数法师", "穿衣服做代数、脱衣服拿答案——Part III 计数三部曲就此收官。下一站 Part IV：概率开场。"]
+      : right >= 4 ? ["🍩 甜甜圈选果师", "卷积与甜甜圈公式已到手——回看 16.3 部分分式与 16.4 的两次错位相减。"]
       : ["🌰 挂衣架学徒", "先玩水果袋实验室：看四条约束怎样乘出一个 1/(1−x)²。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   let i = 0, right = 0;

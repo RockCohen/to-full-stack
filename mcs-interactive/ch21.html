@@ -6,6 +6,7 @@
 <title>随机游走 · 数学之旅第二十一章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 21 章的中文交互式解读：赌徒破产问题、公平与有偏随机游走、破产概率 n/T 与轮盘 1/37648、期望时长 n(T−n)、网页图随机游走与 PageRank。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -121,6 +122,9 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
 .ladder-row .bar{flex:1;height:14px;background:var(--accent-soft);border-radius:4px;overflow:hidden;position:relative;align-self:center}
 .ladder-row .bar i{position:absolute;left:0;top:0;bottom:0;background:var(--bad)}
 
+.outbox,.guess-log{font-family:var(--mono);font-size:13.5px;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:10px 16px;margin-top:12px;line-height:2;overflow-wrap:anywhere}
+
 .pr-wrap{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:center}
 .pr-svg{flex:1.4;min-width:280px}
 .pr-list{flex:1;min-width:180px;font-family:var(--mono);font-size:13.5px;line-height:2}
@@ -153,9 +157,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -169,7 +179,7 @@ footer p{margin:6px 0}
     <div class="en">Random Walks</div>
     <p class="lead">公平赌桌拿着 $100 想赢 $100，胜率恰好 1/2；轮盘只要轻微不利，哪怕你揣着 50 亿想只赢 100，成功率也不到 1/37,648——赌场的生意经是一条定理。同一套随机游走放到网页链接图上，就是 Google 起家的 PageRank。</p>
     <div class="meta">
-      <span>⏱ 约 55 分钟</span><span>🧩 4 个互动装置</span><span>📖 原书第 905–930 页</span>
+      <span>⏱ 约 65 分钟</span><span>🧩 7 个互动装置</span><span>📖 原书第 905–930 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch20.html">上一章：偏离均值</a></div>
@@ -250,7 +260,55 @@ footer p{margin:6px 0}
   <div class="reveal">
     <div class="box thm"><span class="label">定理 21.1.3 · 期望局长</span>
       <p style="margin:4px 0">公平赌桌：Ex[注数] = <b>n(T−n)</b> = 本钱 × 目标利润。$10 起手冲 +$10 → 100 注；$500 冲 $600 → <b>50,000 注</b>——"小赌怡情"的时间代价是乘法级的。有偏时 Ex = (n − T·wₙ)/(q−p)。</p></div>
-    <p>（21.1.5）更哲学的一对事实：无界公平游戏（不设目标）里，赌徒<b>以概率 1 必然破产</b>（引理 21.1.4）——哪怕本金一百万；但<b>期望游戏时长是无限</b>（引理 21.1.5）。公平赌桌上 1/2 的概率首注就输、11/16 五局内破产（原书 21.1 印"超过 15/16"，系原书笔误：精确枚举 1/2+1/8+2·(1/32) = 11/16），可就是这套游戏"平均能玩到永远"。期望会骗人，分布不会。</p>
+    <p>而这条"乘法级"的时间代价本身也有分布性格：局长围绕 n(T−n) 剧烈波动，均值收敛但中位数小得多——先跑一千局看看分布长什么样，再去 21.1.5 见识期望彻底失效的现场。</p>
+  </div>
+
+  <!-- 互动③ 局长分布直方图 -->
+  <div class="widget reveal" id="w-len">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">📊 局长分布直方图：均值 vs 中位数</h4>
+    <p class="wdesc">公平赌桌跑 1000 局，每局注数画成直方图（横轴对数分桶，每格翻倍）。均值收敛到理论 n(T−n)（定理 21.1.3），但中位数只有均值的一半上下——重右尾：少数马拉松局把均值拉上天。这是"期望会骗人"的预习。</p>
+    <div class="num-row">
+      <label class="small" style="flex:1;min-width:140px">本钱 n = <b id="ld-n" style="font-family:var(--mono)">20</b>
+        <input type="range" id="ld-ns" min="5" max="95" value="20" /></label>
+      <label class="small" style="flex:1;min-width:140px">目标 T = <b id="ld-t" style="font-family:var(--mono)">40</b>
+        <input type="range" id="ld-ts" min="10" max="100" value="40" /></label>
+      <button class="btn primary" id="ld-1000">跑 1000 局 ▶</button>
+      <button class="btn ghost" id="ld-reset">清空</button>
+    </div>
+    <svg class="chart-svg" id="ld-svg" viewBox="0 0 680 200"></svg>
+    <div class="num-row">
+      <div class="statcard">均值 = <b id="ld-avg">—</b>（理论 n(T−n) = <b id="ld-theo">400</b>）</div>
+      <div class="statcard">中位数 = <b id="ld-med">—</b></div>
+      <div class="statcard">最长局 = <b id="ld-max">—</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 21.1.5 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">21.1.5</span><h2>无界游戏：必输光，却平均玩到永远</h2><span class="en">The Unbounded Fair Game</span></div>
+  <div class="reveal">
+    <p>把目标 T 撤掉——无界公平游戏，一直玩到破产为止。两个看似打架的事实同时成立：</p>
+    <div class="box thm"><span class="label">引理 21.1.4 × 21.1.5 · 无界公平游戏</span>
+      <p style="margin:4px 0">① 赌徒<b>以概率 1 必然破产</b>——哪怕本金一百万；② 但<b>期望游戏时长是 ∞</b>。递归上看：破产概率没有"逃逸解"，只能取 1；而期望时长 t 满足 t = q + p(1 + 2t)，只得 t = ∞。</p></div>
+    <p>直觉藏在分布的重尾里：n=1 时 1/2 的局第一注就死，11/16 的局撑不过第五注（精确枚举 1/2 + 1/8 + 2·(1/32) = 11/16；原书 21.1 印"超过 15/16"，系原书笔误）——绝大多数局死得飞快，但极少数"马拉松局"长到把均值顶成无穷。<b>期望会骗人，分布不会。</b>亲手看这条尾巴：</p>
+  </div>
+
+  <!-- 互动④ 无界破产剧场 -->
+  <div class="widget reveal" id="w-ub">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🕳️ 无界破产剧场：概率 1 终结，期望 ∞</h4>
+    <p class="wdesc">不设目标 T，公平赌桌（p = 1/2）从 n 美元玩到破产。每一局都必然终结——但平均局长随局数越涨越疯，永远安定不下来（理论期望 = ∞）。默认 n = 1，正好对拍"11/16 五局内破产"。</p>
+    <div class="num-row">
+      <label class="small" style="flex:1;min-width:140px">起始 n = <b id="ub-n" style="font-family:var(--mono)">1</b>
+        <input type="range" id="ub-ns" min="1" max="20" value="1" /></label>
+      <button class="btn primary" id="ub-10">跑 10 局</button>
+      <button class="btn" id="ub-100">跑 100 局</button>
+      <button class="btn" id="ub-1000">跑 1000 局</button>
+      <button class="btn ghost" id="ub-reset">清空</button>
+    </div>
+    <div class="outbox" id="ub-out">按下按钮，看每一局都终结、而平均值永不收敛。</div>
   </div>
 </section>
 
@@ -263,9 +321,9 @@ footer p{margin:6px 0}
     <p>死胡同页面（没有出链）会把游走者困住——解法是加一个<span class="term">超顶点</span>：每页以小概率（原版 0.15）传送到超顶点、再等概率回到任意页。<b>稳态分布</b>（定义 21.2.1）：Pr[at x] = Pr[go to x next step] 的概率分配；强连通图上它存在、唯一，长游走必然收敛到它。这个稳态分布就是 <b>PageRank</b>——Rank(x) = Σ_{y→x} Rank(y)/outdeg(y)。书里的彩蛋：用这套公式，6.042 讲义在 378,000 条结果里排第一。</p>
   </div>
 
-  <!-- 互动③ PageRank 实验台 -->
+  <!-- 互动⑤ PageRank 实验台 -->
   <div class="widget reveal" id="w-pr">
-    <span class="pill">互动 ③</span>
+    <span class="pill">互动 ⑤</span>
     <h4 class="wtitle">🌐 PageRank 实验台：8 页迷你万维网</h4>
     <div class="num-row">
       <label class="small">传送概率 d = <b id="pr-d" style="font-family:var(--mono)">0.15</b>　</label>
@@ -278,6 +336,44 @@ footer p{margin:6px 0}
       <div class="pr-list" id="pr-list"></div>
     </div>
     <div class="fb info" id="pr-fb" style="display:block">节点大小 ∝ Rank。被 4 个页面指向的 A 是权威；把 H 变成死端并保留 15% 传送，Rank 会怎样重新洗牌？把 d 拉到 0 再杀 H，游走者就会永久卡死——这就是超顶点存在的理由。</div>
+  </div>
+
+  <!-- 互动⑥ 稳态小剧场 -->
+  <div class="widget reveal" id="w-st">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🎬 稳态分布小剧场：随机网民走到收敛</h4>
+    <p class="wdesc">4 页迷你网：A→B, A→C, B→C, C→A, C→D, D→A。一步步放随机网民游走，访问频率会收敛到稳态分布（幂迭代精确算给你对）——长游走忘了起点，只记得图的结构（定义 21.2.1）。</p>
+    <div class="num-row">
+      <button class="btn primary" id="st-step">走 1 步</button>
+      <button class="btn" id="st-100">走 100 步</button>
+      <button class="btn ghost" id="st-reset">重来</button>
+      <span class="small muted" style="margin-left:auto">已走 <b id="st-k">0</b> 步</span>
+    </div>
+    <div class="guess-log" id="st-out"></div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Theorems 21.1.1 &amp; 21.1.3, Playable</span></div>
+  <div class="reveal">
+    <p>赌徒破产两定理做成核查解题器：输入参数，两问一起判。</p>
+  </div>
+
+  <!-- 互动⑦ 赌徒双定理解题器 -->
+  <div class="widget reveal" id="w-g21">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🧮 定理 21.1.1 × 21.1.3 解题器</h4>
+    <div class="num-row">
+      <label class="small">公平赌桌：本钱 n = <b id="g2-n" style="font-family:var(--mono)">20</b></label>
+      <input type="range" id="g2-ns" min="5" max="95" value="20" style="width:130px" />
+      <label class="small">目标利润 T−n = <b id="g2-p" style="font-family:var(--mono)">30</b></label>
+      <input type="range" id="g2-ps" min="10" max="100" value="30" style="width:130px" />
+      <label class="small">Ex[胜率] = <input id="g2-w" style="width:80px;font-family:var(--mono);border:1.5px solid var(--line);border-radius:8px;padding:4px 8px" /></label>
+      <label class="small">Ex[注数] = <input id="g2-d" style="width:90px;font-family:var(--mono);border:1.5px solid var(--line);border-radius:8px;padding:4px 8px" /></label>
+      <button class="btn primary" id="g2-check">双判定</button>
+    </div>
+    <div class="fb info" id="g2-fb" style="display:block">胜率 = n/T（定理 21.1.1）；局长 = n(T−n)（定理 21.1.3）——$20 冲 $50 那种"小赌怡情"，时间代价是乘法级的。</div>
   </div>
 </section>
 
@@ -478,7 +574,7 @@ const svgEl = (svg, t, a) => { const e = document.createElementNS(NS, t); for (c
   }).join("") + `<div class="ladder-row" style="border:none"><span class="cap">上界</span><span style="min-width:100px">(9/10)¹⁰⁰</span><div class="bar"><i style="width:100%;background:var(--amber)"></i></div><span style="min-width:90px;text-align:right">1 / 37,648</span></div>`;
 })();
 
-/* ---------- 互动③ PageRank ---------- */
+/* ---------- 互动⑤ PageRank ---------- */
 (() => {
   // 图：A 权威（4 入链），B..H
   const NODES = {
@@ -548,6 +644,161 @@ const svgEl = (svg, t, a) => { const e = document.createElementNS(NS, t); for (c
   $("#pr-kill").addEventListener("click", () => { killed = !killed; $("#pr-kill").textContent = killed ? "♻️ 复活页面 H" : "☠️ 杀死页面 H（制造死端）"; draw(); });
   $("#pr-reset").addEventListener("click", () => { killed = false; $("#pr-ds").value = 15; $("#pr-kill").textContent = "☠️ 杀死页面 H（制造死端）"; draw(); });
   draw();
+})();
+
+/* ---------- 互动③ 局长分布直方图 ---------- */
+(() => {
+  const svg = $("#ld-svg");
+  const st = (x, y, s, fill, anchor) => {
+    const t = document.createElementNS(NS, "text");
+    t.setAttribute("x", x); t.setAttribute("y", y); t.setAttribute("font-size", 10);
+    t.setAttribute("fill", fill); t.setAttribute("text-anchor", anchor || "start");
+    t.textContent = s; svg.appendChild(t);
+  };
+  let lens = [];
+  function params(){
+    let n = +$("#ld-ns").value, T = +$("#ld-ts").value;
+    if (T <= n) { T = n + 1; $("#ld-ts").value = T; }
+    $("#ld-n").textContent = n; $("#ld-t").textContent = T;
+    return { n, T };
+  }
+  function theo(){ const { n, T } = params(); return n * (T - n); }
+  function draw(){
+    params();
+    $("#ld-theo").textContent = theo().toLocaleString();
+    const W = 680, H = 200, L = 34, R = 8, TP = 8, B = 30;
+    svg.innerHTML = "";
+    const bins = new Map();
+    let maxB = 1;
+    lens.forEach(L2 => { const b = Math.max(0, Math.floor(Math.log2(L2))); bins.set(b, (bins.get(b) || 0) + 1); maxB = Math.max(maxB, b); });
+    const maxC = Math.max(1, ...bins.values());
+    const bw = (W - L - R) / (maxB + 1);
+    for (let b = 0; b <= maxB; b++) {
+      const c = bins.get(b) || 0;
+      const h = c / maxC * (H - TP - B);
+      svgEl(svg, "rect", { x: L + b * bw + 1, y: H - B - h, width: Math.max(1, bw - 2), height: h, fill: "#0f4c81", opacity: .8 });
+      if (bw > 30) st(L + b * bw + bw / 2, H - B + 12, b < 10 ? String(1 << b) : ((1 << b) / 1024) + "k", "#6f6a5e", "middle");
+    }
+    const th = theo(), tb = Math.max(0, Math.floor(Math.log2(th)));
+    const tx = L + (tb + 0.5) * bw;
+    svgEl(svg, "line", { x1: tx, y1: TP, x2: tx, y2: H - B, stroke: "#b4832a", "stroke-width": 2, "stroke-dasharray": "5 4" });
+    st(tx + 4, TP + 10, `理论均值 ${th.toLocaleString()}`, "#b4832a");
+    if (lens.length) {
+      const sorted = [...lens].sort((a, b) => a - b);
+      const avg = lens.reduce((a, b) => a + b, 0) / lens.length;
+      const med = sorted[Math.floor(sorted.length / 2)];
+      $("#ld-avg").textContent = Math.round(avg).toLocaleString();
+      $("#ld-med").textContent = med.toLocaleString() + `（均值的 ${(med / avg * 100).toFixed(0)}%）`;
+      $("#ld-max").textContent = Math.max(...lens).toLocaleString();
+    }
+    st(L, H - 4, `已跑 ${lens.length.toLocaleString()} 局 · 横轴：局长（对数刻度，每格翻倍）`, "#6f6a5e");
+  }
+  $("#ld-1000").addEventListener("click", () => {
+    const { n, T } = params();
+    for (let i = 0; i < 1000; i++) {
+      let cap = n, steps = 0;
+      while (cap > 0 && cap < T) { cap += Math.random() < .5 ? 1 : -1; steps++; }
+      lens.push(steps);
+    }
+    if (lens.length > 20000) lens = lens.slice(-20000);
+    draw();
+  });
+  $("#ld-reset").addEventListener("click", () => { lens = []; $("#ld-avg").textContent = "—"; $("#ld-med").textContent = "—"; $("#ld-max").textContent = "—"; draw(); });
+  ["ld-ns", "ld-ts"].forEach(id => $("#" + id).addEventListener("input", () => { lens = []; draw(); }));
+  draw();
+})();
+
+/* ---------- 互动④ 无界破产剧场 ---------- */
+(() => {
+  const CAP = 1000000;
+  let sims = 0, lenSum = 0, maxLen = 0, quick5 = 0, truncated = 0;
+  function play(K){
+    const n = +$("#ub-ns").value;
+    for (let i = 0; i < K; i++) {
+      let cap = n, steps = 0;
+      while (cap > 0 && steps < CAP) { cap += Math.random() < .5 ? 1 : -1; steps++; }
+      sims++; lenSum += steps;
+      if (steps > maxLen) maxLen = steps;
+      if (cap > 0) truncated++;
+      else if (n === 1 && steps <= 5) quick5++;
+    }
+    draw();
+  }
+  function draw(){
+    const n = +$("#ub-ns").value;
+    $("#ub-n").textContent = n;
+    const out = $("#ub-out");
+    if (!sims) return;
+    const ruined = sims - truncated;
+    const avg = lenSum / sims;
+    const lines = [
+      `已跑 ${sims.toLocaleString()} 局：破产 ${ruined.toLocaleString()} 局（${(ruined / sims * 100).toFixed(1)}%）` +
+        (truncated ? `，<b style="color:var(--amber)">${truncated} 局超过 ${CAP.toLocaleString()} 步仍在走</b>——重尾活着的证据` : `——<b>每一局都终结了</b>（概率 1 破产的实证）`),
+      `平均局长 = <b>${Math.round(avg).toLocaleString()}</b> 注（理论：∞——继续跑，这个均值只会越涨越疯，永远安定不下来）`,
+      `最长一局 = ${maxLen.toLocaleString()} 注`,
+    ];
+    if (n === 1) lines.push(`≤5 局破产占比 = <b>${(quick5 / sims).toFixed(3)}</b>（理论 11/16 ≈ 0.688 ✓：1/2 + 1/8 + 2·(1/32)）`);
+    out.innerHTML = lines.join("<br>");
+  }
+  $("#ub-10").addEventListener("click", () => play(10));
+  $("#ub-100").addEventListener("click", () => play(100));
+  $("#ub-1000").addEventListener("click", () => play(1000));
+  $("#ub-reset").addEventListener("click", () => { sims = lenSum = maxLen = quick5 = truncated = 0; $("#ub-out").textContent = "按下按钮，看每一局都终结、而平均值永不收敛。"; });
+  $("#ub-ns").addEventListener("input", () => { $("#ub-n").textContent = +$("#ub-ns").value; });
+})();
+
+/* ---------- 互动⑥ 稳态小剧场 ---------- */
+(() => {
+  const EDGES = { A:["B","C"], B:["C"], C:["A","D"], D:["A"] };
+  const PAGES = ["A","B","C","D"];
+  let at = "A", k = 0; const visits = { A:1, B:0, C:0, D:0 };
+  // 稳态：幂迭代（含随机跳转思想不加，图强连通即可）
+  let p = { A:.25, B:.25, C:.25, D:.25 };
+  for (let i = 0; i < 200; i++) {
+    const q = { A:0, B:0, C:0, D:0 };
+    PAGES.forEach(x => EDGES[x].forEach(y => q[y] += p[x] / EDGES[x].length));
+    p = q;
+  }
+  function draw(){
+    $("#st-k").textContent = k;
+    $("#st-out").innerHTML = PAGES.map(x =>
+      `<div>${x}：访问 ${visits[x]} 次（频率 ${(visits[x]/(k||1)).toFixed(3)}）· 稳态 ${p[x].toFixed(3)}　${k >= 50 ? (Math.abs(visits[x]/k - p[x]) < 0.08 ? "✅" : "…") : ""}</div>`).join("");
+  }
+  $("#st-step").addEventListener("click", () => step(1));
+  $("#st-100").addEventListener("click", () => step(100));
+  function step(t){
+    for (let i = 0; i < t; i++) {
+      const outs = EDGES[at];
+      at = outs[Math.floor(Math.random() * outs.length)];
+      visits[at]++; k++;
+    }
+    draw();
+  }
+  $("#st-reset").addEventListener("click", () => { at = "A"; k = 0; PAGES.forEach(x => visits[x] = 0); visits.A = 1; draw(); });
+  draw();
+})();
+
+/* ---------- 互动⑦ 定理 21.1.1 × 21.1.3 解题器 ---------- */
+(() => {
+  const updN = () => {
+    const n = +$("#g2-ns").value, profit = +$("#g2-ps").value;
+    $("#g2-n").textContent = n; $("#g2-p").textContent = profit;
+  };
+  $("#g2-ns").addEventListener("input", updN);
+  $("#g2-ps").addEventListener("input", updN);
+  $("#g2-check").addEventListener("click", () => {
+    const n = +$("#g2-ns").value, T = n + +$("#g2-ps").value;
+    const win = n / T, dur = n * (T - n);
+    const w = parseFloat($("#g2-w").value), d = parseFloat($("#g2-d").value);
+    const fb = $("#g2-fb");
+    if (isNaN(w) || isNaN(d)) { fb.className = "fb no"; fb.textContent = "两格都填上。"; return; }
+    const okW = Math.abs(w - win) < 0.001, okD = Math.abs(d - dur) < 0.5;
+    fb.className = "fb " + (okW && okD ? "ok" : "no");
+    fb.innerHTML = (okW && okD ? "✅ 双定理命中！" : "❌ ") +
+      `n=${n}、T=${T}：胜率 = n/T = <b>${win.toFixed(4)}</b>；局长 = n(T−n) = <b>${dur.toLocaleString()}</b> 注。` +
+      (okD ? "" : " 局长错的话：想想它 = 本钱 × 目标利润（定理 21.1.3）。");
+  });
+  updN();
 })();
 
 /* ---------- 终局自测 ---------- */

@@ -6,6 +6,7 @@
 <title>计数规则 · 数学之旅第十五章 — 格致</title>
 <meta name="description" content="MIT《Mathematics for Computer Science》第 15 章的中文交互式解读：乘积/求和规则、除法规则、二项式系数、Bookkeeper 法则、扑克牌型计数、鸽笼原理与纸牌魔术、容斥原理。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -157,6 +158,24 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
 .pg-row .verdict{font-size:14px;display:none;border-top:1px dashed var(--line);padding-top:8px;margin-top:8px;width:100%;line-height:1.7}
 .pg-row .verdict.show{display:block}
 
+/* 缺陷钞票 */
+.bn-bar{height:18px;border-radius:9px;background:var(--bad-soft);border:1px solid #e5c0bb;position:relative;overflow:hidden;margin:8px 0}
+.bn-bar i{position:absolute;top:0;bottom:0;left:0;background:var(--good);opacity:.75}
+.bn-legend{font-size:13px;color:var(--muted);display:flex;gap:16px;flex-wrap:wrap}
+
+/* 圆桌折叠 */
+.rt-grid{display:flex;flex-wrap:wrap;gap:5px;margin:12px 0}
+.rt-cell{width:30px;height:30px;border-radius:7px;border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;
+  background:#fff;transition:.5s}
+.rt-cell.folded{width:0;height:0;opacity:0;border-width:0;padding:0;margin:0;overflow:hidden}
+
+/* 组合证明步进 */
+.cp-step{display:none;border:1px solid var(--line);border-radius:12px;background:#fff;padding:14px 20px;margin:8px 0;line-height:1.85}
+.cp-step.show{display:block;animation:fadein .4s}
+.cp-step .cpt{font-weight:700;color:var(--accent);font-family:var(--serif)}
+.cp-nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
 .quiz-item{margin:18px 0}
 .case{margin:16px 0}
 .case .q{font-family:var(--serif);font-size:17px;font-weight:600;margin:8px 0 12px}
@@ -183,9 +202,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -199,7 +224,7 @@ footer p{margin:6px 0}
     <div class="en">Counting · Cardinality Rules</div>
     <p class="lead">52 张牌里有 2,598,960 种五张手牌，其中 624 种是四条、123,552 种是两对——数错的那次错在"把两个东西当成了双射"。乘积、求和、除法、Bookkeeper、鸽笼、容斥：六把尺子一次配齐，外加一个不需要量子力学的纸牌魔术。</p>
     <div class="meta">
-      <span>⏱ 约 55 分钟</span><span>🧩 6 个互动装置</span><span>📖 原书第 597–674 页</span>
+      <span>⏱ 约 70 分钟</span><span>🧩 10 个互动装置</span><span>📖 原书第 597–674 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch14.html">上一章：求和与渐近</a></div>
@@ -217,6 +242,8 @@ footer p{margin:6px 0}
   <a href="#s6"><span class="toc-num">15.7</span>扑克牌型计数</a>
   <a href="#s7"><span class="toc-num">15.8</span>鸽笼原理</a>
   <a href="#s8"><span class="toc-num">15.9</span>容斥原理</a>
+  <a href="#s9"><span class="toc-num">15.10</span>组合证明</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -262,6 +289,21 @@ footer p{margin:6px 0}
     <p><b>缺陷钞票</b>（15.3.1）：8 位序列号中出现重复数字即为"缺陷"。全部序列号 10⁸ 张；数字互不相同的只有 10·9·8·7·6·5·4·3 = 10!/2! = 1,814,400 张——仅 <b>1.8144%</b>。掏出钱包看看，你兜里几乎必然躺着"缺陷钞票"。</p>
     <p><b>棋盘放子</b>（15.3.2）：兵、马、象各占一行一列互不冲突——行 8·7·6、列同样 8·7·6，共 (8·7·6)² = 112,896 种。行和列互不干扰，各自是一轮广义乘积。</p>
   </div>
+
+  <!-- 互动⑦ 缺陷钞票模拟器 -->
+  <div class="widget reveal" id="w-bn">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">💸 缺陷钞票模拟器：98.1856% 的必然</h4>
+    <p class="wdesc">原书例 15.3.1：8 位序列号中只要出现重复数字就是"缺陷"。理论不重复率 = 10·9·⋯·3 / 10⁸ = 1.8144%。蒙特卡洛验证：抽 N 张，看缺陷占比离 98.1856% 多近。</p>
+    <div class="num-row">
+      <label class="small">试验张数 N = <b id="bn-nl" style="font-family:var(--mono)">5000</b></label>
+      <input type="range" id="bn-n" min="1" max="30" value="5" style="width:160px" />
+      <button class="btn primary" id="bn-go">🎰 开抽</button>
+    </div>
+    <div class="bn-bar" id="bn-bar"><i id="bn-fill" style="width:0%"></i></div>
+    <div class="bn-legend"><span>绿区 = 无缺陷（理论 1.8144%）</span><span>红区 = 缺陷（理论 98.1856%）</span></div>
+    <div class="fb info" id="bn-fb" style="display:block">标准误 ≈ √(p(1−p)/N)：N=5,000 时约 ±0.19%——模拟值应贴着 98.19% ± 一点点。N 越大贴得越紧（大数定律）。</div>
+  </div>
 </section>
 
 <!-- ================= 15.4 ================= -->
@@ -273,6 +315,21 @@ footer p{margin:6px 0}
     <p><b>两枚相同的车</b>（15.4.1）：把配置描述成序列 (r₁,c₁,r₂,c₂) 有 (8·7)² 种——但每个真实摆法被数了 <b>2 次</b>（先说哪枚车都一样），答案 (8·7)²/2 = 1,568。</p>
     <p><b>圆桌骑士</b>（15.4.2）：n 个骑士围圆桌就座，旋转不算新排法——n 个座位序列对应同一 arrangement，映射 n-to-1，所以圆桌排法 = n!/n = <b>(n−1)!</b>。第 17 章概率里它还会回来。</p>
     <div class="insight"><span class="ico">🧠</span><div>除法规则是"数重了再修正"的正式化。它的反向陷阱在 15.7.3：如果你<b>以为</b>映射是 1-to-1 其实是 2-to-1，答案就会大好一倍——扑克的两对就是那句 "Wrong answer!" 的名场面。</div></div>
+  </div>
+
+  <!-- 互动⑧ 圆桌折叠剧场 -->
+  <div class="widget reveal" id="w-rt">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">🛡️ 圆桌折叠剧场：n! 个座位序列塌缩成 (n−1)! 种坐法</h4>
+    <p class="wdesc">同一颜色 = 同一坐法的所有旋转序列（n-to-1！）。先看 n! 个格子按色分组，再点"按除法规则折叠"——每类塌成一个，剩 (n−1)! 个。</p>
+    <div class="num-row">
+      <label class="small">骑士 n = <b id="rt-nl" style="font-family:var(--mono)">4</b></label>
+      <input type="range" id="rt-n" min="3" max="5" value="4" style="width:120px" />
+      <button class="btn primary" id="rt-fold">按除法规则折叠 →</button>
+      <button class="btn ghost" id="rt-reset">展开重来</button>
+    </div>
+    <div class="rt-grid" id="rt-grid"></div>
+    <div class="fb info" id="rt-fb" style="display:block">坐法数 = 座位序列数 ÷ n（每个坐法被 n 次旋转各数一遍）。</div>
   </div>
 </section>
 
@@ -394,11 +451,63 @@ footer p{margin:6px 0}
   </div>
 </section>
 
+<!-- ================= 15.10 组合证明 ================= -->
+<section class="ch" id="s9">
+  <div class="ch-head reveal"><span class="no">15.10</span><h2>组合证明：不用代数的代数恒等式</h2><span class="en">Combinatorial Proofs</span></div>
+  <div class="reveal">
+    <p>要证一个关于计数的恒等式，最漂亮的办法是<b>数同一个东西两次</b>：找一个集合，用两种方式数它，两边自然相等。不用展开、不用归纳，一个双射顶 ten 行代数。三连证：</p>
+  </div>
+
+  <!-- 互动⑨ 组合证明剧场 -->
+  <div class="widget reveal" id="w-cp">
+    <span class="pill">互动 ⑨</span>
+    <h4 class="wtitle">🎭 组合证明剧场：数两次，恒等式自己倒下</h4>
+    <div class="cp-step" id="cp-s1">
+      <div class="cpt">第一幕 · T 恤论证：( n / k ) = ( n / n−k )</div>
+      <p>n 个人发 T 恤，恰好 k 人有份——数一遍是 ( n / k )。换个数法：数"没轮到的人"，n−k 个，是 ( n / n−k )。同一个发 T 恤事件，两种数法必然相等。如：C(10,7) = C(10,3) = 120。</p>
+    </div>
+    <div class="cp-step" id="cp-s2">
+      <div class="cpt">第二幕 · Pascal 恒等式：( n / k ) = ( n−1 / k ) + ( n−1 / k−1 )</div>
+      <p>从 n 个人里选 k 人进委员会。按"Bob 在不在队里"分两类：不在 → 从剩下 n−1 人选 k 个；在 → 再选 k−1 个同伴。两类互斥、并起来就是全体——求和规则的一个恒等式。整个 Pascal 三角都由它撑起。</p>
+    </div>
+    <div class="cp-step" id="cp-s3">
+      <div class="cpt">第三幕 · 红黑牌（定理 15.10.2）：Σᵣ ( n / r )( 2n / n−r ) = ( 3n / n )</div>
+      <p>n 张红牌 + 2n 张黑牌混在一起，从中抽 n 张：直接数是 ( 3n / n )。换个数法——按红牌的张数 r 分类：红取 r、黑取 n−r，即 ( n / r )·( 2n / n−r )，r 求和。两个答案数的是同一叠牌，恒等式成立（这就是 Vandermonde 卷积的计数版，第 16 章生成函数的先声）。</p>
+    </div>
+    <div class="cp-nav">
+      <button class="btn primary" id="cp-next">下一幕 ▶</button>
+      <button class="btn ghost" id="cp-reset">回到幕前</button>
+    </div>
+    <div class="fb info" id="cp-fb" style="display:block">三幕的共同套路：找一个"易数的集合"，把它用两种方式数出来。你会看到第 16 章的生成函数把这套把戏再自动化一层。</div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战</h2><span class="en">Practice Problems, Playable</span></div>
+  <div class="reveal">
+    <p>一道原书 Practice Problem 做成解题器（牌照实验室则是习题 15.5 的互动版）。</p>
+  </div>
+
+  <!-- 习题 15.12 -->
+  <div class="widget reveal" id="w-p1512">
+    <span class="pill">互动 ⑩</span>
+    <h4 class="wtitle">🪑 习题 15.12：圆桌骑士四连问</h4>
+    <p class="wdesc">原书题目：Anna、Brian、Caine 等 8 名学生围圆桌就座（旋转同一种坐法）。填数字。</p>
+    <div class="num-row"><b>(a)</b> 无限制的坐法数 = <input id="p12a" type="number" style="width:90px" /> <span class="small muted">（8 人圆桌）</span></div>
+    <div class="num-row"><b>(b)</b> Anna 挨着 Brian 的坐法数 = <input id="p12b" type="number" style="width:90px" /> <span class="small muted">（打包！）</span></div>
+    <div class="num-row"><b>(c)</b> Brian 同时挨着 Anna 和 Caine 的坐法数 = <input id="p12c" type="number" style="width:90px" /></div>
+    <div class="num-row"><b>(d)</b> Brian 挨着 Anna <b>或</b> Caine 的坐法数 = <input id="p12d" type="number" style="width:90px" /> <span class="small muted">（容斥！）</span></div>
+    <div style="margin-top:10px"><button class="btn primary" id="p12-check">四问全判</button></div>
+    <div class="fb" id="p12-fb"></div>
+  </div>
+</section>
+
 <!-- ================= 终局自测 ================= -->
 <section class="ch" id="sq">
   <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
   <div class="reveal">
-    <p>六题，覆盖全章。</p>
+    <p>八题，覆盖 15.2–15.10。</p>
     <div id="quiz-body"></div>
     <div class="result-box" id="quiz-result">
       <div class="rank" id="quiz-rank"></div>
@@ -461,8 +570,8 @@ footer p{margin:6px 0}
     <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
     <a href="#s1">15.2 · 乘积与求和</a><a href="#s2">15.3 · 广义乘积规则</a><a href="#s3">15.4 · 除法规则</a>
     <a href="#s4">15.5 · 子集与二项式</a><a href="#s5">15.6 · Bookkeeper</a><a href="#s6">15.7 · 扑克牌型计数</a>
-    <a href="#s7">15.8 · 鸽笼原理</a><a href="#s8">15.9 · 容斥原理</a>
-    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+    <a href="#s7">15.8 · 鸽笼原理</a><a href="#s8">15.9 · 容斥原理</a><a href="#s9">15.10 · 组合证明</a>
+    <a href="#sp">⚔️ · 习题实战</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
   </div>
 </div>
 
@@ -757,6 +866,137 @@ const C = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i
   draw();
 })();
 
+/* ---------- 互动⑦ 缺陷钞票模拟器 ---------- */
+(() => {
+  const THEORY_BAD = 0.981856; // 缺陷率（有重复数字）
+  $("#bn-n").addEventListener("input", () => $("#bn-nl").textContent = (+$("#bn-n").value * 1000).toLocaleString());
+  $("#bn-go").addEventListener("click", () => {
+    const N = +$("#bn-n").value * 1000;
+    let bad = 0;
+    for (let t = 0; t < N; t++) {
+      const seen = new Array(10).fill(false);
+      let dup = false;
+      for (let d = 0; d < 8; d++) {
+        const x = Math.floor(Math.random() * 10);
+        if (seen[x]) { dup = true; break; }
+        seen[x] = true;
+      }
+      if (dup) bad++;
+    }
+    const sim = bad / N;
+    $("#bn-fill").style.width = ((1 - sim) * 100).toFixed(2) + "%";
+    const se = Math.sqrt(THEORY_BAD * (1 - THEORY_BAD) / N);
+    const fb = $("#bn-fb");
+    const hit = Math.abs(sim - THEORY_BAD) <= 3 * se;
+    fb.className = "fb " + (hit ? "ok" : "no");
+    fb.innerHTML = `模拟缺陷率 = <b>${(sim * 100).toFixed(2)}%</b>（${bad.toLocaleString()} / ${N.toLocaleString()} 张）· 理论 98.1856% ± 3×标准误(±${(3 * se * 100).toFixed(2)}%)。` +
+      (hit ? " 落在 3σ 内——与广义乘积算出的 10·9·…·3/10⁸ = 1.8144% 不重复率完全吻合。" : " 居然跑出 3σ？点'开抽'再试一次——大数定律偶尔也会晃一下。");
+  });
+})();
+
+/* ---------- 互动⑧ 圆桌折叠剧场 ---------- */
+(() => {
+  const COLORS = ["#0f4c81","#b4832a","#2e7d4f","#b3372e","#6a4c93","#0e7c86","#c2542d","#4a7023","#8c2f6b","#3a5a8c"];
+  let n = 4, folded = false;
+  // 生成 [0..n-1] 的全部排列，等价类 = 旋转群（同色 = 同一 arrangement）
+  function classes(perm) {
+    const res = [perm.join("")];
+    let cur = perm;
+    for (let i = 1; i < n; i++) {
+      cur = cur.slice(1).concat(cur[0]);
+      res.push(cur.join(""));
+    }
+    return res;
+  }
+  function render(){
+    const grid = $("#rt-grid");
+    grid.innerHTML = "";
+    $("#rt-nl").textContent = n;
+    const arr = [...Array(n).keys()];
+    // 生成所有排列（n ≤ 5 → ≤120 个）
+    const perms = [];
+    (function gen(cur, used){
+      if (cur.length === n) { perms.push(cur.slice()); return; }
+      for (let v = 0; v < n; v++) if (!used.has(v)) { cur.push(v); used.add(v); gen(cur, used); cur.pop(); used.delete(v); }
+    })([], new Set());
+    // 每个排列的等价类编号
+    const clsMap = {};
+    let cls = 0;
+    const colors = [];
+    perms.forEach(p => {
+      const key = p.join("");
+      if (!(key in clsMap)) {
+        classes(p).forEach(k => { if (!(k in clsMap)) clsMap[k] = cls; });
+        colors.push(COLORS[cls % COLORS.length]);
+        cls++;
+      }
+    });
+    perms.forEach(p => {
+      const d = document.createElement("div");
+      const c = colors[clsMap[p.join("")]];
+      d.className = "rt-cell" + (folded && clsMap[p.join("")] !== undefined && !isRep(p) ? " folded" : "");
+      d.style.background = c + "22"; d.style.borderColor = c; d.style.color = c;
+      d.textContent = p.join("");
+      grid.appendChild(d);
+    });
+    function isRep(p){ return p[0] === Math.min(...p); } // 每类只留一个代表（折叠目标）
+    const fb = $("#rt-fb");
+    fb.className = "fb " + (folded ? "ok" : "info");
+    fb.innerHTML = folded
+      ? `🎯 ${n}! = ${perms.length} 个座位序列折叠成 <b>${perms.length / n} = (n−1)!</b> 种坐法——每 ${n} 个互为旋转的序列共用一个颜色，除法规则 n-to-1 的可视化。`
+      : `${n}! = ${perms.length} 个座位序列，同色格子互为旋转（n 个一组）。坐法数 = 座位序列数 ÷ n（除法规则）。`;
+    $("#rt-fold").disabled = folded;
+  }
+  $("#rt-n").addEventListener("input", () => { n = +$("#rt-n").value; folded = false; render(); });
+  $("#rt-fold").addEventListener("click", () => { folded = true; render(); });
+  $("#rt-reset").addEventListener("click", () => { folded = false; render(); });
+  render();
+})();
+
+/* ---------- 互动⑨ 组合证明剧场 ---------- */
+(() => {
+  let k = 0;
+  const steps = ["cp-s1", "cp-s2", "cp-s3"];
+  const btn = $("#cp-next");
+  function refresh(){
+    steps.forEach((id, i) => $("#"+id).classList.toggle("show", i < k));
+    btn.disabled = k >= steps.length;
+    btn.textContent = k >= steps.length ? "三幕全毕 ■" : "下一幕 ▶";
+    const fb = $("#cp-fb");
+    if (k >= steps.length) {
+      fb.className = "fb ok";
+      fb.textContent = "🎯 三连证毕——T 恤、委员会、红黑牌：一个双射或一次分类，代数恒等式免费到手。15.10 的口诀：'数同一个东西两次'。";
+    }
+  }
+  btn.addEventListener("click", () => { if (k < steps.length) { k++; refresh(); } });
+  $("#cp-reset").addEventListener("click", () => { k = 0; refresh(); $("#cp-fb").className = "fb info"; $("#cp-fb").textContent = "三幕的共同套路：找一个'易数的集合'，把它用两种方式数出来。你会看到第 16 章的生成函数把这套把戏再自动化一层。"; });
+  refresh();
+})();
+
+/* ---------- 互动⑩ 习题 15.12 ---------- */
+(() => {
+  const ANS = { a: 5040, b: 1440, c: 240, d: 2640 };
+  const WHY = {
+    a: "8 人圆桌 = 8!/8 = 7! = 5040（除法规则：每个坐法被 8 次旋转共享）。",
+    b: "把 Anna+Brian 打包成一块（内部 2 种顺序），7 个对象围圆桌 = 6!·2 = 1440。",
+    c: "Brian 必居中：A–B–C 或 C–B–A 两种内序打包，6 个对象围圆桌 = 5!·2 = 240。",
+    d: "容斥：(b) + (C挨B：对称 1440) − (c) = 1440 + 1440 − 240 = 2640。",
+  };
+  $("#p12-check").addEventListener("click", () => {
+    const fb = $("#p12-fb");
+    const parts = [["a","#p12a"],["b","#p12b"],["c","#p12c"],["d","#p12d"]];
+    const msgs = []; let all = true;
+    parts.forEach(([k, sel]) => {
+      const v = $(sel).value;
+      if (v === "") { msgs.push(`(${k}) 未填`); all = false; return; }
+      if (+v === ANS[k]) msgs.push(`(${k}) ✅ ${ANS[k].toLocaleString()}。${WHY[k]}`);
+      else { msgs.push(`(${k}) ❌ 你答 ${v}。提示：(a) 除法规则；(b)(c) 打包；(d) 容斥。`); all = false; }
+    });
+    fb.className = "fb " + (all ? "ok" : "no");
+    fb.innerHTML = msgs.join("<br>");
+  });
+})();
+
 /* ---------- 终局自测 ---------- */
 (() => {
   const items = [
@@ -796,16 +1036,28 @@ const C = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i
        {t:"3·9! − 3·8! + 7!", ok:true, fb:"对。打包法：|P₄₂|=9!（42 打包成 1 个符号），两两交集 8!，三重 6042 打包 7!。容斥三集公式。"},
        {t:"10! − 3·9!", ok:false, fb:"补集是'三对都不出现'，但'都不出现'也得容斥，没有捷径。"},
        {t:"3·9! − 3·8!", ok:false, fb:"差最后一项 +|P₄₂∩P₀₄∩P₆₀| = 7!。"}]},
+    {q:"8 位序列号'数字互不相同'的概率是？",
+     opts:[
+       {t:"接近 50%——一半一半", ok:false, fb:"生日悖论直觉在这里失效：序列号 10 个数字远多于生日 365 天的比例关系。"},
+       {t:"只有 1.8144%（10·9·8·…·3 / 10⁸）", ok:true, fb:"对——广义乘积：第一位 10 种、第二位剩 9 种……第八位只剩 3 种，共 10!/2 张；除以总数 10⁸。掏出钱包看看：你几乎必然攥着'缺陷钞票'。"},
+       {t:"0%——8 位 > 10 个数字不可能不重复", ok:false, fb:"8 < 10，不重复完全可能，只是少见。"},
+       {t:"10!/10⁸", ok:false, fb:"忘了除以重复的 2!?——10!/2 才是互不相同的序列号数（后两位 0/1 顺序无所谓？不——10·9·…·3 本身就是 10!/2!）。"}]},
+    {q:"用组合证明 Pascal 恒等式 ( n / k ) = ( n−1 / k ) + ( n−1 / k−1 )，'数两次'的对象是？",
+     opts:[
+       {t:"n 个人里选 k 人进委员会，按 Bob 在不在场分类", ok:true, fb:"对——不在：从 n−1 人选 k 个；在：再选 k−1 个同伴。两类互斥并成全集，求和规则直接给出恒等式。"},
+       {t:"n 个人里发 k 件 T 恤", ok:false, fb:"那是 ( n / k ) = ( n / n−k ) 的 T 恤论证（第一幕）。"},
+       {t:"红黑牌里数红牌的张数", ok:false, fb:"那是 Vandermonde/定理 15.10.2 的第三幕。"},
+       {t:"圆桌骑士的旋转等价类", ok:false, fb:"那是除法规则的舞台。"}]},
   ];
   const box = $("#quiz-body"), result = $("#quiz-result");
   const correct = [1,1,1,1,1,1].map((_, i) => items[i].opts.findIndex(o => o.ok));
   function grade(right){
     result.classList.add("show");
-    const [rank, note] = right >= 5 ? ["🂡 牌桌会计师", "六把尺子全对齐——两对的 2-to-1 陷阱也没骗到你。第 16 章生成函数：让多项式替你计数。"]
-      : right >= 3 ? ["🕊️ 养鸽新手", "乘积/求和已上手——回看 15.4 除法规则与 15.7 的两个 2-to-1 陷阱。"]
+    const [rank, note] = right >= 7 ? ["🂡 牌桌会计师", "六把尺子 + 组合证明全对齐——两对的 2-to-1 陷阱也没骗到你。第 16 章生成函数：让多项式替你计数。"]
+      : right >= 4 ? ["🕊️ 养鸽新手", "乘积/求和已上手——回看 15.4 除法规则与 15.7 的两个 2-to-1 陷阱。"]
       : ["🧦 黑屋摸袜人", "先玩扑克计数器：看'Wrong answer!'怎么被除法规则救回来。"];
     $("#quiz-rank").textContent = rank;
-    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    $("#quiz-score-line").textContent = `得分 ${right} / ${items.length} · ${note}`;
     result.scrollIntoView({behavior:"smooth", block:"center"});
   }
   let i = 0, right = 0;

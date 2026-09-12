@@ -4,8 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>数学数据类型 · 数学之旅第四章 — 格致</title>
-<meta name="description" content="MIT《Mathematics for Computer Science》第 4 章的中文交互式解读：集合、序列、函数、二元关系与有限基数。6 个互动装置 + 终局自测。" />
+<meta name="description" content="MIT《Mathematics for Computer Science》第 4 章的中文交互式解读：集合、序列、函数、二元关系与有限基数。8 个互动装置 + 终局自测。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -88,6 +89,7 @@ h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-rig
 .insight .ico{font-size:20px;line-height:1.5}
 .eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
 .math{font-family:var(--serif);white-space:nowrap}
+@media (max-width:720px){.eq{white-space:normal;font-size:17px} .eq.math{white-space:normal} .judge-q{white-space:normal}}
 .term{color:var(--accent);font-weight:600}
 .muted{color:var(--muted)} .small{font-size:14px}
 code{font-family:var(--mono);font-size:.88em;background:#efece4;border-radius:6px;padding:2px 8px}
@@ -159,6 +161,18 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
 .qc-row .verdict.show{display:block}
 .qc-row.done{opacity:.92}
 
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.cardset{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.cardset .chip{border:1.5px solid var(--line);border-radius:999px;padding:4px 14px;background:#fff;
+  font-family:var(--mono);font-size:15px;cursor:pointer;user-select:none;transition:.15s}
+.cardset .chip.on{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:700}
+
 .quiz-item{margin:18px 0}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
 .result-box.show{display:block;animation:fadein .5s}
@@ -178,9 +192,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -194,7 +214,7 @@ footer p{margin:6px 0}
     <div class="en">Mathematical Data Types</div>
     <p class="lead">集合、序列、函数、关系——程序员的日常类型系统，数学家的地基工程。这一章定义密集，但我们不背定义：你会开庭审判集合运算、开动幂集发电站、亲手连线鉴定关系的五种性质。</p>
     <div class="meta">
-      <span>⏱ 约 35 分钟</span><span>🧩 6 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 91–122 页</span>
+      <span>⏱ 约 45 分钟</span><span>🧩 8 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 91–122 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch03.html">上一章：逻辑公式</a></div>
@@ -209,6 +229,7 @@ footer p{margin:6px 0}
   <a href="#s3"><span class="toc-num">4.3</span>函数</a>
   <a href="#s4"><span class="toc-num">4.4</span>二元关系</a>
   <a href="#s5"><span class="toc-num">4.5</span>有限基数</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -359,6 +380,35 @@ footer p{margin:6px 0}
       <input type="range" id="map-sb" min="0" max="6" value="3" style="width:140px" />
     </div>
     <div class="fb info" id="map-out" style="display:block"></div>
+  </div>
+</section>
+
+<!-- ================= 4.5 基数 + 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">4.5</span><h2>基数实验室与技能核查</h2><span class="en">Set Cardinality, Playable</span></div>
+  <div class="reveal">
+    <p><span class="term">基数 |A|</span> = 集合元素的个数。核心规则（第 15 章计数规则的预告片）：不交并 |A∪B| = |A|+|B|；一般并要容斥 |A∪B| = |A|+|B|−|A∩B|；积规则 |A×B| = |A|·|B|；幂集 |pow(A)| = 2^|A|。</p>
+  </div>
+
+  <!-- 互动⑦ 基数实验室 -->
+  <div class="widget reveal" id="w-card">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🔢 基数实验室：点元素，看全部数字联动</h4>
+    <p class="wdesc">从论域 {1,2,3,4,5} 里点亮 A 与 B 的成员。右侧所有计数实时重算——找出 |A∪B|、|A|+|B|−|A∩B| 恒等的那个瞬间。</p>
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <div><div class="small muted">集合 A</div><div class="cardset" id="card-A"></div></div>
+      <div><div class="small muted">集合 B</div><div class="cardset" id="card-B"></div></div>
+    </div>
+    <div class="gen-expr" id="card-out" style="border:1px solid var(--line);border-radius:10px;background:#fff;padding:10px 16px;font-family:var(--mono);font-size:14.5px;margin-top:10px;line-height:2"></div>
+  </div>
+
+  <!-- 互动⑧ 4.5 技能核查 -->
+  <div class="widget reveal" id="w-quiz45">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">✅ 4.5 技能核查：五问连答</h4>
+    <p class="wdesc">|A|=4、|B|=3、A∩B 有 1 个元素、全集 D 有 10 个元素。五道快问全对亮绿。</p>
+    <div id="q45-list"></div>
+    <div style="margin-top:10px;font-size:14.5px">进度 <span class="score-pill" id="q45-score">0 / 5</span></div>
   </div>
 </section>
 
@@ -749,6 +799,63 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   }
   sa.addEventListener("input", upd); sb.addEventListener("input", upd);
   upd();
+})();
+
+/* ---------- 互动⑦ 基数实验室 ---------- */
+(() => {
+  const D = [1,2,3,4,5];
+  const A = new Set([1,2,3]), B = new Set([2,3,4]);
+  function build(host, set, other){
+    D.forEach(v => {
+      const c = document.createElement("span");
+      c.className = "chip" + (set.has(v) ? " on" : "");
+      c.textContent = v;
+      c.addEventListener("click", () => { set.has(v) ? set.delete(v) : set.add(v); c.classList.toggle("on"); upd(); });
+      host.appendChild(c);
+    });
+  }
+  function upd(){
+    const U = new Set([...A, ...B]);
+    const I = [...A].filter(x => B.has(x));
+    const prod = A.size * B.size;
+    $("#card-out").innerHTML =
+      `A = {${[...A].sort()||""}}　|A| = ${A.size}<br>` +
+      `B = {${[...B].sort()||""}}　|B| = ${B.size}<br>` +
+      `A∪B = {${[...U].sort()}}　|A∪B| = ${U.size}　＝ ${A.size}+${B.size}−${I.length} ✓<br>` +
+      `A∩B = {${I.sort()}}　|A∩B| = ${I.length}　·　|A×B| = ${A.size}·${B.size} = ${prod}　·　|pow(A)| = 2^${A.size} = ${2 ** A.size}`;
+  }
+  build($("#card-A"), A, B);
+  build($("#card-B"), B, A);
+  upd();
+})();
+
+/* ---------- 互动⑧ 4.5 技能核查 ---------- */
+(() => {
+  const QS = [
+    { s: "|A∪B| = 4 + 3 − 1 = 6", ans: true, why: "对——容斥：并 = 两集之和减去交集。" },
+    { s: "|A×B| = 12", ans: true, why: "对——积规则：4·3 = 12 个有序对。" },
+    { s: "|pow(A)| = 4² = 16", ans: false, why: "✗ 幂集是 2^|A| = 2⁴ = 16 结果对但式子错——是 2 的 4 次方，不是 4²（同为 16 纯属巧合，|A|=5 时 2⁵=32 ≠ 25）。" },
+    { s: "|A−B| = |A| − |A∩B| = 3", ans: true, why: "对——从 A 里挖掉交集：4 − 1 = 3。" },
+    { s: "|Ā|（D 为全集）= 10 − |A| = 6", ans: true, why: "对——补集 = 全集挖掉自己。" },
+  ];
+  let done = 0, right = 0;
+  const list = $("#q45-list");
+  QS.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "qc-row";
+    d.innerHTML = `<div class="stmt"><b>${i+1}.</b> ${it.s}</div>
+      <div style="display:flex;gap:6px"><button class="btn">对</button><button class="btn">错</button></div><div class="verdict"></div>`;
+    const vd = $(".verdict", d);
+    $$(".btn", d).forEach((b, k) => b.addEventListener("click", () => {
+      if (d.classList.contains("done")) return;
+      d.classList.add("done"); done++;
+      const said = k === 0, ok = said === it.ans;
+      if (ok) right++;
+      vd.className = "verdict show"; vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+      $("#q45-score").textContent = done === 5 ? `完成！答对 ${right} / 5` : `${right} / ${done}`;
+    }));
+    list.appendChild(d);
+  });
 })();
 
 /* ---------- 终局自测 ---------- */

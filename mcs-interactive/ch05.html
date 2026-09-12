@@ -4,8 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>归纳法 · 数学之旅第五章 — 格致</title>
-<meta name="description" content="MIT《Mathematics for Computer Science》第 5 章的中文交互式解读：普通归纳、强归纳、同色马假证明与堆叠游戏。6 个互动装置 + 终局自测。" />
+<meta name="description" content="MIT《Mathematics for Computer Science》第 5 章的中文交互式解读：普通归纳、强归纳、同色马假证明与堆叠游戏。8 个互动装置 + 终局自测。" />
 <link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<link rel="stylesheet" href="theme.css">
 <style>
 :root{
   --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
@@ -183,6 +184,16 @@ h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-rig
 input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
 
 .quiz-item{margin:18px 0}
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.score-pill{font-family:var(--mono);background:var(--accent-soft);border-radius:999px;padding:2px 12px;color:var(--accent)}
+.gen-expr{font-family:var(--mono);font-size:14.5px;background:#fff;border:1px solid var(--line);border-radius:10px;
+  padding:10px 16px;margin-top:10px;line-height:2;white-space:pre-wrap;word-break:break-word}
 .result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
 .result-box.show{display:block;animation:fadein .5s}
 .result-box .rank{font-family:var(--serif);font-size:26px}
@@ -201,9 +212,15 @@ footer p{margin:6px 0}
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
 .reveal.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+/* 门禁 v1.1：保留本章暖纸底，关闭 theme 默认色晕（特批豁免） */
+body::before{display:none}
 </style>
 </head>
 <body>
+<nav class="brandbar"><div class="brandbar-inner">
+  <a class="nav-brand" href="/">cohen <span class="domain">· rockcohen.cc</span><em class="motto">张帆济川，凿井及泉</em></a>
+  <div class="links"><a href="index.html">章节目录</a><a href="/">主站</a><a href="/paper/">论文精读</a></div>
+</div></nav>
 <div id="progress"></div>
 
 <header class="hero">
@@ -217,7 +234,7 @@ footer p{margin:6px 0}
     <div class="en">Induction</div>
     <p class="lead">规则一：队首的学生有糖。规则二：有糖的下一人也有糖。两句话，一整条队伍人人有糖——这就是归纳：离散数学的定义性特征。这一章你将推翻"所有马同色"，并在堆叠游戏里发现策略根本不重要。</p>
     <div class="meta">
-      <span>⏱ 约 40 分钟</span><span>🧩 6 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 123–158 页</span>
+      <span>⏱ 约 50 分钟</span><span>🧩 8 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 123–158 页</span>
     </div>
     <button class="start" id="start-btn">开始阅读 ↓</button>
     <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch04.html">上一章：数学数据类型</a></div>
@@ -232,6 +249,7 @@ footer p{margin:6px 0}
   <a href="#s3"><span class="toc-num">5.2</span>强归纳</a>
   <a href="#s4"><span class="toc-num">5.2.5</span>堆叠游戏</a>
   <a href="#s5"><span class="toc-num">5.3</span>三剑客关系</a>
+  <a href="#sp"><span class="toc-num">⚔️</span>习题实战</a>
   <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
   <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
 </nav>
@@ -396,6 +414,32 @@ footer p{margin:6px 0}
   <div class="reveal">
     <p>强归纳看着比普通归纳"强"——能假设的更多嘛。但原书捅破：<b>三者是同一推理的三种排版</b>。任何强归纳证明都能机械改写成普通归纳（给归纳假设套一个全称量词），任何良序证明也能自动改写成归纳证明（和被改回）。第 2 章的求和公式良序版与本章的归纳版，就是同一个数学内容换了字体。</p>
     <div class="insight"><span class="ico">🧭</span><div>选型经验：归纳证明<b>不用反证法</b>，且常常顺手给出递归程序；良序证明有时更短促。没有万能配方——多写几版比一比。无论选哪种，<b>开头就声明方法</b>，给读者一张地图（这条也是第 1 章九条心法的第一条）。</div></div>
+  </div>
+</section>
+
+<!-- ================= 习题实战 ================= -->
+<section class="ch" id="sp">
+  <div class="ch-head reveal"><span class="no">⚔️</span><h2>习题实战：下标变量与归纳步</h2><span class="en">5.3.2 &amp; Practice, Playable</span></div>
+  <div class="reveal">
+    <p>5.3.2 的下标变量是最容易绊倒新手的写作细节；归纳步则用经典奇数和亲手走一遍。</p>
+  </div>
+
+  <!-- 互动⑦ 下标变量翻译器 -->
+  <div class="widget reveal" id="w-idx">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🔤 下标变量翻译器：自由变量 vs 约束变量（5.3.2）</h4>
+    <p class="wdesc">每个数学句子点出它涉及的变量类型——分清 n（自由变量，谓词的"自变量"）与 i、k（求和号管辖的下标变量）是写对归纳谓词的前提。</p>
+    <div id="idx-list"></div>
+    <div style="margin-top:10px;font-size:14.5px">进度 <span class="score-pill" id="idx-score">0 / 4</span></div>
+  </div>
+
+  <!-- 互动⑧ 奇数和归纳步解算器 -->
+  <div class="widget reveal" id="w-odd">
+    <span class="pill">互动 ⑧</span>
+    <h4 class="wtitle">🧮 归纳步解算器：1 + 3 + 5 + ⋯ + (2n−1) = n²</h4>
+    <p class="wdesc">经典练手题（5.2 的实战版）。按提示填空，亲手走完归纳步——每格判对立即解锁下一格。</p>
+    <div class="gen-expr" id="odd-steps" style="border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px 18px;font-family:var(--mono);font-size:15px;line-height:2.3"></div>
+    <div class="fb info" id="odd-fb" style="display:block">S(n) = 1 + 3 + ⋯ + (2n−1)。归纳假设 S(n) = n²。归纳步：S(n+1) = S(n) + ?——把那个"？"算出来。</div>
   </div>
 </section>
 
@@ -721,6 +765,75 @@ $$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classLis
   }
   slider.addEventListener("input", upd);
   upd();
+})();
+
+/* ---------- 互动⑦ 下标变量翻译器 ---------- */
+(() => {
+  const QS = [
+    { s: "P(n) ::= 1 + 2 + ⋯ + n = n(n+1)/2", opts: ["n 是自由变量，无下标变量", "n 是下标变量", "有两个自由变量"], ans: 0,
+      why: "对——n 是谓词 P 的自变量（自由变量），这里根本没有求和号管辖的下标。" },
+    { s: "Q(n) ::= Σᵢ₌₁ⁿ i² = n(n+1)(2n+1)/6", opts: ["n 与 i 都是自由变量", "n 自由、i 是求和号管辖的下标变量", "i 自由、n 是下标"], ans: 1,
+      why: "对——Σ 叫走 i：i 在每项里出现但整个句子读完后 i 消失；留下来的 n 才是谓词 Q 的自变量。" },
+    { s: "R(n) ::= 对所有 i ∈ [0..n]，aᵢ = 2ᵢ", opts: ["i 是自由变量", "n 是下标变量", "n 自由、i 被 ∀n 管辖为约束出现", ""], ans: 2,
+      why: "对（第三个选项）——∀i 的量词管住 i；n 仍是自由变量。注意：谓词 P(n) 写下标变量时，P 的自变量出现在下标位置（如 aₙ）完全合法。" },
+    { s: "归纳证明里假设 P(n) 真、推 P(n+1)——这里的 n 与 n+1 是？", opts: ["都是约束变量", "都是自由变量（P 的自变量，n+1 只是换个值）", "n 是下标变量"], ans: 1,
+      why: "对——'对任意 n'在元语言层面量住：归纳步必须对每个 n 成立，n/n+1 都是 P 的自由自变量。写谓词时最忌把 n 与循环下标 i 混为一谈。" },
+  ];
+  let done = 0, right = 0;
+  const list = $("#idx-list");
+  QS.forEach((it, i) => {
+    const d = document.createElement("div");
+    d.className = "pg-row";
+    d.innerHTML = `<div class="stmt" style="font-family:var(--mono)"><b>${i+1}.</b> ${it.s}</div>
+      <div style="flex:1 1 100%;display:flex;flex-direction:column;gap:6px">
+        ${it.opts.slice(0,3).map((o,k) => `<button class="opt" data-k="${k}">${String.fromCharCode(65+k)}. ${o}</button>`).join("")}
+      </div><div class="verdict"></div>`;
+    const vd = $(".verdict", d);
+    $$(".opt", d).forEach(b => b.addEventListener("click", () => {
+      if (d.classList.contains("done")) return;
+      d.classList.add("done"); done++;
+      const ok = +b.dataset.k === it.ans;
+      if (ok) right++;
+      b.classList.add(ok ? "picked-ok" : "picked-no");
+      if (!ok) { const t = $(`.opt[data-k="${it.ans}"]`, d); if (t) t.classList.add("picked-ok"); }
+      vd.className = "verdict show"; vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+      $("#idx-score").textContent = done === 4 ? `完成！答对 ${right} / 4` : `${right} / ${done}`;
+    }));
+    list.appendChild(d);
+  });
+})();
+
+/* ---------- 互动⑧ 奇数和归纳步 ---------- */
+(() => {
+  const BLANKS = [
+    { hint: "归纳步：S(n+1) = S(n) + ？（第 n+1 个奇数，用 n 表示）", ans: "2n+1", accept: ["2n+1", "2*n+1"] },
+    { hint: "代入归纳假设：S(n+1) = n² + ？", ans: "2n+1", accept: ["2n+1", "2*n+1"] },
+    { hint: "因式分解：n² + 2n + 1 = ？", ans: "(n+1)²", accept: ["(n+1)^2", "(n+1)²", "(n+1)**2"] },
+  ];
+  let idx = 0;
+  const box = $("#odd-steps"), fb = $("#odd-fb");
+  function draw(){
+    let html = `S(n) = 1 + 3 + 5 + ⋯ + (2n−1)，要证 S(n) = n²\n基例 S(0) = 0 = 0² ✓\n归纳假设：设 S(n) = n²\n`;
+    for (let i = 0; i < idx; i++) html += `第 ${i+1} 步 ✓ ${BLANKS[i].hint.split("：")[1] || ""} = <b style="color:var(--good)">${BLANKS[i].ans}</b>\n`;
+    if (idx < BLANKS.length) {
+      html += `<span style="color:var(--amber)">${BLANKS[idx].hint}</span>\n答案：<input id="odd-in" style="width:110px;border:1.5px solid var(--line);border-radius:8px;padding:4px 8px;font-family:var(--mono)" /> <button class="btn primary" id="odd-go" style="padding:4px 14px">提交</button>`;
+    } else {
+      html += `<b style="color:var(--good)">S(n+1) = (n+1)² ✓ 归纳步完成——基例 + 归纳步 ⟹ 对所有 n ≥ 0 成立（定理证毕）。</b>`;
+    }
+    box.innerHTML = html;
+    if (idx < BLANKS.length) {
+      const go = () => {
+        const v = $("#odd-in").value.trim().replace(/\s/g, "");
+        const ok = BLANKS[idx].accept.some(a => a.toLowerCase() === v.toLowerCase());
+        const cur = fb;
+        if (ok) { idx++; cur.className = "fb ok"; cur.textContent = "✅ 对！下一格。"; draw(); }
+        else { cur.className = "fb no"; cur.textContent = "再算算：第 n+1 个奇数是 2(n+1)−1。"; }
+      };
+      $("#odd-go").addEventListener("click", go);
+      $("#odd-in").addEventListener("keydown", e => { if (e.key === "Enter") go(); });
+    }
+  }
+  draw();
 })();
 
 /* ---------- 终局自测 ---------- */
