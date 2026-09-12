@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>事件与概率空间 · 数学之旅第十七章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 17 章的中文交互式解读：四步法、蒙提霍尔 2/3、非传递怪骰子、生日原则、概率规则与无限概率空间。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.box.rule{border-left:4px solid var(--amber)} .box.rule .label{background:var(--amber-soft);color:var(--amber)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.math{font-family:var(--serif);white-space:nowrap}
+@media (max-width:720px){.eq{white-space:normal;font-size:17px} .eq.math{white-space:normal}}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.amber{border-color:var(--amber);color:var(--amber)}
+.btn.amber:hover{background:var(--amber-soft)}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+
+.num-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+.statcard{border:1.5px solid var(--line);border-radius:10px;padding:8px 14px;background:#fff;font-size:14px}
+.statcard b{font-family:var(--mono)}
+.bar-wrap{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:10px}
+.bar{height:22px;border-radius:6px;background:var(--accent-soft);overflow:hidden;position:relative;margin:6px 0 2px}
+.bar > i{position:absolute;left:0;top:0;bottom:0;background:var(--accent);transition:width .3s}
+.bar.switch > i{background:var(--amber)}
+.bar .pct{position:absolute;right:8px;top:0;line-height:22px;font-family:var(--mono);font-size:12.5px;color:#fff;mix-blend-mode:difference}
+
+/* 蒙提霍尔树表 */
+.mh-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.mh{border-collapse:collapse;font-family:var(--mono);font-size:13px;margin:0 auto}
+table.mh td,table.mh th{border:1px solid var(--line);padding:4px 10px;text-align:center;white-space:nowrap}
+table.mh th{background:var(--accent-soft);color:var(--accent)}
+table.mh td.win{background:var(--good-soft);color:var(--good);font-weight:700}
+table.mh td.hl{background:var(--amber-soft)}
+table.mh tr:hover td{background:var(--amber-soft)}
+table.mh tr:hover td.win{background:#cfe8d8}
+
+/* 骰子 */
+.dice-btns{display:flex;gap:10px;flex-wrap:wrap}
+.die{border:1.5px solid var(--line);border-radius:12px;background:#fff;padding:10px 16px;transition:.15s;text-align:center}
+.die b{font-family:var(--serif);font-size:19px;display:block}
+.die small{font-family:var(--mono);color:var(--muted);font-size:12px}
+.die.selA{border-color:var(--accent);background:var(--accent-soft)}
+.die.selB{border-color:var(--amber);background:var(--amber-soft)}
+.battle-grid{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px;justify-content:center}
+.bg-cell{width:64px;height:44px;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:14px;background:#fff}
+.bg-cell.awin{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+.bg-cell.bwin{background:var(--amber-soft);border-color:var(--amber);color:var(--amber);font-weight:700}
+
+/* 生日曲线 */
+.bday-svg{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px}
+
+/* 无限掷币 */
+.series-row{display:flex;gap:5px;align-items:flex-end;height:130px;margin:10px 0;flex-wrap:nowrap}
+.series-row .term2{flex:1;background:var(--accent-soft);border:1px solid var(--accent);border-top:none;border-radius:4px 4px 0 0;
+  position:relative;min-width:26px}
+.series-row .term2 small{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+
+.quiz-item{margin:18px 0}
+.case{margin:16px 0}
+.case .q{font-family:var(--serif);font-size:17px;font-weight:600;margin:8px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px 16px;font-size:15px;transition:.15s;line-height:1.6}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.picked-ok{border-color:var(--good);background:var(--good-soft)}
+.opt.picked-no{border-color:var(--bad);background:var(--bad-soft)}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:16%;left:6%;font-size:42px;--t:15s">Pr[E]</span>
+  <span class="hero-sym" style="top:64%;left:10%;font-size:34px;--t:19s;animation-delay:-6s">2/3</span>
+  <span class="hero-sym" style="top:22%;right:8%;font-size:38px;--t:17s;animation-delay:-3s">√2d</span>
+  <span class="hero-sym" style="top:68%;right:14%;font-size:34px;--t:13s;animation-delay:-9s">S, ω</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 17 · Part IV 概率开篇</span>
+    <h1>事件与概率空间</h1>
+    <div class="en">Events and Probability Spaces</div>
+    <p class="lead">一百名数学家在蒙提霍尔问题上翻车，因为"六种结果里换门赢三种"不等于"换门赢 1/2"——结果不等权。四步法（树图 → 事件 → 边概率 → 求和）把直觉关在门外；三颗怪骰子还会教你怎么让"能打"这个关系失效。</p>
+    <div class="meta">
+      <span>⏱ 约 55 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 717–738 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch16.html">上一章：生成函数</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s1"><span class="toc-num">17.2</span>四步法与蒙提霍尔</a>
+  <a href="#s2"><span class="toc-num">17.2</span>换门模拟法庭</a>
+  <a href="#s3"><span class="toc-num">17.3</span>怪骰子对决</a>
+  <a href="#s4"><span class="toc-num">17.4</span>生日原则</a>
+  <a href="#s5"><span class="toc-num">17.5</span>概率规则卡组</a>
+  <a href="#s6"><span class="toc-num">17.5.4</span>无限空间：先手 2/3</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 17.2 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">17.2</span><h2>四步法：把蒙提霍尔关进树图里</h2><span class="en">The Four Step Method</span></div>
+  <div class="reveal">
+    <div class="box rule"><span class="label">The Four Step Method</span>
+      <p style="margin:4px 0"><b>① 找样本空间</b>：树图每层一个随机量，叶子 = outcome。<b>② 定义事件</b>：outcome 的子集。<b>③ 定 outcome 概率</b>：先给每条边标概率，outcome 概率 = 路径边概率之积。<b>④ 事件概率</b> = 事件内 outcome 概率求和。</p></div>
+    <p>蒙提霍尔：车藏在 3 扇门之一（各 1/3）→ 你初选一门（各 1/3）→ 主持人开一扇有山羊的门（有两个候选时各 1/2，只有一个时为 1）。12 个 outcome，其中"换门获胜"恰有 6 个——<b>但 6/12 ≠ 1/2</b>：主持人被迫开门的那些分支概率更大（1/9 vs 1/18）。逐行看树表，每行概率 = 左边三个数的乘积：</p>
+  </div>
+
+  <!-- 互动① 蒙提霍尔树表 -->
+  <div class="widget reveal" id="w-mh">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🚪 蒙提霍尔树表：12 个 outcome 全景</h4>
+    <div class="num-row">
+      <button class="btn primary" id="mh-all">全部显示</button>
+      <button class="btn" id="mh-win">只看换门获胜 ✓</button>
+      <label class="small" style="margin-left:auto"><input type="checkbox" id="mh-hover" checked> 悬停高亮路径</label>
+    </div>
+    <div class="mh-scroll" id="mh-table"></div>
+    <div class="fb info" id="mh-fb" style="display:block">绿色行 = 换门获胜。点任何一行，看它的概率怎样由三个边概率乘出来（1/3 · 1/3 · 1/2 = 1/18 或 1/3 · 1/3 · 1 = 1/9）。把 6 个绿行加总：6/9 = 2/3。</div>
+  </div>
+</section>
+
+<!-- ================= 模拟法庭 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">17.2</span><h2>换门模拟法庭：让频率去撞理论</h2><span class="en">Simulation Court</span></div>
+  <div class="reveal">
+    <p>理论说 1/3 vs 2/3， Marilyn 的专栏曾收到上万封反驳信。空口无凭——跑实验。注意 17.2.5 的提醒：结论依赖"主持人<b>必须</b>开一扇山羊门并给你换的机会"这一规则设定；如果他只在你选对时才提供换门机会，换门就永远输。</p>
+  </div>
+
+  <!-- 互动② 模拟器 -->
+  <div class="widget reveal" id="w-sim">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">🎲 换门 vs 不换：蒙特卡洛法庭</h4>
+    <div class="num-row">
+      <button class="btn primary" data-run="1">掷 1 局</button>
+      <button class="btn" data-run="100">×100</button>
+      <button class="btn" data-run="10000">×10,000</button>
+      <button class="btn ghost" id="sim-reset">清空</button>
+    </div>
+    <div class="bar-wrap">
+      <div class="small">不换门胜率（理论 1/3）</div>
+      <div class="bar"><i id="bar-stay" style="width:0%"></i><span class="pct" id="pct-stay">—</span></div>
+      <div class="small">换门胜率（理论 2/3）</div>
+      <div class="bar switch"><i id="bar-switch" style="width:0%"></i><span class="pct" id="pct-switch">—</span></div>
+      <div class="small muted" id="sim-count">已模拟 0 局</div>
+    </div>
+    <div class="fb info" id="sim-fb" style="display:block">每一局同时按两种策略各判一次（同一个随机局面）。大数定律会让柱子逼近 1/3 与 2/3——上万局之后还在怀疑的话，再点一轮。</div>
+  </div>
+</section>
+
+<!-- ================= 17.3 怪骰子 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">17.3</span><h2>怪骰子：能打关系的塌方</h2><span class="en">Strange Dice</span></div>
+  <div class="reveal">
+    <p>酒吧里三颗骰子：A = {2, 6, 7}，B = {1, 5, 9}，C = {3, 4, 8}。各掷一次比大小。四步法给出惊人的结果：</p>
+    <div class="eq math">A 胜 B 概率 5/9　＞　B 胜 C 5/9　＞　C 胜 A 5/9　——非传递！</div>
+    <p>"更常获胜"不是传递关系：谁先挑骰子谁吃亏。更狠的是掷两次比总和：强弱<b>全部反转</b>（A vs B 从 5/9 翻成 37/81 落败）。选一颗骰子当你的，再选一颗对手的，看 9 个格子的胜负分布：</p>
+  </div>
+
+  <!-- 互动③ 怪骰子 -->
+  <div class="widget reveal" id="w-dice">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">🎲 怪骰子对决台：一次定输赢，还是两次？</h4>
+    <div class="num-row">
+      <span class="small">你选：<b id="dc-yl">Die A</b></span>
+      <span class="small" style="margin-left:14px">对手：<b id="dc-ol">Die B</b></span>
+      <label class="small" style="margin-left:auto"><input type="radio" name="dc-rolls" value="1" checked> 掷 1 次</label>
+      <label class="small"><input type="radio" name="dc-rolls" value="2"> 掷 2 次比总和</label>
+    </div>
+    <div class="dice-btns" id="dc-picks"></div>
+    <div class="battle-grid" id="dc-grid"></div>
+    <div class="fb info" id="dc-fb" style="display:block">蓝格 = 你赢，金格 = 对手赢。试试 A→B、再 B→C、再 C→A：每一步都是 5/9，绕成一个圈。然后切"掷 2 次"，看强弱整体翻转。</div>
+  </div>
+</section>
+
+<!-- ================= 17.4 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">17.4</span><h2>生日原则：23 人的必然</h2><span class="en">The Birthday Principle</span></div>
+  <div class="reveal">
+    <p>一个班 95 人，几乎必然有两人同一天生日（概率 &gt; 0.9999）。全部生日互不相同的概率是 ∏ᵢ (1 − i/d)（式 17.5），用 1−x ≤ e^{−x} 一夹就得到 e^{−n(n−1)/2d}。于是有计算机科学里到处出现的经验法则：</p>
+    <div class="box thm"><span class="label">The Birthday Principle</span>
+      <p style="margin:4px 0">一年 d 天，房间里约有 √(2d) 人时，两人同生日概率 ≈ 1 − 1/e ≈ <b>0.632</b>。d = 365 → 约 27 人（精确 0.626；而 23 人时刚过一半，是它最出名的变体）。哈希表 n 项进 d 个桶、密码学"生日攻击"，全是同一道公式。</p></div>
+  </div>
+
+  <!-- 互动④ 生日曲线 -->
+  <div class="widget reveal" id="w-bday">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🎂 生日碰撞曲线：精确公式 vs 指数近似</h4>
+    <input type="range" id="bd-n" min="1" max="120" value="23" />
+    <div class="num-row">
+      <div class="statcard">人数 n = <b id="bd-nlabel">23</b></div>
+      <div class="statcard">无碰撞概率 = <b id="bd-exact">—</b></div>
+      <div class="statcard">近似 e^(−n(n−1)/730) = <b id="bd-approx">—</b></div>
+      <div class="statcard">至少两人同生日 = <b id="bd-coll" style="color:var(--amber)">—</b></div>
+    </div>
+    <svg class="bday-svg" id="bd-svg" viewBox="0 0 640 240"></svg>
+    <div class="fb info" id="bd-fb" style="display:block">蓝线 = 精确公式，金虚线 = 指数近似——肉眼几乎重合。红色参考线在 n = 27 ≈ √(2·365)：那里碰撞概率爬过 0.63（精确 0.626）。拨到 n = 23 试试——刚过一半，这就是"23 人问题"的出处。</div>
+  </div>
+</section>
+
+<!-- ================= 17.5 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">17.5</span><h2>概率规则卡组：集合论换装登场</h2><span class="en">Set Theory and Probability</span></div>
+  <div class="reveal">
+    <div class="box rule"><span class="label">定义 17.5.1 / 17.5.2</span>
+      <p style="margin:4px 0">样本空间 𝒮 是非空可数集；事件是子集；概率函数 Pr : 𝒮 → ℝ 满足 Pr[ω] ≥ 0 且 ΣPr[ω] = 1。事件概率 Pr[E] = Σ_{ω∈E} Pr[ω]。uniform 空间里 Pr[E] = |E|/|𝒮|——第 15 章的全部计数工具在这里直接变现（五张手牌葫芦概率 = 3,744 / C(52,5)）。</p></div>
+    <div class="box rule"><span class="label">规则卡组</span>
+      <p style="margin:4px 0">Sum Rule（不交可加）· Complement Rule（Pr[Ā] = 1−Pr[A]）· Difference Rule · Inclusion-Exclusion（容斥原样搬来）· <b>Union Bound</b>（17.8：Pr[E₁∪⋯∪Eₙ] ≤ ΣPr[Eₙ]）· Monotonicity。Union Bound 是算法分析里最常用的上界：飞船 n 个关键部件各自失效概率 pᵢ，"至少一个失效"的概率 ≤ Σpᵢ——宁要粗糙的上界，不要算不出的精确值。</p></div>
+  </div>
+</section>
+
+<!-- ================= 17.5.4 无限 ================= -->
+<section class="ch" id="s6">
+  <div class="ch-head reveal"><span class="no">17.5.4</span><h2>无限概率空间：先手到底占多少便宜？</h2><span class="en">Infinite Probability Spaces</span></div>
+  <div class="reveal">
+    <p>两人轮流掷公平硬币，先掷出正面者胜。样本空间无限：{TʰH}。先手在第 1, 3, 5, … 步获胜，概率 1/2 + 1/8 + 1/32 + ⋯ = 几何级数收口：</p>
+    <div class="eq math">Pr[先手胜] = ½ · Σ (1/4)ⁿ = ½ · 1/(1−¼) = 2/3　　后手 1/3，和恰好为 1</div>
+    <p>树图里那条"永远掷出反面"的无限路径没有对应 outcome——概率 0 的事件不必放进模型，加了也无害（ω<sub>forever</sub> 的讨论）。上一章的几何级数 1/(1−x) 在这里领了第一份工资。</p>
+  </div>
+
+  <!-- 互动⑤ 级数累加 -->
+  <div class="widget reveal" id="w-inf">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">♾️ 先手优势的几何级数：一项项逼近 2/3</h4>
+    <div class="num-row">
+      <button class="btn amber" id="inf-step">再 Winning 一项 +</button>
+      <button class="btn ghost" id="inf-reset">重来</button>
+      <span class="small muted" style="margin-left:auto">累加 = <b id="inf-sum" style="font-family:var(--mono)">0</b> / 目标 2/3 ≈ 0.6667</span>
+    </div>
+    <div class="series-row" id="inf-bars"></div>
+    <div class="fb info" id="inf-fb" style="display:block">每根柱子是 ½·(¼)ⁿ：1/2, 1/8, 1/32, … 衰减极快——先手的巨大优势几乎全靠第一次掷币。</div>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>Marilyn 被骂了整整一年（17.2 开场）</summary>
+      <div class="body">
+        <p>1990 年 Parade 杂志专栏作家 Marilyn vos Savant 答"换门 2/3"，收到上万封抗议信，近千名博士署名反对（"你就是那只山羊的数学水平！"）。四步法树下无话可说：那些概率 1/9 的分支（主持人被迫开门）才是被直觉吃掉的部分。原信人 Craig Whitaker 的问题其实有歧义——若主持人<b>不被要求</b>开门，结论随规则改变（17.2.5）。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>四门版蒙提霍尔（习题 17.5）</summary>
+      <div class="body">
+        <p>4 扇门、开 1 扇无奖门、可换到剩下两扇未开、未选门之一（等概率选）：坚持者 Stu 赢 1/4；换门者 Zelda 赢 3/8；而"总是换到最早那扇门"的 Mergatroid 还能算出精确胜率。门越多，坚持者越惨—— doors→∞ 时坚持胜率 → 0。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>HHT 与 TTH 谁先出现？（习题 17.12）</summary>
+      <div class="body">
+        <p>反复掷公平硬币直到 HHT 或 TTH 出现——两个模式"看起来对称"，胜率却不是 1/2:1/2。模式匹配竞争是概率空间设计（什么叫一次"试验"？）的绝佳反例，Penney's game 的入门款。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>课后挑战（均出自原书习题）</summary>
+      <div class="body">
+        <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
+          <li><b>17.3</b> 红袜队 3/5 胜率的三局两胜系列赛：打满 3 局的概率？冠军输掉首局的概率？</li>
+          <li><b>17.4</b> 双掷硬币定奖品（HT 先出现 vs TH 先出现）：用"子树自指"一步解出先手胜率公式。</li>
+          <li><b>17.8</b> n 部件系统：证明 p ≤ Pr[系统失效] ≤ np，两端都可构造性取到。</li>
+          <li><b>17.11</b> k-neutral 锦标赛：用 Union Bound 证明"没有绝对王者"的赛果对足够大的 n 必然存在——Boole 不等式喂饭级应用。</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 17 章 = 第 717–746 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch16.html">上一章：生成函数</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s1">17.2 · 四步法与蒙提霍尔</a><a href="#s2">17.2 · 换门模拟法庭</a><a href="#s3">17.3 · 怪骰子对决</a>
+    <a href="#s4">17.4 · 生日原则</a><a href="#s5">17.5 · 概率规则卡组</a><a href="#s6">17.5.4 · 无限空间先手 2/3</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s1").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+/* ---------- 互动① 蒙提霍尔树表 ---------- */
+(() => {
+  const DOORS = ["A","B","C"];
+  const rows = [];
+  for (const car of DOORS)
+    for (const pick of DOORS) {
+      const others = DOORS.filter(d => d !== car && d !== pick);
+      if (others.length === 2) others.forEach(open => rows.push({car, pick, open, p: "1/18", pTxt: "1/3 · 1/3 · 1/2", win: true}));
+      else rows.push({car, pick, open: others[0], p: "1/9", pTxt: "1/3 · 1/3 · 1", win: false});
+    }
+  let onlyWin = false;
+  function draw(){
+    const t = $("#mh-table");
+    t.innerHTML = `<table class="mh"><tr><th>车藏</th><th>初选</th><th>主持人开</th><th>边概率</th><th>outcome 概率</th><th>换门获胜</th></tr>` +
+      rows.filter(r => !onlyWin || r.win).map(r =>
+        `<tr><td>${r.car}</td><td>${r.pick}</td><td>${r.open}</td><td class="hl">${r.pTxt}</td><td>${r.p}</td><td class="${r.win ? "win" : ""}">${r.win ? "✓" : ""}</td></tr>`).join("") +
+      `</table>`;
+  }
+  $("#mh-all").addEventListener("click", () => { onlyWin = false; draw(); });
+  $("#mh-win").addEventListener("click", () => { onlyWin = true; draw(); });
+  draw();
+})();
+
+/* ---------- 互动② 模拟器 ---------- */
+(() => {
+  let stay = 0, sw = 0, total = 0;
+  function run(n){
+    for (let i = 0; i < n; i++) {
+      const car = Math.floor(Math.random() * 3);
+      const pick = Math.floor(Math.random() * 3);
+      if (pick === car) stay++; else sw++;
+      total++;
+    }
+    $("#bar-stay").style.width = (stay / total * 100) + "%";
+    $("#bar-switch").style.width = (sw / total * 100) + "%";
+    $("#pct-stay").textContent = (stay / total * 100).toFixed(1) + "%";
+    $("#pct-switch").textContent = (sw / total * 100).toFixed(1) + "%";
+    $("#sim-count").textContent = `已模拟 ${total.toLocaleString()} 局 · 不换胜 ${stay.toLocaleString()} / 换门胜 ${sw.toLocaleString()}`;
+    const fb = $("#sim-fb");
+    if (total >= 10000) {
+      fb.className = "fb ok";
+      fb.textContent = `✅ ${total.toLocaleString()} 局之后：不换 ≈ ${(stay/total).toFixed(3)}，换门 ≈ ${(sw/total).toFixed(3)}——频率已经贴上 1/3 与 2/3。上万封抗议信，敌不过一排代码。`;
+    }
+  }
+  $$("[data-run]").forEach(b => b.addEventListener("click", () => run(+b.dataset.run)));
+  $("#sim-reset").addEventListener("click", () => {
+    stay = sw = total = 0;
+    $("#bar-stay").style.width = $("#bar-switch").style.width = "0%";
+    $("#pct-stay").textContent = $("#pct-switch").textContent = "—";
+    $("#sim-count").textContent = "已模拟 0 局";
+    $("#sim-fb").className = "fb info";
+    $("#sim-fb").textContent = "清空了。每一局同时按两种策略各判一次（同一个随机局面）。";
+  });
+})();
+
+/* ---------- 互动③ 怪骰子 ---------- */
+(() => {
+  const DICE = { A:[2,6,7], B:[1,5,9], C:[3,4,8] };
+  let mine = "A", opp = "B", rolls = 1;
+  const picks = $("#dc-picks");
+  ["A","B","C"].forEach(k => {
+    const b = document.createElement("button");
+    b.className = "die"; b.dataset.k = k;
+    b.innerHTML = `<b>Die ${k}</b><small>{${DICE[k].join(", ")}}</small>`;
+    b.addEventListener("click", () => {
+      if (b.dataset.k === mine) return;
+      if (b.dataset.k === opp) opp = mine;
+      mine = b.dataset.k;
+      draw();
+    });
+    // 右键/长按选对手？简化：双击设对手
+    b.addEventListener("contextmenu", e => { e.preventDefault(); if (k !== mine) { opp = k; draw(); } });
+    picks.appendChild(b);
+  });
+  const oppHint = document.createElement("div");
+  oppHint.className = "small muted"; oppHint.style.width = "100%";
+  oppHint.textContent = "点击选你的骰子 · 右键（手机长按）某颗设为对手的";
+  picks.appendChild(oppHint);
+  function sums(k){ const r = DICE[k]; const out = []; for (const x of r) for (const y of r) out.push(x + y); return out; }
+  function draw(){
+    $$(".die", picks).forEach(b => {
+      b.classList.toggle("selA", b.dataset.k === mine);
+      b.classList.toggle("selB", b.dataset.k === opp);
+    });
+    $("#dc-yl").textContent = "Die " + mine;
+    $("#dc-ol").textContent = "Die " + opp;
+    const grid = $("#dc-grid"); grid.innerHTML = "";
+    let aWin = 0, bWin = 0, ties = 0;
+    if (rolls === 1) {
+      for (const x of DICE[mine]) for (const y of DICE[opp]) {
+        const c = document.createElement("div");
+        const aw = x > y;
+        c.className = "bg-cell " + (x === y ? "" : aw ? "awin" : "bwin");
+        c.textContent = `${x} vs ${y}`;
+        if (x !== y) aw ? aWin++ : bWin++; else ties++;
+        grid.appendChild(c);
+      }
+    } else {
+      const sm = sums(mine), so = sums(opp);
+      // 81 格太密：按 sum 值聚合
+      const cntM = {}, cntO = {};
+      sm.forEach(s => cntM[s] = (cntM[s]||0)+1);
+      so.forEach(s => cntO[s] = (cntO[s]||0)+1);
+      for (const xs of Object.keys(cntM)) for (const ys of Object.keys(cntO)) {
+        const w = +xs > +ys ? cntM[xs]*cntO[ys] : 0;
+        const l = +xs < +ys ? cntM[xs]*cntO[ys] : 0;
+        if (+xs === +ys) ties += cntM[xs]*cntO[ys];
+        aWin += w; bWin += l;
+        if (cntM[xs]*cntO[ys] >= 6) {
+          const c = document.createElement("div");
+          c.className = "bg-cell " + (+xs === +ys ? "" : +xs > +ys ? "awin" : "bwin");
+          c.textContent = `${xs}>${ys}×${cntM[xs]*cntO[ys]}`;
+          grid.appendChild(c);
+        }
+      }
+    }
+    const tt = aWin + bWin + ties;
+    const fb = $("#dc-fb");
+    fb.className = "fb info";
+    fb.innerHTML = rolls === 1
+      ? `你赢 ${aWin}/9 = <b>${(aWin/9).toFixed(3)}</b>　对手赢 ${bWin}/9${ties ? ` · 平 ${ties}` : ""}。${aWin === 5 ? "——5/9，又一次。先挑的人总是吃亏。" : ""}`
+      : `掷两次比总和（81 种等可能组合）：你赢 ${aWin}/81 = <b>${(aWin/81).toFixed(3)}</b>　对手赢 ${bWin}/81　平 ${ties}。注意强弱与掷一次时相反——骰子的"实力"会翻转。`;
+  }
+  $$('input[name="dc-rolls"]').forEach(r => r.addEventListener("change", e => { rolls = +e.target.value; draw(); }));
+  draw();
+})();
+
+/* ---------- 互动④ 生日 ---------- */
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = $("#bd-svg");
+  const el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  function noColl(n, d=365){ let p = 1; for (let i = 0; i < n; i++) p *= (d - i) / d; return p; }
+  function draw(){
+    const n = +$("#bd-n").value;
+    $("#bd-nlabel").textContent = n;
+    const pNo = noColl(n), pNoA = Math.exp(-n*(n-1)/730);
+    $("#bd-exact").textContent = pNo.toFixed(4);
+    $("#bd-approx").textContent = pNoA.toFixed(4);
+    $("#bd-coll").textContent = (1 - pNo).toFixed(4);
+    const W = 640, H = 240, L = 44, R = 12, T = 12, B = 28;
+    svg.innerHTML = "";
+    const X = x => L + (x / 120) * (W - L - R);
+    const Y = y => H - B - y * (H - T - B);
+    // 网格线
+    [0, .25, .5, .75, 1].forEach(y => {
+      svg.appendChild(el("line", {x1:L, y1:Y(y), x2:W-R, y2:Y(y), stroke:"#eee6d6", "stroke-width":1}));
+      const t = el("text", {x:L-6, y:Y(y)+4, "text-anchor":"end", "font-size":10, fill:"#6f6a5e"});
+      t.textContent = y; svg.appendChild(t);
+    });
+    // 近似曲线（金虚线）
+    let dA = "";
+    for (let x = 1; x <= 120; x += 2) dA += (x===1?"M":"L") + X(x).toFixed(1) + " " + Y(1 - Math.exp(-x*(x-1)/730)).toFixed(1);
+    svg.appendChild(el("path", {d:dA, fill:"none", stroke:"#b4832a", "stroke-width":1.5, "stroke-dasharray":"5 4"}));
+    // 精确曲线（蓝）
+    let dE = "";
+    for (let x = 1; x <= 120; x++) dE += (x===1?"M":"L") + X(x).toFixed(1) + " " + Y(1 - noColl(x)).toFixed(1);
+    svg.appendChild(el("path", {d:dE, fill:"none", stroke:"#0f4c81", "stroke-width":2.2}));
+    // n=27 参考线（√(2·365) ≈ 27.02 → 0.632）
+    svg.appendChild(el("line", {x1:X(27), y1:T, x2:X(27), y2:Y(0), stroke:"#b3372e", "stroke-width":1, "stroke-dasharray":"3 3"}));
+    const t23 = el("text", {x:X(27), y:H-8, "text-anchor":"middle", "font-size":10, fill:"#b3372e"});
+    t23.textContent = "√(2·365)=27 · ≈0.63"; svg.appendChild(t23);
+    // 当前点
+    svg.appendChild(el("circle", {cx:X(n), cy:Y(1 - pNo), r:5, fill:"#b4832a", stroke:"#fff", "stroke-width":2}));
+    // 滑块指示线
+    svg.appendChild(el("line", {x1:X(n), y1:Y(1-pNo), x2:X(n), y2:Y(0), stroke:"#b4832a", "stroke-width":1, opacity:.5}));
+    const tx = el("text", {x:L+8, y:T+14, "font-size":11, fill:"#6f6a5e"});
+    tx.textContent = "至少两人同生日的概率"; svg.appendChild(tx);
+  }
+  $("#bd-n").addEventListener("input", draw);
+  draw();
+})();
+
+/* ---------- 互动⑤ 无限级数 ---------- */
+(() => {
+  let k = 0, sum = 0;
+  const bars = $("#inf-bars");
+  function draw(){
+    bars.innerHTML = "";
+    for (let i = 0; i < k; i++) {
+      const v = 0.5 * Math.pow(0.25, i);
+      const d = document.createElement("div");
+      d.className = "term2";
+      d.style.height = (v / (2/3) * 100) + "%";
+      d.innerHTML = `<small>${[ "½","⅛","¹⁄₃₂","¹⁄₁₂₈","¹⁄₅₁₂","¹⁄₂₀₄⁸" ][i] || ""}</small>`;
+      bars.appendChild(d);
+    }
+  }
+  $("#inf-step").addEventListener("click", () => {
+    if (k >= 6) return;
+    sum += 0.5 * Math.pow(0.25, k);
+    k++;
+    $("#inf-sum").textContent = sum.toFixed(4) + (k >= 6 ? " —— 已经咬住 2/3 的尾巴" : "");
+    draw();
+  });
+  $("#inf-reset").addEventListener("click", () => { k = 0; sum = 0; $("#inf-sum").textContent = "0"; draw(); });
+  draw();
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"蒙提霍尔：'换门获胜的 outcome 有 6 个，共 12 个，所以胜率 1/2'——错在哪？",
+     opts:[
+       {t:"树图第三层画错了", ok:false, fb:"树图没错——错在把 outcome 数当概率。"},
+       {t:"outcome 不等权：主持人'被迫开门'的分支概率是 1/9，可选时是 1/18", ok:true, fb:"对。Pr[E]=ΣPr[ω] 而非 |E|/|S|（非 uniform 空间）。六个获胜 outcome 加权后是 2/3。"},
+       {t:"应该数 9 个 outcome 而不是 12 个", ok:false, fb:"12 个没错，权重错了。"},
+       {t:"Marilyn 其实算错了", ok:false, fb:"她是对的——尽管收了近千封博士的反驳信。"}]},
+    {q:"怪骰子 A={2,6,7}, B={1,5,9}, C={3,4,8}，掷一次。哪个说法对？",
+     opts:[
+       {t:"存在'最强骰子'，总该选它", ok:false, fb:"恰恰没有——循环支配。"},
+       {t:"A 胜 B、B 胜 C、C 胜 A，各 5/9——先挑骰子是劣势", ok:true, fb:"对。'更常获胜'不满足传递性（第 10 章偏序的 transitivity 在这里塌方）。"},
+       {t:"三颗骰子两两平手（各 1/2）", ok:false, fb:"每对都是 5/9，没有平手。"},
+       {t:"含 9 的 B 最强", ok:false, fb:"单点最大值决定不了胜率分布——B 输给 A。"}]},
+    {q:"怪骰子掷两次比总和，A 与 B 的强弱会？",
+     opts:[
+       {t:"不变，还是 A 优（5/9）", ok:false, fb:"翻了：A 赢 37/81 < 1/2。"},
+       {t:"反转：B 赢 42/81，平 2/81", ok:true, fb:"对——两roll和 (4,8,8,9,9,12,13,13,14) vs (2,6,6,10,10,10,14,14,18)，B 反超。'实力'随重复次数翻转。"},
+       {t:"概率不变因为每次独立", ok:false, fb:"独立性是每次内部的；比较的是和的分布，分布变了。"},
+       {t:"变成确定性的 1", ok:false, fb:"仍有 2/81 平局与大量交叉。"}]},
+    {q:"生日原则：一年 d 天，几个人时'有人同生日'概率约 0.632？",
+     opts:[
+       {t:"d/2", ok:false, fb:"那是直觉的线性答案——真实结果小得多。"},
+       {t:"√(2d)（365 天 → 约 27 人，精确 0.626）", ok:true, fb:"对。无碰撞概率 ≈ e^{−n(n−1)/2d}，n=√(2d)≈27 时 ≈ 1/e，碰撞 ≈ 0.63（精确 0.626）。23 人是'刚过一半'的著名版本。"},
+       {t:"√d", ok:false, fb:"差 √2 倍——来自 1+2+⋯+(n−1) ≈ n²/2。"},
+       {t:"ln d", ok:false, fb:"增长太慢，23 ≠ ln365≈5.9。"}]},
+    {q:"n 个部件各自年失效概率 pᵢ，'至少一个失效'的概率上界是？",
+     opts:[
+       {t:"恰好 Σpᵢ", ok:false, fb:"那是 Union Bound 的右边——上界，不是等式（重叠会重复计）。"},
+       {t:"≤ Σpᵢ（Union Bound / Boole 不等式）", ok:true, fb:"对（式 17.8）。由容斥扔掉正项而来——宁要粗糙可靠的上界。"},
+       {t:"≤ p₁·p₂⋯pₙ", ok:false, fb:"乘积是'全部失效'——比单个还小，方向完全错了。"},
+       {t:"无法界定", ok:false, fb:"能——这正是 union bound 的用处。"}]},
+    {q:"两人轮流掷公平硬币，先正面者胜。先手胜率是？",
+     opts:[
+       {t:"1/2——掷币公平", ok:false, fb:"公平的是硬币，不是顺序。"},
+       {t:"2/3 = ½·Σ(¼)ⁿ", ok:true, fb:"对。先手在第 1,3,5,… 步获胜：1/2+1/8+1/32+⋯，几何级数收口 2/3。无限样本空间照样求和。"},
+       {t:"无穷博弈没有胜率", ok:false, fb:"概率和严格为 1（几何级数），没有'永远反面'的剩余。"},
+       {t:"1/4", ok:false, fb:"那是后手第一步就赢的概率。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["🎲 酒吧反杀王", "四步法已内化——下一章条件概率会把'given'变成一把更细的手术刀。"]
+      : right >= 3 ? ["🚪 还在门前", "蒙提霍尔与生日原则已拿下——回看 17.3 怪骰子的两次对决和 17.8 Union Bound。"]
+      : ["🐐 抱着山羊不放", "把树表 12 行按 1/9、1/18 分组加一遍——2/3 自己会长出来。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  let i = 0, right = 0;
+  function render(){
+    box.innerHTML = "";
+    if (i >= items.length) { grade(right); return; }
+    const it = items[i];
+    const div = document.createElement("div");
+    div.className = "case";
+    div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+      <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+      <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">${i === items.length-1 ? "看结果 →" : "下一题 →"}</button></div>`;
+    const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+    it.opts.forEach(o => {
+      const b = document.createElement("button");
+      b.className = "opt"; b.innerHTML = o.t;
+      b.addEventListener("click", () => {
+        if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+        if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+        else {
+          b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+          $$(".opt", opts).forEach((bb, k2) => { if (it.opts[k2].ok) bb.classList.add("picked-ok"); });
+        }
+        nxt.style.display = "inline-block";
+      });
+      opts.appendChild(b);
+    });
+    nxt.addEventListener("click", () => { i++; render(); });
+    box.appendChild(div);
+  }
+  $("#quiz-reset").addEventListener("click", () => { i = 0; right = 0; result.classList.remove("show"); render(); });
+  render();
+})();
+</script>
+</body>
+</html>

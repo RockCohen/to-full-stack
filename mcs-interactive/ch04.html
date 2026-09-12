@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>数学数据类型 · 数学之旅第四章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 4 章的中文交互式解读：集合、序列、函数、二元关系与有限基数。7 个互动装置 + 终局自测。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.def{border-left:4px solid var(--good)} .box.def .label{background:var(--good-soft);color:var(--good)}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.box.method{border-left:4px solid var(--amber)} .box.method .label{background:var(--amber-soft);color:var(--amber)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.math{font-family:var(--serif);white-space:nowrap}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+code{font-family:var(--mono);font-size:.88em;background:#efece4;border-radius:6px;padding:2px 8px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.good{border-color:var(--good);color:var(--good)}
+.btn.bad{border-color:var(--bad);color:var(--bad)}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+.score-pill{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;
+  padding:4px 14px;font-size:13.5px;font-weight:600;margin-left:8px}
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+
+/* 集合运算法官 */
+.judge-q{font-family:var(--serif);font-size:20px;text-align:center;margin:8px 0;min-height:40px}
+
+/* 幂集 */
+.psw-wrap{display:flex;gap:22px;flex-wrap:wrap}
+.psw-wrap .panel{flex:1;min-width:240px}
+.swrow{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0}
+.knob{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:16px}
+.knob .sw{width:48px;height:26px;border-radius:999px;background:#cfc8ba;border:none;position:relative;transition:.2s}
+.knob .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+.knob .sw.on{background:var(--good)}
+.knob .sw.on::after{left:25px}
+.subset-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.subset-chip{font-family:var(--mono);font-size:13px;border:1px solid var(--line);border-radius:8px;
+  padding:3px 10px;background:#fff;transition:.15s}
+.subset-chip.hit{background:var(--accent-soft);border-color:#b9cfe2;color:var(--accent);font-weight:700}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+
+/* 关系鉴定器 */
+.rel-wrap{display:flex;gap:22px;flex-wrap:wrap}
+.rel-wrap svg{background:#fff;border:1px solid var(--line);border-radius:12px;max-width:100%;flex-shrink:0}
+.rel-side{flex:1;min-width:240px}
+.prop-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.prop{border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;font-size:13.5px;background:#fff;line-height:1.5}
+.prop b{display:block;font-size:13px}
+.prop.on{background:var(--good-soft);border-color:#bcd9c6}
+.prop.on .yes{color:var(--good);font-weight:700}
+.prop:not(.on) .yes{color:var(--bad);font-weight:700}
+.rel-msg{margin-top:12px;min-height:48px;font-size:14.5px;border-radius:10px;padding:10px 16px;
+  background:var(--accent-soft);border:1px solid #c4d6e8;line-height:1.7}
+
+/* 快判 */
+.qc-row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:12px;padding:12px 18px;margin:10px 0;background:#fff}
+.qc-row .stmt{font-family:var(--serif);font-size:16px;flex:1;min-width:220px}
+.qc-row .verdict{font-size:14px;display:none;border-top:1px dashed var(--line);padding-top:8px;margin-top:8px;width:100%;line-height:1.7}
+.qc-row .verdict.show{display:block}
+.qc-row.done{opacity:.92}
+
+.quiz-item{margin:18px 0}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:16%;left:6%;font-size:46px;--t:15s">⊆</span>
+  <span class="hero-sym" style="top:64%;left:13%;font-size:40px;--t:19s;animation-delay:-6s">℘</span>
+  <span class="hero-sym" style="top:22%;right:9%;font-size:44px;--t:17s;animation-delay:-3s">∀</span>
+  <span class="hero-sym" style="top:68%;right:14%;font-size:38px;--t:13s;animation-delay:-9s">↦</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 04</span>
+    <h1>数学数据类型</h1>
+    <div class="en">Mathematical Data Types</div>
+    <p class="lead">集合、序列、函数、关系——程序员的日常类型系统，数学家的地基工程。这一章定义密集，但我们不背定义：你会开庭审判集合运算、开动幂集发电站、亲手连线鉴定关系的五种性质。</p>
+    <div class="meta">
+      <span>⏱ 约 35 分钟</span><span>🧩 6 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 91–130 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch03.html">上一章：逻辑公式</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s1"><span class="toc-num">4.1</span>集合</a>
+  <a href="#s2"><span class="toc-num">4.2</span>序列与笛卡尔积</a>
+  <a href="#s3"><span class="toc-num">4.3</span>函数</a>
+  <a href="#s4"><span class="toc-num">4.4</span>二元关系</a>
+  <a href="#s5"><span class="toc-num">4.5</span>有限基数</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 4.1 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">4.1</span><h2>集合</h2><span class="en">Sets</span></div>
+  <div class="reveal">
+    <p><span class="term">集合（set）</span>就是一堆对象（元素）的聚会：写在大括号里，<b>不管顺序、不看重复</b>——{x, y} 与 {y, x} 是同一个集合，{x, x} 就是 {x}。常用符号：∅（空集）、ℕ、ℤ、ℚ、ℝ、ℂ，上标 + / − 表示正 / 负部分。</p>
+    <p>运算三件套（X ::= {1,2,3}，Y ::= {2,3,4}）：<span class="math">X ∪ Y</span> 并（或）、<span class="math">X ∩ Y</span> 交（且）、<span class="math">X − Y</span> 差（在 X 不在 Y）。在论域 D 上还有补集 <span class="math">Ā ::= D − A</span>。<b>集合相等 = 互相包含</b>，所以集合等式都能按"iff 链"证明——书里用这招证了分配律 <span class="math">A ∩ (B ∪ C) = (A ∩ B) ∪ (A ∩ C)</span>，每一步"iff"恰好对应一条命题逻辑定律（3.4 节的 De Morgan、分配律在这里全部 reincarnate）。</p>
+    <div class="insight"><span class="ico">⚠️</span><div>程序员特别注意：集合与命题是两种类型！<code>X AND Y</code> 是类型错误（AND 只作用于真假值），正确写法是 <code>X ∩ Y</code>。你的编译器/阅读者会因此感谢你。</div></div>
+  </div>
+
+  <!-- 互动① 集合运算法官 -->
+  <div class="widget reveal" id="w-judge">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">⚖️ 集合运算法官</h4>
+    <p class="wdesc">论域 D = {1,2,3,4,5}，X = {1,2,3}，Y = {2,3,4}。机器随机出题，判断对错，10 题一局。</p>
+    <div class="judge-q math" id="jq-q"></div>
+    <div class="opts" style="justify-content:center">
+      <button class="btn good" id="jq-true">真</button>
+      <button class="btn bad" id="jq-false">假</button>
+    </div>
+    <div class="fb" id="jq-fb"></div>
+    <div style="margin-top:12px;font-size:14.5px">进度 <span class="score-pill" id="jq-score">0 / 10</span></div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">4.1.3</span>幂集：集合的发电站</h3>
+    <div class="box thm">
+      <span class="label">定义 + 定理 4.5.5</span>
+      <p style="margin:4px 0"><span class="term">幂集 pow(A)</span> = A 的全部子集之集。<b>n 个元素的集合恰有 2ⁿ 个子集</b>——因为每个子集与一个 n 位 0/1 串一一对应（第 i 位 = 1 当且仅当第 i 个元素入选）。</p>
+    </div>
+  </div>
+
+  <!-- 互动② 幂集发电站 -->
+  <div class="widget reveal" id="w-psw">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">⚡ 幂集发电站：子集 ↔ 位串双射</h4>
+    <p class="wdesc">拨动元素开关 = 拼出一个子集 = 拼出一个位串。右边的发电机组会实时点亮对应的子集芯片——这就是"2ⁿ 个子集"的来历。</p>
+    <div class="psw-wrap">
+      <div class="panel">
+        <label class="small muted">元素个数 n = <b id="psw-n" style="font-family:var(--mono)">3</b>（1–4）</label>
+        <input type="range" id="psw-slider" min="1" max="4" value="3" />
+        <div class="swrow" id="psw-knobs"></div>
+        <div class="small muted" style="margin-top:6px">当前子集 S = <b class="math" id="psw-cur">∅</b> · 位串 = <b style="font-family:var(--mono)" id="psw-bits">000</b></div>
+      </div>
+      <div class="panel">
+        <div class="small muted">pow({a₁,…,aₙ}) 的 <b id="psw-count">8</b> 个子集：</div>
+        <div class="subset-list" id="psw-list"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4.2 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">4.2</span><h2>序列与笛卡尔积</h2><span class="en">Sequences</span></div>
+  <div class="reveal">
+    <p><span class="term">序列（sequence）</span>是有序、可重复的列表 (a, b, c)，空序列记 λ。与集合的三条分界线：<b>可重复</b>（(a,b,a) 合法，{a,b,a} 是两个元素的集合）、<b>讲顺序</b>（(a,b,c) ≠ (a,c,b)，但对应集合相同）、<b>记号</b>（圆括号 vs 花括号）。</p>
+    <p><span class="term">笛卡尔积</span> S₁ × S₂ × ⋯ × Sₙ 是"依次从每个集合取一个"的所有序列之集；两个集合的积叫配对（pair）。Sⁿ 表示 n 份 S 的积：{0,1}³ 恰是全部 3-bit 串的 8 个成员——又见 2ⁿ。</p>
+  </div>
+
+  <!-- 互动③ 集合 vs 序列找茬 -->
+  <div class="widget reveal" id="w-vs">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">🃏 集合 vs 序列找茬</h4>
+    <p class="wdesc">三道快判，辨一辨"这两个东西相等吗？"</p>
+    <div id="vs-list"></div>
+  </div>
+</section>
+
+<!-- ================= 4.3 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">4.3</span><h2>函数</h2><span class="en">Functions</span></div>
+  <div class="reveal">
+    <p><span class="term">函数</span> f : A → B 给定义域 A 中每个元素指派陪域 B 中的一个值。关键冷知识：<b>函数可以是部分的（partial）</b>——不必对每个元素都有定义；处处有定义的才叫<span class="term">全函数（total）</span>。书里的例子：f₅(y) = "从左到右搜索位串 y 直到遇到 1 的位置"，于是 f₅(0010) = 3、f₅(100) = 1，而 <b>f₅(0000) = undefined</b>。</p>
+    <div class="box def">
+      <span class="label">像与值域</span>
+      <p style="margin:4px 0">f(S) ::= 把 f 逐点作用于集合 S 得到的像（image）；range(f) ::= f(定义域)。注意 range ≠ codomain——陪域是"允许的落点"，range 是"实际打中的落点"。</p>
+    </div>
+  </div>
+
+  <!-- 互动④ 部分 vs 全函数 -->
+  <div class="widget reveal" id="w-pf">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🔌 部分还是全？f₅ 的定义域体检</h4>
+    <p class="wdesc">f₅(y) ::= 位串 y 中<b>第一个 1 的位置</b>（从 1 数起）。对每个输入判断 f₅ 是否有定义。</p>
+    <div id="pf-list"></div>
+    <div style="margin-top:14px;font-size:14.5px">进度 <span class="score-pill" id="pf-score">0 / 4</span></div>
+  </div>
+</section>
+
+<!-- ================= 4.4 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">4.4</span><h2>二元关系</h2><span class="en">Binary Relations</span></div>
+  <div class="reveal">
+    <p><span class="term">二元关系</span> R : A → B 就是 A × B 的一个子集（它的 graph）——比函数更松：一个点可以连出任意多条箭头。用<b>箭头图</b>（左列定义域、右列陪域）看，五个标准性质全部是"数箭头"：</p>
+    <div class="box def">
+      <span class="label">定义 4.4.2 · 五性质</span>
+      <p style="margin:4px 0">
+      <b>function</b>：每点 ≤1 条箭头<b>出</b>；<b>total</b>：每点 ≥1 条箭头出；<br>
+      <b>surjective</b>：右侧每点 ≥1 条箭头<b>入</b>；<b>injective</b>：右侧每点 ≤1 条箭头入；<br>
+      <b>bijective</b>：恰好 =1 出 且 =1 入。<br>
+      <span class="small muted">函数 = ≤1 出；全函数 = ≤1 出 且 ≥1 出。</span></p>
+    </div>
+    <p>别看定义干巴巴——亲手连几条箭头，五盏灯会替你记住它们：</p>
+  </div>
+
+  <!-- 互动⑤ 关系五性质鉴定器（hero） -->
+  <div class="widget reveal" id="w-rel">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">🕸️ 关系五性质鉴定器</h4>
+    <p class="wdesc">先点左列一个点，再点右列一个点 = 画一条箭头；点已画的箭头可删除。五盏灯实时判定——挑战：造出 <b>bijective</b>（每点恰一进一出），再故意破坏其中一条性质看灯怎么灭。</p>
+    <div class="rel-wrap">
+      <svg id="rel-svg" width="380" height="330" viewBox="0 0 380 330" role="application" aria-label="关系箭头图，点击左右点连线"></svg>
+      <div class="rel-side">
+        <div class="prop-grid" id="rel-props"></div>
+        <div class="rel-msg" id="rel-msg">先点左边一个点。</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+          <button class="btn ghost" id="rel-clear">清空</button>
+          <button class="btn" id="rel-book">书里那两个例子</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4.5 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">4.5</span><h2>有限基数</h2><span class="en">Finite Cardinality</span></div>
+  <div class="reveal">
+    <p>有限集合的大小 |A| 可以用<b>箭头计数</b>compare：函数每点至多一出 ⇒ 箭头数 ≤ |A|；满射要求右侧每点至少一入 ⇒ 箭头数 ≥ |B|。合起来就是<span class="term">映射规则</span>（定理 4.5.4）：</p>
+    <div class="eq math">|A| ≥ |B| ⟺ A surj B&nbsp;&nbsp;&nbsp;|A| ≤ |B| ⟺ A inj B&nbsp;&nbsp;&nbsp;|A| = |B| ⟺ A bij B</div>
+    <p>它的首个战果：|pow(A)| = 2ⁿ（子集 ↔ n 位串的双射，互动 ②）。滑动两个集合的大小，看看哪种映射还可能存在：</p>
+  </div>
+
+  <!-- 互动⑥ 映射规则实验室 -->
+  <div class="widget reveal" id="w-map">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🧪 映射规则实验室</h4>
+    <p class="wdesc">设定 |A| 与 |B|，机器判定三类映射的存在性（只看大小规则）——注意 |A|=|B|=0 时 ∅ 到 ∅ 的空映射是双射的特例。</p>
+    <div class="num-row">
+      <label class="small">|A| = <b id="map-a" style="font-family:var(--mono)">4</b></label>
+      <input type="range" id="map-sa" min="0" max="6" value="4" style="width:140px" />
+      <label class="small">|B| = <b id="map-b" style="font-family:var(--mono)">3</b></label>
+      <input type="range" id="map-sb" min="0" max="6" value="3" style="width:140px" />
+    </div>
+    <div class="fb info" id="map-out" style="display:block"></div>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>幂集套娃：pow({∅, {∅}})（原书习题 4.1）</summary>
+      <div class="body">
+        <p>它的子集有几个？四个：∅、{∅}、{{∅}}、{∅, {∅}}。注意 ∅ 和 {∅} 是<b>两个不同的东西</b>——空集的幂集是 {{∅}}，恰好一个元素。这套套娃是集合论"万物皆集合"世界观的第一口深井（第一章提过的 ZFC 公理体系就在井底）。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>类型错误博物馆（原书 4.1.5 节警告）</summary>
+      <div class="body">
+        <p>X、Y 是集合时写 "X AND Y" 会触发类型错误——AND 只吃真值，不吃集合，正确写法 X ∩ Y；同理命题 P、Q 写 "P ∪ Q" 也是类型错误，应为 P OR Q。第一章学过的每条命题逻辑定律，都在集合运算里有孪生兄弟（De Morgan：NOT(A ∩ B) ⟺ Ā ∪ B̄）——但孪生兄弟不能互相冒名顶替。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>集合构造器记号一窥（原书 4.1.4 节）</summary>
+      <div class="body">
+        <p>{n ∈ ℕ | n 是素数且 n = 4k+1} 的前几个成员：5, 13, 17, 29, 37, 41, 53, …——列出前十个根本看不出规律，这就是"谓词定义"比"枚举"强大的原因。再如 C ::= {a+bi ∈ ℂ | a² + 2b² ≤ 1} 是复平面上围绕原点的一个椭圆区域——集合可以是一块"形状"。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>课后挑战（均出自原书习题）</summary>
+      <div class="body">
+        <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
+          <li><b>4.2</b> 只用 ∈、⊆、=、∪、−、pow 把"x 是 y 的真子集"等关系写成集合论公式（自制一门"集合语言"）。</li>
+          <li><b>4.5</b> 由命题逻辑 De Morgan 推导集合版 NOT(A ∩ B) = Ā ∪ B̄——把 3、4 两章的知识缝起来。</li>
+          <li><b>4.14</b> 用关系语言严格定义"函数 f 是全的"与"f 的像"（4.4.2 节的 R(Y)）。</li>
+          <li><b>4.17 / 4.18</b> 鸽笼原理的映射规则版：|A| &gt; |B| 时从 A 到 B 的全函数必有两人同席——第 14 章将正式登场。</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 4 章 = 第 91–130 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch03.html">上一章：逻辑公式</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s1">4.1 · 集合</a><a href="#s2">4.2 · 序列与笛卡尔积</a><a href="#s3">4.3 · 函数</a>
+    <a href="#s4">4.4 · 二元关系</a><a href="#s5">4.5 · 有限基数</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const click = el => el.dispatchEvent(new MouseEvent("click", {bubbles: true}));
+
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s1").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+/* ---------- 互动① 集合运算法官 ---------- */
+(() => {
+  const X = new Set([1,2,3]), Y = new Set([2,3,4]), D = [1,2,3,4,5];
+  const ops = [
+    { sym: z => `z ∈ X ∪ Y`, val: z => X.has(z) || Y.has(z) },
+    { sym: z => `z ∈ X ∩ Y`, val: z => X.has(z) && Y.has(z) },
+    { sym: z => `z ∈ X − Y`, val: z => X.has(z) && !Y.has(z) },
+    { sym: z => `z ∈ Y − X`, val: z => Y.has(z) && !X.has(z) },
+    { sym: z => `z ∉ X ∪ Y`, val: z => !(X.has(z) || Y.has(z)) },
+  ];
+  let i = 0, right = 0, cur = null;
+  const q = $("#jq-q"), fb = $("#jq-fb");
+  function next(){
+    if (i >= 10) {
+      q.innerHTML = `<span style="color:var(--good)">本局结束！答对 ${right} / 10。</span>`;
+      $("#jq-true").disabled = $("#jq-false").disabled = true;
+      return;
+    }
+    cur = { z: D[Math.floor(Math.random() * 5)], op: ops[Math.floor(Math.random() * ops.length)] };
+    q.innerHTML = `论域 D = {1,2,3,4,5}，X = {1,2,3}，Y = {2,3,4}<br><b>问：z = ${cur.z} 时，${cur.op.sym(cur.z)} 吗？</b>`;
+    fb.className = "fb"; fb.textContent = "";
+  }
+  function answer(says){
+    if (!cur) return;
+    const truth = cur.op.val(cur.z);
+    const ok = says === truth;
+    i++; if (ok) right++;
+    fb.className = "fb " + (ok ? "ok" : "no");
+    fb.innerHTML = `${ok ? "✅" : "❌"} 该命题<b>${truth ? "真" : "假"}</b>。` +
+      (truth ? `z = ${cur.z} 时该成员关系成立。` : `z = ${cur.z} 不满足该成员关系。`) +
+      `<span class="score-pill">${right} / ${i}</span>`;
+    $("#jq-score").textContent = `${right} / ${i}`;
+    cur = null;
+    setTimeout(next, 900);
+  }
+  $("#jq-true").addEventListener("click", () => answer(true));
+  $("#jq-false").addEventListener("click", () => answer(false));
+  next();
+})();
+
+/* ---------- 互动② 幂集发电站 ---------- */
+(() => {
+  const names = ["a₁", "a₂", "a₃", "a₄"];
+  const bits = [false, false, false, false];
+  let n = 3;
+  const knobs = $("#psw-knobs"), list = $("#psw-list");
+  function render(){
+    n = +$("#psw-slider").value;
+    $("#psw-n").textContent = n;
+    knobs.innerHTML = "";
+    for (let i = 0; i < n; i++) {
+      const d = document.createElement("div");
+      d.className = "knob";
+      d.innerHTML = `<button class="sw ${bits[i] ? "on" : ""}" data-i="${i}" aria-label="切换 ${names[i]}"></button> ${names[i]}`;
+      knobs.appendChild(d);
+    }
+    $$("#psw-knobs .sw").forEach(sw => sw.addEventListener("click", () => {
+      bits[+sw.dataset.i] = !bits[+sw.dataset.i];
+      render();
+    }));
+    const chosen = [];
+    let bitstr = "";
+    for (let i = 0; i < n; i++) {
+      if (bits[i]) chosen.push(names[i]);
+      bitstr += bits[i] ? "1" : "0";
+    }
+    $("#psw-cur").textContent = chosen.length ? "{ " + chosen.join(", ") + " }" : "∅";
+    $("#psw-bits").textContent = bitstr;
+    $("#psw-count").textContent = 2 ** n;
+    list.innerHTML = "";
+    for (let m = 0; m < (1 << n); m++) {
+      const mem = [];
+      let s = "";
+      for (let i = 0; i < n; i++) {
+        const on = !!(m & (1 << (n - 1 - i)));
+        s += on ? "1" : "0";
+        if (on) mem.push(names[i]);
+      }
+      const chip = document.createElement("span");
+      const label = mem.length ? "{ " + mem.join(", ") + " }" : "∅";
+      chip.className = "subset-chip" + (s === bitstr ? " hit" : "");
+      chip.innerHTML = `<b>${s}</b> · ${label}`;
+      list.appendChild(chip);
+    }
+  }
+  $("#psw-slider").addEventListener("input", () => { n = +$("#psw-slider").value; render(); });
+  render();
+})();
+
+/* ---------- 互动③ 集合 vs 序列找茬 ---------- */
+(() => {
+  const items = [
+    { s:"{a, b, a} 与 {a, b}", ans:true, why:"集合不理会重复：{a,b,a} 里 a 只算一次，就是 {a,b}。" },
+    { s:"(a, b, a) 是长度为 2 的序列", ans:false, why:"序列看重复：它有 a、b、a 三个成员，长度是 3。" },
+    { s:"(a, c, b) 与 (a, b, c) 是同一个序列", ans:false, why:"序列讲顺序：换了顺序就是不同序列（但 {a,c,b} 与 {a,b,c} 是同一个集合）。" },
+  ];
+  const list = $("#vs-list");
+  items.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "qc-row";
+    div.innerHTML = `<div class="stmt">${i+1}. ${it.s}</div>
+      <div class="opts"><button class="btn good">相等 ✓</button><button class="btn bad">不等 ✗</button></div>
+      <div class="verdict"></div>`;
+    const vd = $(".verdict", div);
+    const answer = said => {
+      if (div.classList.contains("done")) return;
+      div.classList.add("done");
+      const ok = said === it.ans;
+      vd.className = "verdict show";
+      vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+    };
+    $$(".btn", div).forEach((b, k) => b.addEventListener("click", () => answer(k === 0)));
+    list.appendChild(div);
+  });
+})();
+
+/* ---------- 互动④ 部分 vs 全函数 ---------- */
+(() => {
+  const items = [
+    { s:"f₅(0010)", ans:true, why:"有定义：第一个 1 在第 3 位，f₅ = 3。" },
+    { s:"f₅(100)", ans:true, why:"有定义：第一个 1 在第 1 位，f₅ = 1。" },
+    { s:"f₅(0000)", ans:false, why:"无定义！整串没有 1，搜索失败——f₅ 是部分函数，0000 不在它的定义范围内。" },
+    { s:"f₅(λ)（空串）", ans:false, why:"空串里同样没有 1，f₅(λ) = undefined。部分函数连空串都可以'不管'。" },
+  ];
+  const list = $("#pf-list"); let done = 0, right = 0;
+  items.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "qc-row";
+    div.innerHTML = `<div class="stmt math">${i+1}. ${it.s}</div>
+      <div class="opts"><button class="btn good">有定义</button><button class="btn bad">无定义</button></div>
+      <div class="verdict"></div>`;
+    const vd = $(".verdict", div);
+    $$(".btn", div).forEach((b, k) => b.addEventListener("click", () => {
+      if (div.classList.contains("done")) return;
+      div.classList.add("done"); done++;
+      const said = k === 0, ok = said === it.ans;
+      if (ok) right++;
+      vd.className = "verdict show";
+      vd.innerHTML = (ok ? "✅ " : "❌ ") + it.why;
+      $("#pf-score").textContent = done === 4 ? `完成！答对 ${right} / 4` : `${right} / ${done}`;
+    }));
+    list.appendChild(div);
+  });
+})();
+
+/* ---------- 互动⑤ 关系五性质鉴定器 ---------- */
+(() => {
+  const svg = $("#rel-svg"), NS = "http://www.w3.org/2000/svg";
+  const L = ["a","b","c","d","e"], R = ["1","2","3","4","5"];
+  const Lx = 90, Rx = 290, y0 = 40, dy = 62;
+  const posL = L.map((_, i) => [Lx, y0 + i * dy]);
+  const posR = R.map((_, i) => [Rx, y0 + i * dy]);
+  let arrows = [];       // {a, b, line}
+  let selL = -1;
+  const msg = $("#rel-msg");
+
+  const bg = document.createElementNS(NS, "g");
+  bg.innerHTML = `<text x="${Lx}" y="20" text-anchor="middle" font-size="14" fill="#6f6a5e">定义域 A</text>
+                  <text x="${Rx}" y="20" text-anchor="middle" font-size="14" fill="#6f6a5e">陪域 B</text>`;
+  svg.appendChild(bg);
+
+  function drawDots(){
+    posL.forEach(([x, y], i) => {
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 15);
+      c.setAttribute("fill", selL === i ? "#0f4c81" : "#fffdf8");
+      c.setAttribute("stroke", "#2b2a26"); c.setAttribute("stroke-width", 2);
+      c.style.cursor = "pointer";
+      c.addEventListener("click", () => { selL = (selL === i ? -1 : i); redraw(); });
+      svg.appendChild(c);
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", x); t.setAttribute("y", y + 5); t.setAttribute("text-anchor", "middle");
+      t.setAttribute("font-size", 14); t.setAttribute("font-weight", 700);
+      t.setAttribute("fill", selL === i ? "#fff" : "#2b2a26");
+      t.style.pointerEvents = "none";
+      t.textContent = L[i];
+      svg.appendChild(t);
+    });
+    posR.forEach(([x, y], i) => {
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", 15);
+      c.setAttribute("fill", "#fffdf8"); c.setAttribute("stroke", "#2b2a26"); c.setAttribute("stroke-width", 2);
+      c.style.cursor = "pointer";
+      c.addEventListener("click", () => {
+        if (selL === -1) { msg.textContent = "先点左列一个起点，再点右列目标。"; return; }
+        arrows.push({ a: selL, b: i });
+        selL = -1; redraw();
+      });
+      svg.appendChild(c);
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", x); t.setAttribute("y", y + 5); t.setAttribute("text-anchor", "middle");
+      t.setAttribute("font-size", 14); t.setAttribute("font-weight", 700); t.setAttribute("fill", "#2b2a26");
+      t.style.pointerEvents = "none";
+      t.textContent = R[i];
+      svg.appendChild(t);
+    });
+  }
+  function drawArrows(){
+    arrows.forEach(arr => {
+      const [x1, y1] = posL[arr.a], [x2, y2] = posR[arr.b];
+      const g = document.createElementNS(NS, "g");
+      g.style.cursor = "pointer";
+      const ln = document.createElementNS(NS, "line");
+      ln.setAttribute("x1", x1 + 16); ln.setAttribute("y1", y1);
+      ln.setAttribute("x2", x2 - 18); ln.setAttribute("y2", y2);
+      ln.setAttribute("stroke", "#b4832a"); ln.setAttribute("stroke-width", 3);
+      const hit = document.createElementNS(NS, "line");
+      hit.setAttribute("x1", x1 + 16); hit.setAttribute("y1", y1);
+      hit.setAttribute("x2", x2 - 18); hit.setAttribute("y2", y2);
+      hit.setAttribute("stroke", "transparent"); hit.setAttribute("stroke-width", 16);
+      hit.addEventListener("click", () => { arrows = arrows.filter(x => x !== arr); redraw(); });
+      const tip = document.createElementNS(NS, "polygon");
+      const ang = Math.atan2(y2 - y1, x2 - x1 - 34);
+      const tx = x2 - 18, ty = y2;
+      tip.setAttribute("points", `${tx},${ty} ${tx-10},${ty-5} ${tx-10},${ty+5}`);
+      tip.setAttribute("fill", "#b4832a");
+      g.appendChild(ln); g.appendChild(tip); g.appendChild(hit);
+      svg.appendChild(g);
+    });
+  }
+  function props(){
+    const out = Array(5).fill(0), inn = Array(5).fill(0);
+    arrows.forEach(a => { out[a.a]++; inn[a.b]++; });
+    return {
+      fn: out.every(d => d <= 1),
+      total: out.every(d => d >= 1),
+      surj: inn.every(d => d >= 1),
+      inj: inn.every(d => d <= 1),
+      bij: out.every(d => d === 1) && inn.every(d => d === 1),
+      none: arrows.length === 0,
+    };
+  }
+  function redraw(){
+    svg.innerHTML = "";
+    svg.appendChild(bg); drawArrows(); drawDots();
+    const p = props();
+    const defs = [
+      ["function", "≤1 条出箭头", p.fn],
+      ["total", "≥1 条出箭头", p.total],
+      ["surjective", "≥1 条入箭头", p.surj],
+      ["injective", "≤1 条入箭头", p.inj],
+      ["bijective", "=1 出 且 =1 入", p.bij],
+    ];
+    const grid = $("#rel-props");
+    grid.innerHTML = "";
+    defs.forEach(([nm, d, on]) => {
+      const div = document.createElement("div");
+      div.className = "prop" + (on ? " on" : "");
+      div.innerHTML = `<b>${nm}</b><span class="yes">${on ? "✓ 满足" : "✗ 不满足"}</span> · ${d}`;
+      grid.appendChild(div);
+    });
+    msg.textContent = p.none
+      ? "先点左边一个点，再点右边一个点，画出你的第一条箭头。"
+      : p.bij
+        ? "🎯 双射达成！每点恰一进一出——按映射规则 4.5.4，这意味着 |A| = |B| = 5 的一个完美配对。试试删掉一条箭头，看 bijective 与 total 谁先灭。"
+        : `当前 ${arrows.length} 条箭头。注意区分：function 看<b>出</b>度上限，total 看<b>出</b>度下限；injective 看<b>入</b>度上限，surjective 看<b>入</b>度下限。`;
+  }
+  $("#rel-clear").addEventListener("click", () => { arrows = []; selL = -1; redraw(); });
+  $("#rel-book").addEventListener("click", () => {
+    arrows = [ {a:0,b:0}, {a:1,b:3}, {a:2,b:1}, {a:3,b:3}, {a:4,b:2} ];
+    selL = -1; redraw();
+    msg.innerHTML = "这是原书 101 页<b>左图</b>的复刻：total + surjective 的函数，但 3 号点有两箭头入 ⇒ 不是 injective。点'清空'自己再造书里的<b>右图</b>（total + injective 但不 surjective）试试。";
+  });
+  redraw();
+})();
+
+/* ---------- 互动⑥ 映射规则实验室 ---------- */
+(() => {
+  const sa = $("#map-sa"), sb = $("#map-sb");
+  function upd(){
+    const a = +sa.value, b = +sb.value;
+    $("#map-a").textContent = a; $("#map-b").textContent = b;
+    const surj = a >= b, inj = a <= b, bij = a === b;
+    const empty = a === 0 || b === 0;
+    $("#map-out").innerHTML =
+      `<b>surj（满射函数）</b>：${surj ? (a === 0 && b === 0 ? "∅ → ∅ 的空映射是双射，当然满射 ✓" : "可能 ✓——把 A 多余的元素'折'到 B 上（原书 f(aᵢ) ::= b_min(i,|B|) 的招法）") : "不可能 ✗ —— |A| &lt; |B|，总有点没有箭头进来"}<br>
+       <b>inj（单射全关系）</b>：${inj ? "可能 ✓" : "不可能 ✗ —— |A| &gt; |B| 必有两点挤同一个目标（鸽笼原理的先声）"}<br>
+       <b>bij（双射）</b>：${bij ? "可能 ✓ —— 一一配对" : "不可能 ✗ —— 双射要求两边一样大"}<br>
+       <span class="small muted">${empty ? "空集参与时按定义与空映射/空关系讨论。" : ""}映射规则（定理 4.5.4）对有限集是'iff'：大小关系与映射存在性互为表里。</span>`;
+  }
+  sa.addEventListener("input", upd); sb.addEventListener("input", upd);
+  upd();
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"下列哪个集合等于 {x, x}？",
+     opts:[
+       {t:"{x}——集合不理会重复", ok:true, fb:"对。元素'在不在'只有一票，写两遍也只算一个。"},
+       {t:"∅", ok:false, fb:"x 在集合里呢，怎么会是空集。"},
+       {t:"长度为 2 的序列", ok:false, fb:"那是 (x, x)——序列才管重复。"},
+       {t:"{{x}}", ok:false, fb:"{{x}} 的元素是 {x}（一个集合），不是 x。"}]},
+    {q:"pow({∅, {∅}}) 有几个元素？",
+     opts:[
+       {t:"2", ok:false, fb:"小心：{∅, {∅}} 有两个元素，所以 pow 有 2² = 4 个。"},
+       {t:"3", ok:false, fb:"幂集大小永远是 2ⁿ。"},
+       {t:"4", ok:true, fb:"对：∅、{∅}、{{∅}}、{∅, {∅}}。注意 ∅ 与 {∅} 是两个不同的东西。"},
+       {t:"0", ok:false, fb:"只有空集的幂集 {{∅}} 之外——不，pow(∅) = {∅} 有 1 个。这里 n=2。"}]},
+    {q:"按箭头图语言（定义 4.4.2），关系 R 是 'total'（全的）意味着？",
+     opts:[
+       {t:"每个定义域点 ≥1 条箭头出", ok:true, fb:"对——'每点至少出一条'。注意它与 function（≤1 出）是两个独立维度：total 不蕴含 function，一个点可以出两条。"},
+       {t:"每个陪域点 ≥1 条箭头入", ok:false, fb:"那是 surjective——看的是'入'不是'出'。"},
+       {t:"每个定义域点 ≤1 条箭头出", ok:false, fb:"那是 function 性。total 只保底、不限顶。"},
+       {t:"恰好 =1 出且 =1 入", ok:false, fb:"那是 bijective。"}]},
+    {q:"书里定义 f₅(y) = 位串 y 中第一个 1 的位置。f₅(0000) 的值是？",
+     opts:[
+       {t:"0", ok:false, fb:"没有 1 可找，f₅ 在 0000 上没有定义——部分函数的'坑'。"},
+       {t:"undefined——f₅ 是部分函数，全 0 串不在其定义范围", ok:true, fb:"对。部分函数允许'不管'某些输入；处处有定义的才叫全函数。"},
+       {t:"4", ok:false, fb:"4 是串长不是 1 的位置。"},
+       {t:"1", ok:false, fb:"没有 1，谈不上位置。"}]},
+    {q:"有限集映射规则：A surj B（存在满射函数）与 |A|、|B| 的关系是？",
+     opts:[
+       {t:"|A| ≥ |B| ⟺ A surj B", ok:true, fb:"对（定理 4.5.4）：满射需要每个 B 元素至少一条入箭头，箭头数（≤|A|）必须够 |B|。"},
+       {t:"|A| ≤ |B| ⟺ A surj B", ok:false, fb:"那是单射侧的规则（A inj B）。"},
+       {t:"|A| = |B| ⟺ A surj B", ok:false, fb:"等价是双射侧；满射允许'多对一'。"},
+       {t:"与大小无关", ok:false, fb:"整章的映射规则就是在说'大小决定映射存在性'。"}]},
+    {q:"计算机科学视角：为什么良序集 + '每步严格变小'能证明程序终止？",
+     opts:[
+       {t:"因为程序都跑不快，早停早好", ok:false, fb:"这不是道德问题，是数学问题。"},
+       {t:"若永不停机，各步取值构成无最小元的子集，违反良序", ok:true, fb:"对（原书 2.4 节 + 2.22）。素分解流水线就是实例：余数严格变小必触底。"},
+       {t:"因为良序集都是有限集", ok:false, fb:"ℕ 无限却良序——'任意长的下降链'与'无限下降链'隔着一整个良序原理。"},
+       {t:"因为程序计数器不能为负", ok:false, fb:"个别实现细节不是定理；定理恰恰是不依赖具体实现。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["🗂️ 类型系统建筑师", "集合、序列、函数、关系、基数五件套全部到位——第 5 章归纳法将把这些数据类型变成证明的燃料。"]
+      : right >= 3 ? ["🔗 关系连接员", "五性质的'出/入'方向还记得吗？回看互动⑤的灯，其余定义都会跟着亮。"]
+      : ["🌱 集合绘图生", "从互动①和②重来：集合运算的'或/且/不在'与子集位串双射，是全章的两根支柱。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){
+    let i = 0, right = 0;
+    function render(){
+      bodyEl.innerHTML = "";
+      if (i >= items.length) { onDone && onDone(right); return; }
+      const it = items[i];
+      const div = document.createElement("div");
+      div.className = "case";
+      div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+        <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+        <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">下一题 →</button></div>`;
+      const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+      it.opts.forEach(o => {
+        const b = document.createElement("button");
+        b.className = "opt"; b.innerHTML = o.t;
+        b.addEventListener("click", () => {
+          if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+          if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+          else {
+            b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+            $$(".opt", opts).forEach((bb, k2) => { if (it.opts[k2].ok) bb.classList.add("picked-ok"); });
+          }
+          nxt.style.display = "inline-block";
+          nxt.textContent = i === items.length - 1 ? "看结果 →" : "下一题 →";
+        });
+        opts.appendChild(b);
+      });
+      nxt.addEventListener("click", () => { i++; render(); });
+      bodyEl.appendChild(div);
+    }
+    if (resetBtn) resetBtn.addEventListener("click", () => { i = 0; right = 0; render(); result.classList.remove("show"); });
+    render();
+  }
+  runQuiz(box, items, {onDone: grade, resetBtn: $("#quiz-reset")});
+})();
+</script>
+</body>
+</html>

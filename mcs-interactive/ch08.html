@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>无限集 · 数学之旅第八章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 8 章的中文交互式解读：无限基数、Cantor 对角论证、停机问题与 Russell 悖论。第一部分收官章。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.def{border-left:4px solid var(--good)} .box.def .label{background:var(--good-soft);color:var(--good)}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.box.method{border-left:4px solid var(--amber)} .box.method .label{background:var(--amber-soft);color:var(--amber)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.math{font-family:var(--serif);white-space:nowrap}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+
+/* 旅馆 */
+.rooms{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.room{width:58px;border:1.5px solid var(--line);border-radius:9px;background:#fff;padding:5px 0;
+  text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted);transition:.3s}
+.room .rn{font-size:15px;font-weight:700;color:var(--ink)}
+.room.guest{background:var(--accent-soft);border-color:#b9cfe2;color:var(--accent)}
+.room.guest .rn{color:var(--accent)}
+.room.freeroom{background:var(--amber-soft);border-color:var(--amber)}
+
+/* 对角剧场 */
+.dg-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.dg-table{border-collapse:collapse;margin:0 auto;font-family:var(--mono);font-size:16px}
+.dg-table td{width:36px;height:32px;text-align:center;border:1px solid var(--line);background:#fff}
+.dg-table td.rn{background:var(--surface);font-weight:700;min-width:52px}
+.dg-table td.diag{background:var(--amber-soft);font-weight:700;color:var(--amber)}
+.dg-table td.diff{background:var(--bad-soft);color:var(--bad);font-weight:700}
+.dg-table td.crow{background:var(--good-soft);color:var(--good);font-weight:700}
+.dg-side{flex:1;min-width:230px;font-size:15px}
+.dg-msg{margin-top:10px;min-height:70px;border-radius:10px;padding:10px 16px;
+  background:var(--accent-soft);border:1px solid #c4d6e8;line-height:1.7}
+.dg-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* 悖论发生器 */
+.paradox-step{border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin:8px 0;background:#fff;
+  font-size:15px;line-height:1.7;display:none}
+.paradox-step.show{display:block;animation:fadein .4s}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.dilemma{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+@media (max-width:640px){.dilemma{grid-template-columns:1fr}}
+.dilemma .side{border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;font-size:14px;background:#fff}
+.dilemma .side.dead{background:var(--bad-soft);border-color:var(--bad)}
+
+.quiz-item{margin:18px 0}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:16%;left:6%;font-size:44px;--t:15s">ℵ₀</span>
+  <span class="hero-sym" style="top:64%;left:12%;font-size:38px;--t:19s;animation-delay:-6s">2^ω</span>
+  <span class="hero-sym" style="top:22%;right:9%;font-size:40px;--t:17s;animation-delay:-3s">≺</span>
+  <span class="hero-sym" style="top:68%;right:15%;font-size:36px;--t:13s;animation-delay:-9s">⇄</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 08 · 第一部分收官</span>
+    <h1>无限集</h1>
+    <div class="en">Infinite Sets</div>
+    <p class="lead">计算机内存有限，为什么要在乎无穷？因为对无穷集合"较真"直接通向计算机科学的边界定理：停机问题不可解。Cantor 的对角论证、Russell 的悖论、Gödel 的乌云——第一部分在此收官。</p>
+    <div class="meta">
+      <span>⏱ 约 40 分钟</span><span>🧩 5 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 245–286 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch07.html">上一章：递归数据类型</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s1"><span class="toc-num">8.1</span>无限基数</a>
+  <a href="#s2"><span class="toc-num">8.1.4</span>对角论证剧场</a>
+  <a href="#s3"><span class="toc-num">8.2</span>停机问题</a>
+  <a href="#s4"><span class="toc-num">8.3</span>集合的逻辑</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 8.1 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">8.1</span><h2>无限基数：比大小，不称重</h2><span class="en">Infinite Cardinality</span></div>
+  <div class="reveal">
+    <p>Cantor 研究傅里叶级数时被逼出一门新学问：怎么比较两个<b>无限集合</b>的大小？他的妙招是不给"大小"下定义，只比较——沿用第四章的映射规则：<b>A bij B</b> 叫"一样大"，<b>A surj B</b> 叫"不小于"，<b>A strict B</b>（即 NOT(A surj B)）叫"严格更小"。</p>
+    <p>有限集的直觉大量失效：<b>无限集加一个元素，还是一样大</b>（引理 8.1.7）——ℕ bij ℕ∪{周一周二…}；ℤ 与 ℕ 一样大（0,1,−1,2,−2,…）；连 ℕ×ℕ、ℚ⁺ 都可数（定理 8.1.10）。"可数（countable）"= 能排成清单 c₀, c₁, c₂, …（有限集也算，可重复列举）。</p>
+    <p>这条直觉的经典可视化就是"无限旅馆"：</p>
+  </div>
+
+  <!-- 互动① 无限旅馆 -->
+  <div class="widget reveal" id="w-hotel">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🏨 满员的无限旅馆，又来了一位客人</h4>
+    <p class="wdesc">客房 0~7 全满。经理宣布：每位客人从 n 号房搬到 n+1 号。会发生什么？</p>
+    <div class="rooms" id="hotel-rooms"></div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn primary" id="hotel-shift">经理令：全体右移一格 →</button>
+      <button class="btn ghost" id="hotel-reset">复位</button>
+    </div>
+    <div class="fb info" id="hotel-fb" style="display:block">新客人站在门口等待……</div>
+  </div>
+
+  <div class="reveal">
+    <div class="insight"><span class="ico">⚠️</span><div>原书警告一个常见滑坡：能做有限次"右移"，不代表能做"无限次右移"——从 3 开始加 1 有限次仍是某个 ≥3 的整数，加无限次你什么都得不到。有限与无限之间隔着一整个良序原理。</div></div>
+    <div class="box thm">
+      <span class="label">Cantor 定理 8.1.12</span>
+      <p style="margin:4px 0">对任意集合 A：<span class="math"><b>A strict pow(A)</b></span>——幂集永远严格更大。Cantor 的惊人发现在于：<b>无穷与无穷之间也有大小之分</b>，且幂集塔可以无限攀升：ℕ ≺ pow(ℕ) ≺ pow(pow(ℕ)) ≺ ⋯</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 对角剧场 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">8.1.4</span><h2>对角论证剧场</h2><span class="en">The Diagonal Argument</span></div>
+  <div class="reveal">
+    <p>pow(ℕ) ≈ {0,1}^ω（无限位串全体）。假设有人宣称已把<b>所有</b>无限位串排成了清单 A₀, A₁, A₂, …——对角论证当场上演：取清单的<b>对角线</b>，逐位翻转，得到的串 C 与清单里<b>每一行</b>都至少有一位不同，却也是合法位串。矛盾：清单不全。这招直接证明 pow(ℕ)、{0,1}^ω、ℝ 全都不可数。亲手揪一次：</p>
+  </div>
+
+  <!-- 互动② 对角剧场 -->
+  <div class="widget reveal" id="w-diag">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">🎭 对角论证剧场：揪出漏网之串</h4>
+    <p class="wdesc">一张 6×6 的"号称完整"的位串清单。三步走：高亮对角线 → 逐位翻转生成 C → 逐行对照，看 C 如何与每一行都不同。</p>
+    <div class="dg-wrap">
+      <div style="flex-shrink:0;overflow-x:auto"><table class="dg-table" id="dg-table"></table></div>
+      <div class="dg-side">
+        <div class="dg-msg" id="dg-msg">这就是那张"完整清单"。按下面的按钮启动三幕剧。</div>
+        <div class="dg-btns">
+          <button class="btn primary" id="dg-1">第一幕：点亮对角线</button>
+          <button class="btn" id="dg-2" disabled>第二幕：对角翻转 → C</button>
+          <button class="btn" id="dg-3" disabled>第三幕：逐行对照</button>
+          <button class="btn ghost" id="dg-reset">随机新清单</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8.2 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">8.2</span><h2>停机问题：对角论证的 CS 杀伤弹</h2><span class="en">The Halting Problem</span></div>
+  <div class="reveal">
+    <p>把每个程序看成字符串。定义 <span class="math">No-halt ::= { s | 程序 Pₛ 跑在自己身上永不停机 }</span>。<b>定理 8.2.2：No-halt 不可识别</b>——不存在程序能认出所有"自跑不停"的程序。证明就是 Cantor 对角论证的换装：假设分析器 P̂ 识别 No-halt，把清单表换成"程序 × 是否停在自身"的表，P̂ 所在的对角线一翻转，构造出的 s₀ 立刻自相矛盾。</p>
+  </div>
+
+  <!-- 互动③ 悖论发生器 -->
+  <div class="widget reveal" id="w-halt">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">💥 停机悖论发生器：五步引爆</h4>
+    <p class="wdesc">逐步"假设—构造—自问—两难—爆炸"，亲眼看一个完美类型检查器/优化器为何在逻辑上不可能。</p>
+    <button class="btn primary" id="para-next">引爆第一步 ▶</button>
+    <div style="margin-top:12px">
+      <div class="paradox-step" data-s="0">🧨 <b>假设</b>：存在一个完美的字符串分析程序 P̂，它能对任意程序 s 正确回答："Pₛ 跑在自己身上会停吗？"（即 P̂ 识别 No-halt 的补集）</div>
+      <div class="paradox-step" data-s="1">🔧 <b>构造</b>：用 P̂ 拼一个新程序 s₀ := "若 P̂ 说我的输入会停，我就无限循环；否则我立刻停。"——这个构造完全机械，写出来只是几十行代码。</div>
+      <div class="paradox-step" data-s="2">🪞 <b>自杀之问</b>：把 s₀ 喂给它自己：s₀ 跑在 s₀ 上，停还是不停？</div>
+      <div class="dilemma">
+        <div class="side" id="dilemma-a"><b>若 s₀ 会停：</b>则 P̂ 判定"会停" ⇒ 按构造 s₀ 进入无限循环 ⇒ s₀ 不停。矛盾！</div>
+        <div class="side" id="dilemma-b"><b>若 s₀ 不停：</b>则 P̂ 判定"不停" ⇒ 按构造 s₀ 立刻停。矛盾！</div>
+      </div>
+      <div class="paradox-step" data-s="3">💥 <b>爆炸</b>：两个方向都矛盾 ⇒ 这样的 P̂ <b>不可能存在</b>。推广：任何语言都不可能拥有完美的停机分析器、完美类型检查器或完美优化器——换语言没用（可以在 Java 里写 C++ 虚拟机）。</div>
+      <div class="paradox-step" data-s="4">🧘 <b>实践视角</b>（原书 8.2 末）：逻辑上不可能 ≠ 实践中无用。好的分析器照样建——只是它们必然<b>漏报或误报</b>。听到"通用程序分析/验证方法"的宣传时，想想这五步。</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8.3 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">8.3</span><h2>集合的逻辑：Russell 悖论与 ZFC</h2><span class="en">The Logic of Sets</span></div>
+  <div class="reveal">
+    <p>1890 年代，Frege 的集合公理化刚要完工，Russell 用同一个对角思路把它打穿：<b>W ::= { S | S ∉ S }</b>——"所有不包含自身的集合"之集。问：W ∈ W 吗？是 ⇒ 它不该在 W 里；否 ⇒ 它就该在 W 里。数学的根基轰然作响。Russell 与 Whitehead 花了十二年写《数学原理》试图自救，最终由更简洁的 ZFC 公理体系接管（Foundation 公理禁止 W 这种自吞集合成为集合；第一章提过的 ZFC 在此正式露面）。</p>
+    <p>而对角论证的 CS 杀伤弹与 Russell 悖论是<b>同一个论证</b>：W 的定义里那句 "S ∉ S"，就是停机悖论里"程序对自己的判断取反"。</p>
+    <div class="box thm">
+      <span class="label">8.4 这一切真的成立吗？</span>
+      <p style="margin:4px 0">三朵乌云：① ZFC 是人定的公理，可能有一天被"下一个 Russell"打穿；② <b>连续统假设</b>（ℕ 与 pow(ℕ) 之间没有别的无穷）在 ZFC 中<b>不可判定</b>——Gödel 与 Cohen 证明两边都能自洽；③ <b>Gödel 不完备性</b>：任何一致的系统都无法证明自身的一致性。数学的"真相"并未完全尘埃落定。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章与第一部分收官。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>Cantor 的流放与"康托乐园"（原书 8.1 节）</summary>
+      <div class="body">
+        <p>Cantor 本是研究傅里叶级数收敛的，被无穷集"带偏"后遭到当时数学界主流的怀疑与排斥，同侪讥其研究的是"康托乐园里的OutOfInfinity"。他去世后，这门学问成了数学与计算机科学共同的地基——你的每次类型检查失败，都是对角论证在工作。另外：连续统假设在 ZFC 中不可判定（Gödel 1940 / Cohen 1963），两位都为此拿了 Fields 奖。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>Schröder-Bernstein 定理（原书 8.1.4 定理 8.1.4）</summary>
+      <div class="body">
+        <p>若 A surj B 且 B surj A，则 A bij B——有限集上显然，无限集上是要真证的（构造双射需要把两个满射"缝"起来，习题 8.10）。配角的深度的最好例子：随手一写的"显然"，可能藏着一页纸的机关。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>课后挑战（均出自原书习题）</summary>
+      <div class="body">
+        <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
+          <li><b>8.1</b> 证明有限二进制串集 {0,1}* 可数（按长度分层列举）。</li>
+          <li><b>8.2</b> 构造两个<b>不可数</b>集合 A、B，使 A、B 之间不存在双射——"不可数"也分大小。</li>
+          <li><b>8.3</b> A strict ℕ 等价于下列哪些？"A 可数无限""A 不可数""A 有限"——小心，有陷阱。</li>
+          <li><b>8.8</b> 证明：A 无限且 B 可数 ⇒ A surj B（可数集是"最小的无穷"）。</li>
+          <li><b>8.24</b> 证明 ℕ ≺ pow(ℕ) ≺ pow(pow(ℕ)) ≺ ⋯ 的并集比塔里每一层都大——无穷的无穷塔没有顶。</li>
+        </ul>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>第一部分（Part I · Proofs）就此收官 🎓</summary>
+      <div class="body">
+        <p>八章走完：命题与证明的骨架（1）→ 良序（2）→ 逻辑语言（3）→ 数据类型（4）→ 归纳双璧（2、5）→ 状态机与不变量（6）→ 递归类型（7）→ 无穷与可计算性的边界（8）。接下来原书进入 Part II · Structures（数论、图论、通信网络），后续章节按同样流程续作——说"继续"即可。</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 8 章 = 第 245–286 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch07.html">上一章：递归数据类型</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s1">8.1 · 无限基数</a><a href="#s2">8.1.4 · 对角论证剧场</a><a href="#s3">8.2 · 停机问题</a>
+    <a href="#s4">8.3 · 集合的逻辑</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const click = el => el.dispatchEvent(new MouseEvent("click", {bubbles: true}));
+
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s1").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+/* ---------- 互动① 无限旅馆 ---------- */
+(() => {
+  const row = $("#hotel-rooms"), fb = $("#hotel-fb");
+  let shifted = false;
+  function render(){
+    row.innerHTML = "";
+    for (let i = 0; i < 8; i++) {
+      const d = document.createElement("div");
+      d.className = "room" + (shifted ? "" : " guest");
+      d.innerHTML = shifted
+        ? `<div class="rn">${i === 0 ? "🧳" : "客"}</div>房 ${i}`
+        : `<div class="rn">客</div>房 ${i}`;
+      if (shifted && i === 0) d.classList.add("freeroom");
+      row.appendChild(d);
+    }
+  }
+  $("#hotel-shift").addEventListener("click", () => {
+    shifted = true;
+    render();
+    fb.className = "fb ok";
+    fb.innerHTML = "0 号房空出来了，新客入住 ✓ —— <b>满员的无限旅馆永远容得下新客</b>（引理 8.1.7：A 无限 ⟺ A bij A∪{b}）。反方向思考：这恰恰说明'元素个数'这个有限直觉对无限集失效。";
+  });
+  $("#hotel-reset").addEventListener("click", () => { shifted = false; render(); fb.className = "fb info"; fb.textContent = "新客人站在门口等待……"; });
+  render();
+})();
+
+/* ---------- 互动② 对角剧场 ---------- */
+(() => {
+  const tbl = $("#dg-table"), msg = $("#dg-msg");
+  const [b1, b2, b3] = [$("#dg-1"), $("#dg-2"), $("#dg-3")];
+  let data = [];
+  function newList(){
+    data = [];
+    for (let i = 0; i < 6; i++) {
+      const row = [];
+      for (let j = 0; j < 8; j++) row.push(Math.random() < .5 ? 0 : 1);
+      data.push(row);
+    }
+    stage = 0; render();
+  }
+  let stage = 0;
+  function render(){
+    tbl.innerHTML = "";
+    const head = document.createElement("tr");
+    head.innerHTML = `<td class="rn">清单</td>` + [0,1,2,3,4,5,6,7].map(j => `<th style="background:var(--surface)">第${j}位</th>`).join("");
+    tbl.appendChild(head);
+    data.forEach((row, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="rn">A<sub>${i}</sub> =</td>`;
+      row.forEach((bit, j) => {
+        const td = document.createElement("td");
+        td.textContent = bit;
+        if (stage >= 1 && i === j) td.classList.add("diag");
+        if (stage >= 2 && i === j) { td.textContent = 1 - bit; td.classList.remove("diag"); td.classList.add("diff"); }
+        tr.appendChild(td);
+      });
+      if (stage >= 2) {
+        const td = document.createElement("td");
+        td.className = "crow";
+        td.textContent = "≠";
+        tr.appendChild(td);
+      }
+      tbl.appendChild(tr);
+    });
+    if (stage >= 2) {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td class="rn crow">C =</td>` + data.map((row, i) => `<td class="crow">${1 - row[i]}</td>`).join("") + `<td class="crow">✔</td>`;
+      tbl.appendChild(tr);
+    }
+    b1.disabled = stage >= 1; b2.disabled = stage !== 1; b3.disabled = stage !== 1;
+  }
+  b1.addEventListener("click", () => {
+    stage = 1; render();
+    msg.textContent = "第一幕：对角线已点亮——第 i 行的第 i 位。六个'配方位'，将决定一个新串的命运。";
+    b2.disabled = false; b3.disabled = true;
+  });
+  b2.addEventListener("click", () => {
+    stage = 2; render();
+    msg.textContent = "第二幕：对角线逐位翻转（1↔0），拼出新串 C。C 是一个合法的无限位串——按理说它应该在'完整清单'里。";
+    b3.disabled = false;
+  });
+  b3.addEventListener("click", () => {
+    msg.innerHTML = "第三幕：C 与 A₀ 在第 0 位不同，与 A₁ 在第 1 位不同……<b>与每一行都至少一位不同</b> ⇒ C 不在清单里！所谓'完整清单'必然不全 ⇒ 不存在把所有无限位串列成清单的方法 ⇒ {0,1}<sup>ω</sup>（以及 pow(ℕ)、ℝ）<b>不可数</b>。";
+    b3.disabled = true;
+  });
+  $("#dg-reset").addEventListener("click", () => { newList(); msg.textContent = "新的随机清单已就位。再演一遍三幕剧。"; });
+  newList();
+})();
+
+/* ---------- 互动③ 停机悖论发生器 ---------- */
+(() => {
+  let k = 0;
+  const btn = $("#para-next");
+  btn.addEventListener("click", () => {
+    if (k >= 5) return;
+    $(`.paradox-step[data-s="${k}"]`).classList.add("show");
+    k++;
+    if (k === 2) {
+      setTimeout(() => {
+        $("#dilemma-a").classList.add("dead");
+        setTimeout(() => $("#dilemma-b").classList.add("dead"), 800);
+      }, 400);
+    }
+    btn.textContent = k >= 5 ? "爆炸完毕 💥" : `引爆第 ${k+1} 步 ▶`;
+    if (k >= 5) btn.disabled = true;
+  });
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"Cantor 比较无穷集大小的策略是？",
+     opts:[
+       {t:"先定义无限集的'大小'，再比较", ok:false, fb:"原书明确警告：不定义大小，也不需要——只比较。"},
+       {t:"不定义大小，用 bij / surj 关系比较：A bij B 叫一样大，A strict B（NOT(A surj B)）叫严格更小", ok:true, fb:"对——绕开'大小'定义的技术深水区，直接比。"},
+       {t:"数元素个数，数到无穷", ok:false, fb:"数不完，也没意义。"},
+       {t:"只比较有限集", ok:false, fb:"整章就是在比较无限集。"}]},
+    {q:"'满员的无限旅馆又来一位客人'能住下，说明的定理是？",
+     opts:[
+       {t:"A 无限 ⟺ A bij A∪{b}（引理 8.1.7）", ok:true, fb:"对。无限集加一个元素还是一样大——有限直觉在此失效。"},
+       {t:"无限集都是可数的", ok:false, fb:"pow(ℕ) 与 ℝ 都不可数——本章后半的主角。"},
+       {t:"旅馆管理先进", ok:false, fb:"……不是这道题的考点。"},
+       {t:"说明可数集可以减成有限集", ok:false, fb:"可数无限怎么挪都是无限。"}]},
+    {q:"对角论证中，构造串 C 的规则是？",
+     opts:[
+       {t:"取清单第 i 行的第 i 位并翻转，作为 C 的第 i 位", ok:true, fb:"对——C 与第 i 行在第 i 位必然不同 ⇒ C 不在任何清单上。"},
+       {t:"取清单每一行第一位的 0", ok:false, fb:"那只是某行的拷贝片段，保证不了'与每行都不同'。"},
+       {t:"把清单所有位全取反", ok:false, fb:"无限串没有'所有位'的对角翻转——取的是对角线那一位。"},
+       {t:"随机生成一个新串", ok:false, fb:"随机串也可能碰巧在清单里——对角构造保证的是'必然不在'。"}]},
+    {q:"Cantor 定理（8.1.12）断言：对任意集合 A，",
+     opts:[
+       {t:"A bij pow(A)", ok:false, fb:"恰相反——这正是'无穷有无穷多个大小'的源头。"},
+       {t:"A strict pow(A)（幂集严格更大）", ok:true, fb:"对。证明的核心就是 A_g = {a ∈ A | a ∉ g(a)} 这个'对角'子集。"},
+       {t:"pow(A) strict A", ok:false, fb:"方向反了。"},
+       {t:"pow(A) 可数", ok:false, fb:"Corollary 8.1.13：pow(ℕ) 不可数。"}]},
+    {q:"停机问题不可解的证明，最后一步矛盾来自？",
+     opts:[
+       {t:"把 s₀ 喂给自己：s₀ 停 ⇔ s₀ 不停，两难皆矛盾", ok:true, fb:"对——对角线的'自己那一位'。完美的停机分析器在逻辑上不可能存在。"},
+       {t:"程序跑得太慢", ok:false, fb:"与速度无关——是逻辑不可能，不是工程困难。"},
+       {t:"P̂ 会输出错误的语法提示", ok:false, fb:"无关。"},
+       {t:"换成 C++ 就能解", ok:false, fb:"原书明确：可以在 Java 里写 C++ 虚拟机——换语言无路可逃。"}]},
+    {q:"Russell 悖论 W ::= { S | S ∉ S } 的现代 ZFC 解法是？",
+     opts:[
+       {t:"规定 W ∈ W", ok:false, fb:"那立刻产生另一侧矛盾。"},
+       {t:"承认 W 是集合但内容为空", ok:false, fb:"若 W = ∅，则 W ∉ W 为真 ⇒ W ∈ W，仍矛盾。"},
+       {t:"判定 W 不是集合——Foundation 公理禁止这种自吞集合", ok:true, fb:"对。'每个良定义的搜集都是集合'这条天真的公理被牺牲，ZFC 的 Foundation 等公理接管。"},
+       {t:"禁止使用否定词 NOT", ok:false, fb:"逻辑连接词照常使用，约束的是集合构造的方式。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["♾️ 康托对角手", "第一部分（Proofs 八章）收官！对角论证是你带走的终极武器——它同时杀死了'完整清单'、'完美分析器'与'万集合'。Part II 数论与图论见。"]
+      : right >= 3 ? ["🧭 无穷领航员", "主线清晰了——错题集中在 8.3/8.4 的元数学，回看 Russell 悖论与三朵乌云。"]
+      : ["🌱 无限旅馆门童", "从互动①的重开一局开始：先把'可数'与'不可数'的直觉扶正，对角剧场再走一遍三幕。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){
+    let i = 0, right = 0;
+    function render(){
+      bodyEl.innerHTML = "";
+      if (i >= items.length) { onDone && onDone(right); return; }
+      const it = items[i];
+      const div = document.createElement("div");
+      div.className = "case";
+      div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+        <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+        <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">下一题 →</button></div>`;
+      const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+      it.opts.forEach(o => {
+        const b = document.createElement("button");
+        b.className = "opt"; b.innerHTML = o.t;
+        b.addEventListener("click", () => {
+          if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+          if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+          else {
+            b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+            $$(".opt", opts).forEach((bb, k2) => { if (it.opts[k2].ok) bb.classList.add("picked-ok"); });
+          }
+          nxt.style.display = "inline-block";
+          nxt.textContent = i === items.length - 1 ? "看结果 →" : "下一题 →";
+        });
+        opts.appendChild(b);
+      });
+      nxt.addEventListener("click", () => { i++; render(); });
+      bodyEl.appendChild(div);
+    }
+    if (resetBtn) resetBtn.addEventListener("click", () => { i = 0; right = 0; render(); result.classList.remove("show"); });
+    render();
+  }
+  runQuiz(box, items, {onDone: grade, resetBtn: $("#quiz-reset")});
+})();
+</script>
+</body>
+</html>

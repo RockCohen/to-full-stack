@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>数论 · 数学之旅第九章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 9 章的中文交互式解读：可除性、欧几里得算法、Pulverizer、模算术、欧拉定理与 RSA。Part II · Structures 开篇。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.def{border-left:4px solid var(--good)} .box.def .label{background:var(--good-soft);color:var(--good)}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.box.method{border-left:4px solid var(--amber)} .box.method .label{background:var(--amber-soft);color:var(--amber)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.math{font-family:var(--serif);white-space:nowrap}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+code{font-family:var(--mono);font-size:.88em;background:#efece4;border-radius:6px;padding:2px 8px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+
+.num-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input[type=number]{font-family:var(--mono);font-size:15px;padding:7px 10px;border:1.5px solid var(--line);border-radius:9px;width:100px}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+.steps-box{font-family:var(--mono);font-size:13.5px;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:10px 16px;margin-top:12px;line-height:2}
+.steps-box .hl{color:var(--accent);font-weight:700}
+select{font-family:inherit;font-size:14.5px;padding:7px 10px;border:1.5px solid var(--line);border-radius:9px;background:#fff}
+
+.clockwrap{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+.clockwrap svg{flex-shrink:0}
+.rs{font-family:var(--mono);font-size:14px;line-height:2}
+
+.rsa-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media (max-width:640px){.rsa-grid{grid-template-columns:1fr}}
+.rsa-card{border:1.5px solid var(--line);border-radius:12px;padding:12px 16px;background:#fff;font-size:14.5px;line-height:1.8}
+.rsa-card b{font-family:var(--serif)}
+.rsa-card .big{font-family:var(--mono);font-size:20px;color:var(--accent);font-weight:700}
+.rsa-keys{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.rsa-keys .key{border:1px solid var(--line);border-radius:8px;padding:4px 10px;font-family:var(--mono);font-size:13px;background:#fff}
+
+.quiz-item{margin:18px 0}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:16%;left:6%;font-size:44px;--t:15s">a | b</span>
+  <span class="hero-sym" style="top:64%;left:12%;font-size:38px;--t:19s;animation-delay:-6s">gcd</span>
+  <span class="hero-sym" style="top:22%;right:9%;font-size:42px;--t:17s;animation-delay:-3s">mod</span>
+  <span class="hero-sym" style="top:68%;right:15%;font-size:36px;--t:13s;animation-delay:-9s">m^e</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 09 · Part II 开篇</span>
+    <h1>数论</h1>
+    <div class="en">Number Theory</div>
+    <p class="lead">Hardy 曾庆幸数论"远离人间烟火、洁净无害"——他错了。每次网购、每张证书、每个 PayPal 账户背后都是数论。本章从第六章的水壶讲到 RSA 密码系统，还给了 Alan Turing 一场迟到的致敬。</p>
+    <div class="meta">
+      <span>⏱ 约 50 分钟</span><span>🧩 5 个互动装置</span><span>🔐 RSA Playground</span><span>📖 原书第 289–328 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch08.html">上一章：无限集</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s1"><span class="toc-num">9.1</span>可除性与水壶终解</a>
+  <a href="#s2"><span class="toc-num">9.2</span>欧几里得与 Pulverizer</a>
+  <a href="#s3"><span class="toc-num">9.3</span>素数之谜</a>
+  <a href="#s4"><span class="toc-num">9.4</span>算术基本定理</a>
+  <a href="#s5"><span class="toc-num">9.6–9.9</span>模算术与逆元</a>
+  <a href="#s6"><span class="toc-num">9.10</span>欧拉定理</a>
+  <a href="#s7"><span class="toc-num">9.11</span>RSA Playground</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 9.1 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">9.1</span><h2>可除性：水壶问题的终审判决</h2><span class="en">Divisibility</span></div>
+  <div class="reveal">
+    <p><span class="math">a | b</span>（a 整除 b）定义为存在整数 k 使 ak = b。它一出场就带来惊喜——第六章那两把水壶，现在有了终审判决。回忆：Die Hard 3 用 3/5 壶能凑 4 加仑；换 12/18 壶凑 4 加仑、899/1147 壶凑 32 加仑则必死。<b>为什么？</b></p>
+    <p><b>水壶引理 9.1.6</b>：壶里的水量永远是 a、b 的<span class="term">线性组合</span>（sa + tb，s、t 为整数）。<b>推论 9.2.4</b>：其实永远是 gcd(a, b) 的倍数。所以：</p>
+    <div class="eq math">gcd(12, 18) = 6，而 4 不是 6 的倍数 ⇒ Bruce 必死<br>gcd(899, 1147) = 31，而 32 不是 31 的倍数 ⇒ 还是死<br>gcd(3, 5) = 1，而 4 是 1 的倍数 ⇒ 有救 ✓</div>
+    <p>判决器在此——输入任意两把壶和目标量：</p>
+  </div>
+
+  <!-- 互动① 水壶终审判决 -->
+  <div class="widget reveal" id="w-jug">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">⚖️ 水壶终审判决器（含欧几里得算法步进）</h4>
+    <div class="num-row">
+      <label class="small">壶 a = <input type="number" id="jg-a" min="1" max="9999" value="1147" /></label>
+      <label class="small">壶 b = <input type="number" id="jg-b" min="1" max="9999" value="899" /></label>
+      <label class="small">目标 c = <input type="number" id="jg-c" min="0" max="9999" value="32" /></label>
+      <button class="btn primary" id="jg-go">判决 ▶</button>
+    </div>
+    <div class="steps-box" id="jg-steps"></div>
+    <div class="fb" id="jg-fb"></div>
+  </div>
+</section>
+
+<!-- ================= 9.2 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">9.2</span><h2>欧几里得算法与 Pulverizer</h2><span class="en">Euclid's Algorithm &amp; the Pulverizer</span></div>
+  <div class="reveal">
+    <p>gcd 怎么算？两千三百年前欧几里得就知道：<span class="math">gcd(a, b) = gcd(b, rem(a, b))</span>——反复碾压，余数归零时的 x 就是 gcd。把它形式化成状态机 (x, y) → (y, rem(x, y))：gcd 是保持不变量（引理 9.2.1），x 每两步至少减半 ⇒ 至多 1 + 2log a 步终止。第六章的不变量原理 + 良序原理在此双剑合璧。</p>
+    <p>而 <span class="term">Pulverizer</span>（粉碎机，公元六世纪印度人叫它 kuttaka）在欧几里得的骨架上加了一层簿记，反推出 <b>gcd(a, b) = sa + tb</b>（定理 9.2.2）。例如 gcd(259, 70) = 7 = 3·259 − 11·70。这看似平凡的等式是整个 RSA 的地基：</p>
+    <div class="eq math">s·a + t·b = gcd(a, b) &nbsp;⇒&nbsp; 逆元、消去律、水壶通解……全部解锁</div>
+  </div>
+
+  <!-- 互动② Pulverizer -->
+  <div class="widget reveal" id="w-pul">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">🔨 Pulverizer：把 gcd 粉碎成 sa + tb</h4>
+    <div class="num-row">
+      <label class="small">a = <input type="number" id="pul-a" min="1" max="99999" value="259" /></label>
+      <label class="small">b = <input type="number" id="pul-b" min="1" max="99999" value="70" /></label>
+      <button class="btn primary" id="pul-go">粉碎 ▶</button>
+    </div>
+    <div class="steps-box" id="pul-steps"></div>
+    <div class="fb" id="pul-fb"></div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">9.2.3</span>水壶完全解</h3>
+    <div class="box thm">
+      <span class="label">定理 9.2.5 · 水壶问题通解</span>
+      <p style="margin:4px 0">用容量 a、b 的壶，能在 a 壶中凑出 c ⟺ <b>c 是 gcd(a, b) 的倍数</b>。策略甚至不需要知道系数：反复"灌满小壶 → 全倒入大壶（满了就倒空大壶）"，gcd 的每个倍数都会依次出现。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 9.3 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">9.3</span><h2>素数之谜</h2><span class="en">Prime Mysteries</span></div>
+  <div class="reveal">
+    <p>素数是数论的明星，也是未解问题的重灾区：</p>
+    <div class="box def">
+      <span class="label">三大悬案</span>
+      <p style="margin:4px 0">
+      <b>孪生素数猜想</b>：使 p、p+2 皆为素数的 p 有无穷多。（1966 年陈景润证明了"几乎"：p+2 至多是两个素数之积。）<br>
+      <b>分解难</b>：给 n = pq（p、q 为大素数），没有已知的多项式时间算法还原 p、q——目前最快是数域筛，300 位以上即不可行。<br>
+      <b>哥德巴赫猜想</b>：大于 2 的偶数都是两素数之和——第一章的老朋友了。</p>
+    </div>
+    <p>但也有铁律：素数定理 π(n) ~ n/ln n（每 ln n 个数里约 1 个素数），切比雪夫给了初等下界 π(n) &gt; n/(3 ln n)。2004 年 Google 的招聘广告牌"e 中连续数字的第一个 10 位素数 .com"——答案 7427466391 出现得很早，正是这条密度的胜利。</p>
+  </div>
+</section>
+
+<!-- ================= 9.4 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">9.4</span><h2>算术基本定理</h2><span class="en">The Fundamental Theorem of Arithmetic</span></div>
+  <div class="reveal">
+    <div class="box thm">
+      <span class="label">定理 9.4.1 · 算术基本定理</span>
+      <p style="margin:4px 0">每个正整数都是<b>唯一</b>一个弱递减素数序列的乘积。例：75237393 = 23·17·17·11·7·7·7·3，别无他法。</p>
+    </div>
+    <p>定理 2.3.1 证过"存在性"（良序），现在证"唯一性"：反设存在两种分解的最小整数 n，比较两个素数序列的首项，用引理 9.4.2（<b>p 素且 p | ab ⇒ p | a 或 p | b</b>）导出矛盾。注意引理 9.4.2 本身用 gcd 线性组合证明——<b>刻意绕开唯一分解，避免循环论证</b>。顺带一提：唯一分解在复数域的 m + m√−5 整数里会失效——它根本不是"显然"的。</p>
+  </div>
+</section>
+
+<!-- ================= 9.6-9.9 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">9.6–9.9</span><h2>模算术、余数环与乘法逆</h2><span class="en">Modular Arithmetic, ℤₙ &amp; Inverses</span></div>
+  <div class="reveal">
+    <p>Gauss 的"同余"：a ≡ b (mod n) ⟺ n | (a − b) ⟺ 两者余数相等。同余对加法乘法<b>保持</b>（引理 9.6.4），于是诞生了<span class="term">余数算术一般原理</span>：算一大串加减乘的余数时，每步都可以取余，数字永不出 [0, n)。例：rem(3³⁴⁵⁶⁷⁸⁹, 36) = rem(3³, 36) = 27——因为 3 的幂的余数 3, 9, 27, 9, 27, … 两步一循环。<b>警告</b>：指数绝不能取余！</p>
+    <p>Turing 密码 2.0 就建在 ℤₙ 上：m̂ ::= m·k (ℤₙ)。但解密需要"除以 k"——什么时候能除？答案是<span class="term">乘法逆</span>：</p>
+    <div class="box thm">
+      <span class="label">定理 9.9.5 · 三位一体</span>
+      <p style="margin:4px 0">对 k ∈ [0..n)：gcd(k, n) = 1 ⟺ k 在 ℤₙ 中有乘法逆 ⟺ k 可消去。<br>
+      <span class="small muted">例：ℤ₁₅ 中 2·8 = 1（8 是 2 的逆）；3 与 15 不互素 ⇒ 3 无逆（否则 5 = 0）。逆存在时唯一，且可用 Pulverizer 直接算出 rem(t, n)。</span></p>
+    </div>
+    <p>2.0 版还是被破解了——德国人自己发的不加密天气报告与 Enigma 密文对照（known-plaintext 攻击），j·m̂ = k 直接泄露密钥。密码学真是一场猫鼠游戏。</p>
+  </div>
+</section>
+
+<!-- ================= 9.10 ================= -->
+<section class="ch" id="s6">
+  <div class="ch-head reveal"><span class="no">9.10</span><h2>欧拉定理</h2><span class="en">Euler's Theorem</span></div>
+  <div class="reveal">
+    <div class="box thm">
+      <span class="label">定义 + 定理</span>
+      <p style="margin:4px 0"><span class="term">φ(n)</span> ::= [0..n) 中与 n 互素的整数个数（φ(7) = 6，φ(12) = 4，φ(300) = 80）。<br>
+      <b>欧拉定理</b>：gcd(k, n) = 1 ⇒ <span class="math">k^φ(n) ≡ 1 (mod n)</span>。<br>
+      <span class="small muted">特例：p 素时 φ(p) = p − 1，得 Fermat 小定理 k^(p−1) ≡ 1 (mod p)。素数幂 φ(pᵏ) = pᵏ − pᵏ⁻¹；φ(pq) = (p−1)(q−1)。</span></p>
+    </div>
+    <p>证明是 ℤₙ*（与 n 互素的剩余类之集）上的一个漂亮 pigeonhole：k ∈ ℤₙ* 时 k·ℤₙ* = ℤₙ*（乘 k 只是重排），于是 (k·c₁)(k·c₂)⋯ = (c₁)(c₂)⋯，消去得 k^φ(n) = 1。另一路求逆：k 的逆 = k^(φ(n)−1)，可用第六章的快速幂高效计算。</p>
+  </div>
+</section>
+
+<!-- ================= 9.11 RSA ================= -->
+<section class="ch" id="s7">
+  <div class="ch-head reveal"><span class="no">9.11</span><h2>RSA 公钥加密</h2><span class="en">RSA Public Key Encryption</span></div>
+  <div class="reveal">
+    <p>1977 年，MIT 的 Rivest、Shamir、Adleman 把 Turing 的遗愿做成了现实：<b>公钥加密</b>。接收者生成两个数百位的大素数 p、q，公开 (e, n := pq)，私藏 d := e 在 ℤ₍ₚ₋₁₎₍q₋₁₎ 中的逆。任何人都能用公钥加密 m̂ ::= mᵉ (ℤₙ)，只有持有 d 的人能解密 m ::= m̂ᵈ——因为 e·d ≡ 1 (mod φ(n))，欧拉定理保证 m̂ᵈ = m。安全性押在"分解 n 为 p·q 是难事"这条未证猜想上——四十余年全球攻击无果。</p>
+    <p>下面是真的 RSA（玩具尺寸）。选素数、发消息，走一遍完整流程：</p>
+  </div>
+
+  <!-- 互动 RSA Playground -->
+  <div class="widget reveal" id="w-rsa">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">🔐 RSA Playground</h4>
+    <div class="num-row">
+      <label class="small">素数 p =
+        <select id="rsa-p"><option>47</option><option>53</option><option>59</option><option>61</option><option>67</option></select></label>
+      <label class="small">素数 q =
+        <select id="rsa-q"><option>61</option><option>59</option><option>71</option><option>73</option><option>83</option></select></label>
+      <label class="small">公钥 e =
+        <select id="rsa-e"></select></label>
+      <button class="btn primary" id="rsa-gen">生成密钥对 🔑</button>
+    </div>
+    <div class="rsa-keys" id="rsa-keys"></div>
+    <div class="rsa-grid">
+      <div class="rsa-card">
+        <b>📨 发送方（用公钥加密）</b><br>
+        消息 m ∈ [0, n)：<input type="number" id="rsa-m" min="0" style="width:90px" />
+        <button class="btn" id="rsa-enc">加密 m → m̂</button>
+        <div style="margin-top:8px">密文 m̂ = m<sup>e</sup> mod n =<br><span class="big" id="rsa-mhat">—</span></div>
+      </div>
+      <div class="rsa-card">
+        <b>🔐 接收方（用私钥解密）</b><br>
+        <button class="btn" id="rsa-dec">解密 m̂ → m</button>
+        <div style="margin-top:8px">明文 m = m̂<sup>d</sup> mod n =<br><span class="big" id="rsa-mback">—</span></div>
+      </div>
+    </div>
+    <div class="fb" id="rsa-fb"></div>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>Hardy 的乌鸦与 Turing 的苹果（原书 9.0 / 9.9.4）</summary>
+      <div class="body">
+        <p>数论学家 Hardy 曾庆幸数论"因远离军事而洁净"，还担心它被用于战争——他错了两次：数论是现代密码学的地基，而图灵（Turing's Code 的构想者）后来在布莱切利园领衔破解 Enigma，拯救了无数生命。图灵本人的结局则令人心碎：因同性恋被定罪、接受"化学治疗"，1954 年死于氰化物与一只苹果——他的母亲至死相信那是意外。2009 年英国政府正式道歉，2013 年女王赦免。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>Google 的素数广告牌（原书 9.3 节文框）</summary>
+      <div class="body">
+        <p>2004 年美国多地的广告牌写着："{first 10-digit prime found in consecutive digits of e}.com"。解出 7427466391 就能到达 Google 的招聘页。素数定理保证 10 位数中约每 ln(10¹⁰) ≈ 23 个就有一个素数——所以这题其实不难，难的是想到用素数定理。Google 要雇的正是"会想到"的人。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>完美数与黎曼假设（原书 9.1 / 9.10 文框）</summary>
+      <div class="body">
+        <p>毕达哥拉斯学派的"完美数"（等于自身真因子之和：6 = 1+2+3, 28 = 1+2+4+7+14）——欧几里得刻画的都是偶完美数，<b>奇完美数存在吗？</b>两千三百年无解，已排除至 10¹⁵⁰⁰。另一边，Riemann 假设把素数分布写进 ζ 函数的零点——千禧年七大难题之一，同样悬赏百万美元。素数density的每一个转角都通向深渊。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>课后挑战（均出自原书习题）</summary>
+      <div class="body">
+        <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
+          <li><b>9.2</b> 用偶完美数的欧几里得刻画（2^(k−1))(2^k − 1)，2^k − 1 为素数）自己找几个完美数。</li>
+          <li><b>9.10</b> 把 Schröder-Bernstein 定理的构造双射补完（第八章伏笔回收）。</li>
+          <li><b>9.14</b> 证明欧几里得算法至多 log_φ(a) 步（φ 是黄金比）——斐波那契最坏情形。</li>
+          <li><b>9.81</b> 证明即使 m 与 n 不互素，RSA 解密依然还原 m（欧拉定理之外的补充论证）。</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 9 章 = 第 289–328 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch08.html">上一章：无限集</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s1">9.1 · 可除性与水壶终解</a><a href="#s2">9.2 · 欧几里得与 Pulverizer</a><a href="#s3">9.3 · 素数之谜</a>
+    <a href="#s4">9.4 · 算术基本定理</a><a href="#s5">9.6–9.9 · 模算术与逆元</a><a href="#s6">9.10 · 欧拉定理</a>
+    <a href="#s7">9.11 · RSA Playground</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const click = el => el.dispatchEvent(new MouseEvent("click", {bubbles: true}));
+
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s1").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+function gcd(a, b){ while (b) { [a, b] = [b, a % b]; } return a; }
+
+/* ---------- 互动① 水壶终审 ---------- */
+(() => {
+  function run(){
+    const a = +$("#jg-a").value, b = +$("#jg-b").value, c = +$("#jg-c").value;
+    if (!(a >= 1 && b >= 1 && c >= 0)) { $("#jg-steps").textContent = "输入有误。"; return; }
+    const g = gcd(a, b);
+    let x = Math.max(a, b), y = Math.min(a, b);
+    const lines = [`欧几里得算法：gcd(${x}, ${y})`];
+    while (y > 0) {
+      const r = x % y;
+      lines.push(`&nbsp;&nbsp;gcd(${x}, ${y}) = gcd(${y}, ${r})　（${x} = ${Math.floor(x / y)}·${y} + ${r}）`);
+      [x, y] = [y, r];
+    }
+    lines.push(`&nbsp;&nbsp;<span class="hl">gcd(${Math.max(a,b)}, ${Math.min(a,b)}) = ${g}</span>`);
+    $("#jg-steps").innerHTML = lines.join("<br>");
+    const can = c % g === 0 && c <= Math.max(a, b);
+    const fb = $("#jg-fb");
+    fb.className = "fb " + (can ? "ok" : "no");
+    fb.innerHTML = can
+      ? `✅ <b>可凑！</b>c = ${c} 是 gcd = ${g} 的倍数（定理 9.2.5）。策略：反复"灌满小壶 → 倒入大壶（满了倒空）"，${c} 迟早出现——无需任何聪明才智。`
+      : `💀 <b>Bruce will die！</b>c = ${c} 不是 gcd = ${g} 的倍数。壶中水量永远是 a、b 的线性组合 ⇒ 永远是 ${g} 的倍数 ⇒ ${c} 永远凑不出（推论 9.2.4）。`;
+  }
+  $("#jg-go").addEventListener("click", run);
+  run();
+})();
+
+/* ---------- 互动② Pulverizer ---------- */
+(() => {
+  function pulverize(a, b){
+    // 返回 {g, s, t, lines}
+    let [oldr, r] = [a, b];
+    let [olds, s] = [1, 0];
+    let [oldt, t] = [0, 1];
+    const lines = [`初始：${a} = 1·${a} + 0·${b}；${b} = 0·${a} + 1·${b}`];
+    while (r !== 0) {
+      const q = Math.floor(oldr / r);
+      [oldr, r] = [r, oldr - q * r];
+      [olds, s] = [s, olds - q * s];
+      [oldt, t] = [t, oldt - q * t];
+      lines.push(`商 ${q}：${oldr} = ${olds}·${a} + ${oldt}·${b}`);
+    }
+    return { g: oldr, s: olds, t: oldt, lines };
+  }
+  function run(){
+    const a = +$("#pul-a").value, b = +$("#pul-b").value;
+    if (!(a >= 1 && b >= 1)) return;
+    const { g, s, t, lines } = pulverize(a, b);
+    $("#pul-steps").innerHTML = lines.join("<br>");
+    const fb = $("#pul-fb");
+    fb.className = "fb ok";
+    fb.innerHTML = `🔨 <b>gcd(${a}, ${b}) = ${g} = (${s})·${a} + (${t})·${b}</b>——验证：${s*a} + ${t*b} = ${s*a + t*b} ✓。Pulverizer 完成（定理 9.2.2）。若 gcd = 1，则 s 就是 a 在 ℤ_b 中的乘法逆（mod b）——RSA 的命脉。`;
+  }
+  $("#pul-go").addEventListener("click", run);
+  run();
+})();
+
+/* ---------- RSA Playground ---------- */
+(() => {
+  const primes = [47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97];
+  const pSel = $("#rsa-p"), qSel = $("#rsa-q"), eSel = $("#rsa-e");
+  primes.forEach(p => { pSel.add(new Option(p, p)); qSel.add(new Option(p, p)); });
+  pSel.value = 47; qSel.value = 59;
+  let n = 0, e = 0, d = 0, phi = 0;
+  function fillE(){
+    const p = +pSel.value, q = +qSel.value;
+    phi = (p - 1) * (q - 1);
+    eSel.innerHTML = "";
+    for (let c = 2; c < phi; c++) if (gcd(c, phi) === 1) eSel.add(new Option(c, c));
+    [...eSel.options].forEach(o => { if (+o.value === 7) eSel.value = 7; });
+  }
+  function gen(){
+    const p = +pSel.value, q = +qSel.value;
+    if (p === q) { $("#rsa-keys").innerHTML = "<span style='color:var(--bad)'>p 与 q 必须不同！</span>"; return; }
+    n = p * q; phi = (p - 1) * (q - 1);
+    fillE();
+    e = +eSel.value;
+    d = 1; while ((d * e) % phi !== 1 || d === e % phi && false) d++;
+    while ((e * d) % phi !== 1) d++;
+    $("#rsa-keys").innerHTML =
+      `<span class="key">p = ${p}（私藏）</span><span class="key">q = ${q}（私藏）</span>` +
+      `<span class="key">n = pq = ${n}</span><span class="key">φ(n) = ${phi}（私藏）</span>` +
+      `<span class="key" style="border-color:var(--accent);color:var(--accent)">🔑 公钥 (e=${e}, n)</span>` +
+      `<span class="key" style="border-color:var(--bad);color:var(--bad)">🔐 私钥 d = ${d}</span>`;
+    $("#rsa-m").max = n - 1;
+    $("#rsa-m").value = Math.min(42, n - 1);
+    $("#rsa-mhat").textContent = "—"; $("#rsa-mback").textContent = "—";
+    $("#rsa-fb").className = "fb info";
+    $("#rsa-fb").textContent = `密钥对就绪。e·d = ${e}·${d} ≡ 1 (mod φ=${phi})——欧拉定理保证解密必然还原 m。输入消息并加密试试。`;
+  }
+  let mhat = null;
+  $("#rsa-enc").addEventListener("click", () => {
+    if (!n) return;
+    const m = +$("#rsa-m").value;
+    if (!(m >= 0 && m < n)) { $("#rsa-fb").className = "fb no"; $("#rsa-fb").textContent = `m 需在 [0, ${n}) 内。`; return; }
+    mhat = 1;
+    for (let i = 0; i < e; i++) mhat = (mhat * m) % n;
+    $("#rsa-mhat").textContent = mhat;
+    $("#rsa-fb").className = "fb info";
+    $("#rsa-fb").textContent = `📡 密文 ${mhat} 已公开传输。窃听者只看到 ${mhat} 和公钥 (e=${e}, n=${n})——想解密需要分解 n = ${n} 找到 p、q（这里只有两位数，现实中是数百位素数）。`;
+    $("#rsa-dec").disabled = false;
+  });
+  $("#rsa-dec").addEventListener("click", () => {
+    if (mhat === null) return;
+    let m = 1;
+    for (let i = 0; i < d; i++) m = (m * mhat) % n;
+    $("#rsa-mback").textContent = m;
+    $("#rsa-fb").className = "fb ok";
+    fb_ok(m);
+  });
+  function fb_ok(m){
+    fb_ok_msg(m);
+  }
+  function fb_ok_msg(m){
+    $("#rsa-fb").innerHTML = `✅ 解密还原 m = ${m}——与发送方一致！<br><span class="small muted">原理：e·d ≡ 1 (mod φ(n)) ⇒ m^(ed) = m·(m^φ(n))^((ed−1)/φ(n)) ≡ m·1 = m (mod n)（欧拉定理）。现实中 p、q 是数百位素数，分解 n 需要"数域筛"跑天文数字的时间——RSA 40 年屹立不倒。</span>`;
+  }
+  $("#rsa-gen").addEventListener("click", gen);
+  eSel.addEventListener("change", gen);
+  pSel.addEventListener("change", gen);
+  qSel.addEventListener("change", gen);
+  $("#rsa-dec").disabled = true;
+  gen();
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"用 12 加仑和 18 加仑的水壶凑 4 加仑，注定失败。数论依据是？",
+     opts:[
+       {t:"4 是奇数", ok:false, fb:"与奇偶无关——16 也是偶数，但同样凑不出（16 不是 6 的倍数）。"},
+       {t:"壶中水量永远是 gcd(12,18) = 6 的倍数，而 4 不是", ok:true, fb:"对（引理 9.1.6 + 推论 9.2.4）。线性组合保持 + gcd 不变量 + 消去律，三步定罪。"},
+       {t:"12 和 18 都是合数", ok:false, fb:"素合无关——899 与 1147 更大也一样死。"},
+       {t:"水壶容量必须互素", ok:false, fb:"互素（gcd=1）时什么量都凑得出，但本题的判据是倍数关系。"}]},
+    {q:"欧几里得算法 gcd(a,b) = gcd(b, rem(a,b)) 的效率依据是？",
+     opts:[
+       {t:"rem(a,b) 至少减半（每两步），故至多 1 + 2log a 步终止", ok:true, fb:"对——良序原理保证非负整数序列不能无限降，这是第六章不变量 + 终止的合奏。"},
+       {t:"gcd 计算需要质因数分解", ok:false, fb:"欧几里得算法恰恰不需要分解——这正是它的优雅之处。"},
+       {t:"rem(a,b) 总是恰好减半", ok:false, fb:"是'两步内至少减半'（rem < y ≤ x/2 或 x−y ≤ x/2 二选一）。"},
+       {t:"它只对小数字有效", ok:false, fb:"对任意大小都有效，步数对数级。"}]},
+    {q:"Pulverizer（扩展欧几里得）的产出是？",
+     opts:[
+       {t:"把 a、b 粉碎成素因数", ok:false, fb:"那是分解器。Pulverizer 粉碎的是 gcd 本身。"},
+       {t:"整数 s、t 使 sa + tb = gcd(a,b)", ok:true, fb:"对（定理 9.2.2）。gcd 是 a、b 的线性组合——逆元、水壶通解全部由此解锁。"},
+       {t:"a、b 的最小公倍数", ok:false, fb:"lcm 可由 gcd 推出（ab/gcd），但不是 Pulverizer 的直接产出。"},
+       {t:"a 除以 b 的商", ok:false, fb:"商只是中间量。"}]},
+    {q:"ℤ₁₅ 中哪个数有乘法逆？",
+     opts:[
+       {t:"3——gcd(3, 15) = 3 ≠ 1，无逆", ok:false, fb:"若 3 有逆 j，则 5 = 5·(3j) = (5·3)·j = 0 (mod 15)，矛盾——3 无逆。"},
+       {t:"8——gcd(8, 15) = 1，且 2·8 = 16 ≡ 1 (mod 15)，2 就是 8 的逆", ok:true, fb:"对——互素 ⇔ 有逆（定理 9.9.5），且 Pulverizer 可直接算出：8 的逆是 2。"},
+       {t:"10——gcd(10, 15) = 5 ≠ 1，无逆", ok:false, fb:"与 15 不互素 ⇒ 无逆。"},
+       {t:"0——0·0 = 0", ok:false, fb:"0 乘任何数都是 0，永远到不了 1。"}]},
+    {q:"RSA 中，接收者公开的是？",
+     opts:[
+       {t:"私钥 d", ok:false, fb:"d 绝对私藏——泄露 d 等于泄露一切。"},
+       {t:"公钥 (e, n)，其中 n = pq 且 e 与 φ(n) = (p−1)(q−1) 互素", ok:true, fb:"对。任何人可用 (e, n) 加密 m̂ = mᵉ；解密需要 d = e 在 ℤ_φ 中的逆，只有知道 p、q 的人能高效算出。"},
+       {t:"素数 p 和 q", ok:false, fb:"p、q 私藏——它们一泄露，Pulverizer 立刻给出 d。"},
+       {t:"φ(n) = (p−1)(q−1)", ok:false, fb:"φ(n) 私藏——它直接给出 d。"}]},
+    {q:"RSA 解密之所以必然还原 m，最终的数学靠山是？",
+     opts:[
+       {t:"费马小定理：k^(p−1) ≡ 1 (mod p)", ok:false, fb:"费马小定理是欧拉定理的特例，RSA 用的是完整版。"},
+       {t:"欧拉定理：m^(ed) = m·(m^φ(n))^k ≡ m (mod n)，其中 ed ≡ 1 (mod φ(n))", ok:true, fb:"对——ed ≡ 1 (mod φ(n)) ⇒ m^(ed) ≡ m (mod n)，解密还原（即使 m 与 n 不互素也成立，见习题 9.81）。"},
+       {t:"鸽笼原理", ok:false, fb:"那是第 4 章 mapping rules 与第 14 章的主角。"},
+       {t:"素数定理", ok:false, fb:"素数定理管密度，不管解密。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["🔐 RSA 铸钥师", "从水壶到密码系统，数论主线全部贯通——Hardy 泉下有知，也会为这门'无用之学'骄傲。下一章有向图与偏序。"]
+      : right >= 3 ? ["🧮 模环书记员", "余数算术已经上手——Pulverizer 与欧拉定理的细节回看 9.2 与 9.10 两节。"]
+      : ["🌱 整除见习生", "从水壶判决器重新出发：gcd 是本章一切的钥匙。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){
+    let i = 0, right = 0;
+    function render(){
+      bodyEl.innerHTML = "";
+      if (i >= items.length) { onDone && onDone(right); return; }
+      const it = items[i];
+      const div = document.createElement("div");
+      div.className = "case";
+      div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+        <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+        <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">下一题 →</button></div>`;
+      const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+      it.opts.forEach(o => {
+        const b = document.createElement("button");
+        b.className = "opt"; b.innerHTML = o.t;
+        b.addEventListener("click", () => {
+          if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+          if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+          else {
+            b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+            $$(".opt", opts).forEach((bb, k2) => { if (it.opts[k2].ok) bb.classList.add("picked-ok"); });
+          }
+          nxt.style.display = "inline-block";
+          nxt.textContent = i === items.length - 1 ? "看结果 →" : "下一题 →";
+        });
+        opts.appendChild(b);
+      });
+      nxt.addEventListener("click", () => { i++; render(); });
+      bodyEl.appendChild(div);
+    }
+    if (resetBtn) resetBtn.addEventListener("click", () => { i = 0; right = 0; render(); result.classList.remove("show"); });
+    render();
+  }
+  runQuiz(box, items, {onDone: grade, resetBtn: $("#quiz-reset")});
+})();
+</script>
+</body>
+</html>

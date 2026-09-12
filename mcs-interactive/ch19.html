@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>随机变量与期望 · 数学之旅第十九章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 19 章的中文交互式解读：随机变量、PDF/CDF、信封猜数必胜策略、二项分布、期望与线性性、均故障时间、分池对赌与优惠券收集问题。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.box.rule{border-left:4px solid var(--amber)} .box.rule .label{background:var(--amber-soft);color:var(--amber)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.math{font-family:var(--serif);white-space:nowrap}
+@media (max-width:720px){.eq{white-space:normal;font-size:17px} .eq.math{white-space:normal}}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.amber{border-color:var(--amber);color:var(--amber)}
+.btn.amber:hover{background:var(--amber-soft)}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+
+.num-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+.statcard{border:1.5px solid var(--line);border-radius:10px;padding:8px 14px;background:#fff;font-size:14px}
+.statcard b{font-family:var(--mono)}
+
+/* 信封游戏 */
+.env-row{display:flex;gap:16px;justify-content:center;margin:14px 0;flex-wrap:wrap}
+.env{width:150px;height:96px;border:2px solid var(--amber);border-radius:10px;background:var(--amber-soft);
+  display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:30px;font-weight:700;position:relative}
+.env.closed{background:repeating-linear-gradient(45deg,#efe4c8,#efe4c8 8px,#e7d9b5 8px,#e7d9b5 16px);cursor:pointer}
+.env small{position:absolute;bottom:4px;right:8px;font-size:11px;color:var(--muted);font-family:var(--sans)}
+.guess-log{font-family:var(--mono);font-size:13.5px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin-top:10px;max-height:150px;overflow:auto;line-height:1.9}
+
+/* 直方图 */
+.hist-svg{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px}
+
+/* 收益曲线 */
+.profit-svg{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px}
+
+/* 优惠券 */
+.cp-seg{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
+.cp-seg span{border:1px solid var(--amber);background:var(--amber-soft);border-radius:8px;padding:3px 10px;font-family:var(--mono);font-size:12.5px}
+
+.quiz-item{margin:18px 0}
+.case{margin:16px 0}
+.case .q{font-family:var(--serif);font-size:17px;font-weight:600;margin:8px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px 16px;font-size:15px;transition:.15s;line-height:1.6}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.picked-ok{border-color:var(--good);background:var(--good-soft)}
+.opt.picked-no{border-color:var(--bad);background:var(--bad-soft)}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:16%;left:6%;font-size:42px;--t:15s">Ex[R]</span>
+  <span class="hero-sym" style="top:64%;left:10%;font-size:34px;--t:19s;animation-delay:-6s">1/p</span>
+  <span class="hero-sym" style="top:22%;right:8%;font-size:38px;--t:17s;animation-delay:-3s">nHₙ</span>
+  <span class="hero-sym" style="top:68%;right:14%;font-size:34px;--t:13s;animation-delay:-9s">PDF</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 19 · Part IV</span>
+    <h1>随机变量与期望</h1>
+    <div class="en">Random Variables &amp; Great Expectations</div>
+    <p class="lead">两个信封里装着敌人挑的数，只许偷看一个——你仍有必胜过半的策略。三人对赌猜硬币看似公平，两人串通后你的期望回报悄悄变成 −$0.50。线性期望不需要独立性：n 个人拿帽子，平均恰好 1 人拿对，无论 n 多大。</p>
+    <div class="meta">
+      <span>⏱ 约 60 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 799–828 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch18.html">上一章：条件概率</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s1"><span class="toc-num">19.1</span>随机变量 = 函数</a>
+  <a href="#s2"><span class="toc-num">19.3</span>分布函数 PDF/CDF</a>
+  <a href="#s3"><span class="toc-num">19.3.3</span>信封猜数必胜法</a>
+  <a href="#s4"><span class="toc-num">19.3.4</span>二项分布尾巴</a>
+  <a href="#s5"><span class="toc-num">19.4</span>期望与均故障时间</a>
+  <a href="#s6"><span class="toc-num">19.4.7</span>分池对赌与串通</a>
+  <a href="#s7"><span class="toc-num">19.5</span>线性期望三连</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 19.1 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">19.1</span><h2>随机变量：名字骗人的函数</h2><span class="en">Random Variable Examples</span></div>
+  <div class="reveal">
+    <div class="box thm"><span class="label">定义 19.1.1</span>
+      <p style="margin:4px 0">随机变量 R 是定义在样本空间上的<b>全函数</b>——它根本不随机，随机的是输入。"掷三枚硬币的正面数" C：C(HHT)=2；"三币全同"指示变量 M：M(HHT)=0。</p></div>
+    <p><span class="term">指示随机变量</span>（indicator / Bernoulli 变量）把样本空间切成两块：I_E(ω)=1 当 ω∈E。每个事件天然对应一个指示变量，反之亦然（引理 19.2.1：事件独立 ⟺ 指示变量独立）。任何关于随机变量的断言都定义一个事件：[C=2] = {THH,HTH,HHT}，Pr = 3/8；而怪断言"C·M 是奇数"就是 {HHH}。</p>
+    <p>独立性升级到变量版（19.2）：R、S 独立 ⟺ 所有 [R=x] 与 [S=y] 独立。三硬币里 C 与 M <b>不</b>独立（C=2 时 M 必为 0），但首掷指示变量 H₁ 与 M 独立。还有一条好用的：独立变量的函数仍独立（引理 19.2.2）。</p>
+  </div>
+</section>
+
+<!-- ================= 19.3 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">19.3</span><h2>分布函数：同一件事的两种问法</h2><span class="en">Distribution Functions</span></div>
+  <div class="reveal">
+    <div class="box rule"><span class="label">定义 19.3.1</span>
+      <p style="margin:4px 0">PDF_R(x) = Pr[R=x]；CDF_R(x) = Pr[R ≤ x]（左侧阶梯累加）。两枚骰子和的 PDF 是 2..12 上的金字塔（7 最可能 6/36），CDF 是爬向 1 的阶梯。PDF/CDF 完全确定"行为"——不同样本空间上的随机变量可以同分布。</p></div>
+    <p>CS 三大常用分布：<span class="term">Bernoulli</span>（0/1，f_p(0)=p、f_p(1)=1−p）、<span class="term">Uniform</span>（n 个值各 1/n）、<span class="term">Binomial</span>（下一节）。还有无处不在的 randomized algorithms：Ethernet 的指数退避、quicksort 的随机主元——随机性是性能工具，不是缺陷。</p>
+  </div>
+</section>
+
+<!-- ================= 19.3.3 信封 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">19.3.3</span><h2>信封猜数：对上赌桌也必胜的策略</h2><span class="en">The Numbers Game</span></div>
+  <div class="reveal">
+    <p>两个信封装两个<b>不同</b>整数——由想赢你的对手挑选，可以完全非随机。你偷看一个，然后指认它是不是较大的数。随机瞎猜 50%；四步法证明如下策略必胜过半：<b>先从半整数 ½, 3/2, 5/2, … 中随机猜一个 x，偷看到 T&gt;x 就说"这是大的"，T&lt;x 就说"这是小的"</b>。猜中 x 落在两数之间时稳赢，猜不中也不亏：</p>
+    <div class="eq math">Pr[win] = 1/2 + (H−L)/2n ≥ 1/2 + 1/2n</div>
+    <p>范围 0..100 至少 50.5%；缩到 0..10 直接 55%。理论交给实践：</p>
+  </div>
+
+  <!-- 互动① 信封游戏 -->
+  <div class="widget reveal" id="w-env">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">✉️ 信封对赌台：对手出千，你照样赢</h4>
+    <div class="num-row">
+      <label class="small">数字范围 0..<b id="ev-max" style="font-family:var(--mono)">100</b></label>
+      <input type="range" id="ev-max-s" min="10" max="200" value="100" style="width:140px" />
+      <button class="btn amber" id="ev-play">🎲 偷看并出手</button>
+      <button class="btn primary" id="ev-auto">自动 1,000 局</button>
+      <button class="btn ghost" id="ev-reset">清空</button>
+    </div>
+    <div class="env-row">
+      <div class="env closed" id="env-a">?<small>信封 A</small></div>
+      <div class="env closed" id="env-b">?<small>信封 B</small></div>
+    </div>
+    <div class="num-row">
+      <div class="statcard">战绩 <b id="ev-score">0 胜 0 负</b> · 胜率 <b id="ev-rate">—</b></div>
+      <div class="statcard">理论下限 50% + <b id="ev-theo">1/200</b></div>
+    </div>
+    <div class="guess-log" id="ev-log">点"偷看并出手"开始。对手的数字由程序挑选（会故意针对策略），你只能看到一个。</div>
+  </div>
+</section>
+
+<!-- ================= 19.3.4 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">19.3.4</span><h2>二项分布：尾巴塌得比想象快</h2><span class="en">Binomial Distributions</span></div>
+  <div class="reveal">
+    <div class="box rule"><span class="label">一般二项分布</span>
+      <p style="margin:4px 0">n 枚独立硬币各以概率 p 出正面，正面数 J 的 pdf：f_{n,p}(k) = ( n / k )·pᵏ(1−p)ⁿ⁻ᵏ。公平硬币是 p=1/2 特例。尾部（tails）以指数速度塌缩：100 掷至多 25 正的概率 &lt; 1/3,000,000。</p></div>
+  </div>
+
+  <!-- 互动② 二项直方图 -->
+  <div class="widget reveal" id="w-bin">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">📊 二项分布观测台：主峰与尾巴</h4>
+    <label class="small">n = <b id="bn-n" style="font-family:var(--mono)">20</b>　</label>
+    <input type="range" id="bn-ns" min="2" max="60" value="20" />
+    <label class="small">p = <b id="bn-p" style="font-family:var(--mono)">0.50</b>　</label>
+    <input type="range" id="bn-ps" min="5" max="95" value="50" />
+    <svg class="hist-svg" id="bn-svg" viewBox="0 0 680 250"></svg>
+    <div class="fb info" id="bn-fb" style="display:block">拨 p 看主峰怎么跟着 np 走；拨大 n 看尾巴怎么以指数速度消失。悬停不了就点滑块，读下面数字。</div>
+  </div>
+</section>
+
+<!-- ================= 19.4 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">19.4</span><h2>期望：被概率加权的平均</h2><span class="en">Great Expectations</span></div>
+  <div class="reveal">
+    <div class="box thm"><span class="label">定义 19.4.1 / 定理 19.4.3</span>
+      <p style="margin:4px 0">Ex[R] = Σ_ω R(ω)Pr[ω] = Σ_x x·Pr[R=x]。骰子期望 7/2——"期望值"这个名字有误导性：没人能掷出 3.5。倒数的期望 ≠ 期望的倒数：Ex[1/R] = 49/120 ≠ 1/(7/2)。</p></div>
+    <p><b>条件期望</b>（19.4.4）：Ex[R|A] 按缩小后的空间取平均——"骰子 ≥4"条件下期望恰为 5。<b>全期望定律</b>（定理 19.4.5）：按情况拆分再按概率加权，身高例：0.496×5'11″ + 0.504×5'5″ ≈ 5'8″。</p>
+    <div class="box rule"><span class="label">Mean Time to Failure（19.4.6）</span>
+      <p style="margin:4px 0">系统每步独立以概率 p 崩溃，首次崩溃期望步数 Ex[C] = <b>1/p</b>。自指推导：Ex[C] = 1·p + (1+Ex[C])(1−p)。几何分布（定义 19.4.6）。"生到男孩为止"的夫妇平均只要 2 胎——人口性别比不会被这种策略改变。</p></div>
+  </div>
+</section>
+
+<!-- ================= 19.4.7 ================= -->
+<section class="ch" id="s6">
+  <div class="ch-head reveal"><span class="no">19.4.7</span><h2>分池对赌：公平游戏怎么输掉 $500</h2><span class="en">Expected Returns in Gambling Games</span></div>
+  <div class="reveal">
+    <p>三人各押 $2 猜一枚公平硬币的正反，$6 池子由猜中者平分（全错则退池）。四步法算 8 个 outcome：你的期望回报恰好 0——公平。玩了 1000 局却输掉 $500？重新看牌桌：Eric 和 Nick <b>从来没有猜过一样的</b>——他们串通了。这一个事实改写了 outcome 概率：Ex[payoff] = 0 → <b>−1/2</b>，每局期望亏 5 毛。</p>
+  </div>
+
+  <!-- 互动③ 分池模拟器 -->
+  <div class="widget reveal" id="w-pot">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">💰 分池对赌模拟器：公平 vs 串通</h4>
+    <div class="num-row">
+      <button class="btn primary" data-pg="1">掷 1 局</button>
+      <button class="btn" data-pg="100">×100</button>
+      <button class="btn" data-pg="1000">×1,000</button>
+      <button class="btn ghost" id="pg-reset">清空</button>
+      <label class="small" style="margin-left:auto"><input type="checkbox" id="pg-collude"> Eric &amp; Nick 串通</label>
+    </div>
+    <svg class="profit-svg" id="pg-svg" viewBox="0 0 680 200"></svg>
+    <div class="fb info" id="pg-fb" style="display:block">蓝线 = 你的累计收益。不勾串通：绕着 0 随机漫步（公平）。勾上串通：稳定向下的斜坡，斜率 −0.50/局。</div>
+  </div>
+</section>
+
+<!-- ================= 19.5 ================= -->
+<section class="ch" id="s7">
+  <div class="ch-head reveal"><span class="no">19.5</span><h2>线性期望：不需要独立性</h2><span class="en">Linearity of Expectation</span></div>
+  <div class="reveal">
+    <div class="box thm"><span class="label">定理 19.5.1 / 推论 19.5.3</span>
+      <p style="margin:4px 0">Ex[R₁+R₂] = Ex[R₁]+Ex[R₂]，k 项推广 Ex[ΣaᵢRᵢ] = ΣaᵢEx[Rᵢ]。杀手锏：<b>不需要任何独立性</b>——两枚骰子的和的期望是 7，哪怕两骰被恶魔操控得完全相关，只要各自公平。</p></div>
+    <p><b>帽子问题</b>（19.5.2）：n 个人的帽子随机发还，拿到自己帽子的人数 G 拆成指示变量之和，每人拿对概率 1/n，所以 Ex[G] = n·(1/n) = <b>1</b>——与 n 无关！定理 19.5.4：期望发生的事件数 = ΣPr[Aᵢ]。顺手白拿一个恒等式：二项分布期望 np（式 19.13 的组合求和一秒收工）。<b>优惠券收集</b>（19.5.4）：集齐 n 种的期望购买数 = n·Hₙ ~ n ln n——调和数又来了。</p>
+  </div>
+
+  <!-- 互动④ 帽子模拟 -->
+  <div class="widget reveal" id="w-hat">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🎩 帽子问题模拟器：期望恒等于 1</h4>
+    <label class="small">人数 n = <b id="ht-n" style="font-family:var(--mono)">10</b>　</label>
+    <input type="range" id="ht-ns" min="2" max="50" value="10" />
+    <div class="num-row">
+      <button class="btn primary" id="ht-run">发一次帽子</button>
+      <button class="btn amber" id="ht-run100">×100 次取平均</button>
+      <div class="statcard" style="margin-left:auto">累计平均命中 = <b id="ht-avg">—</b>（理论 1.000）</div>
+    </div>
+    <div class="guess-log" id="ht-log">点"发一次帽子"看这轮几个人拿对。无论 n=2 还是 n=50，长期平均都会咬死 1。</div>
+  </div>
+
+  <!-- 互动⑤ 优惠券收集 -->
+  <div class="widget reveal" id="w-cpn">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">🚗 优惠券收集器：集齐 n 种平均要买多少份？</h4>
+    <label class="small">种类 n = <b id="cp-n" style="font-family:var(--mono)">6</b>　</label>
+    <input type="range" id="cp-ns" min="2" max="20" value="6" />
+    <div class="num-row">
+      <div class="statcard">理论 n·Hₙ = <b id="cp-theo">14.7</b></div>
+      <div class="statcard">模拟平均 = <b id="cp-sim">—</b> <button class="btn amber" id="cp-run" style="padding:3px 12px;font-size:13px">跑 500 轮</button></div>
+      <div class="statcard" style="flex:1;min-width:200px">分段期望 <span id="cp-segs" class="small"></span></div>
+    </div>
+    <div class="cp-seg" id="cp-segbar"></div>
+    <div class="fb info" id="cp-fb" style="display:block">每段 Xₖ = 从拥有 k 种到集到新一种的期望购买数 = n/(n−k)（均故障时间规则的直系亲属）。线性期望把五段一加：n·Hₙ。骰子集齐 6 面 ≈ 14.7 次掷；把 365 个生日"集齐"要 2364.6 人。</div>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>Chernoff 怎么把彩票买成正期望（19.4.7 末尾）</summary>
+      <div class="body">
+        <p>州彩票一半销售额发奖、一半"装修州长官邸"，正常期望是 −50%。但大众爱挑生日号（1–31）和"红袜队夺冠日"，这些热门号中奖要跟一大群人分池。前 MIT 数学教授 Hermann Chernoff 专门买冷门组合——意外的"对手串通"让他把期望拉到 <b>+7 美分/美元</b>。与 Nick/Eric 的故事正好互为镜像：串通伤你，别人无意的串通可以喂你。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>随机化算法：随机性当性能工具（19.3.3 侧栏）</summary>
+      <div class="body">
+        <p>共享总线的广播时机用<span class="term">指数退避</span>（exponential backoff）——每次冲突后随机延迟翻倍；quicksort 随机选主元，让任何输入的期望运行时间都是 O(n log n)。信封猜数是它们的精神原型：对手知道你的确定性策略就能针对你，随机化让"针对"失效。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>课后挑战（均出自原书习题）</summary>
+      <div class="body">
+        <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
+          <li><b>19.1</b> 证明：两事件独立 ⟺ 它们的指示变量独立。</li>
+          <li><b>19.5</b> (a) Ex[R|A] 与 (b) 全期望定律的完整证明（定理 19.4.5 的分组重排）。</li>
+          <li><b>19.28</b> 不用线性的方法直接算 Σk·C(n,k)pᵏ(1−p)ⁿ⁻ᵏ = np，体会两种证明的落差。</li>
+          <li><b>18.31（前章预热）</b> 三硬币定义 D="偶数枚正面"：A、B、C、D 不是相互独立，却 3-way 独立——动手验证。</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 19 章 = 第 799–830 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch18.html">上一章：条件概率</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s1">19.1 · 随机变量 = 函数</a><a href="#s2">19.3 · PDF/CDF</a><a href="#s3">19.3.3 · 信封必胜法</a>
+    <a href="#s4">19.3.4 · 二项尾巴</a><a href="#s5">19.4 · 期望与 1/p</a><a href="#s6">19.4.7 · 分池与串通</a>
+    <a href="#s7">19.5 · 线性期望三连</a><a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s1").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+/* ---------- 互动① 信封 ---------- */
+(() => {
+  let maxN = 100, wins = 0, losses = 0, log = [];
+  const envA = $("#env-a"), envB = $("#env-b");
+  function play(){
+    // 对手"故意挑难猜的"：倾向选相近的数（完全合法——数不必随机）
+    const L = Math.floor(Math.random() * maxN);
+    const H = L + 1 + Math.floor(Math.random() * 3); // 相差 1..3，最难猜
+    const peekLow = Math.random() < 0.5;
+    const T = peekLow ? L : H;
+    const x = 0.5 + Math.floor(Math.random() * maxN);   // 半整数 0.5 .. maxN-0.5
+    const saidHigh = T > x;
+    const correct = (saidHigh && !peekLow) || (!saidHigh && peekLow);
+    if (correct) wins++; else losses++;
+    envA.textContent = peekLow ? L : H; envB.textContent = peekLow ? H : L;
+    envA.classList.remove("closed"); envB.classList.remove("closed");
+    setTimeout(() => { envA.classList.add("closed"); envB.classList.add("closed"); envA.textContent = "?"; envB.textContent = "?"; }, 900);
+    log.unshift(`看到 ${T}${saidHigh ? " >" : " <"} x=${x} → 猜${saidHigh ? "大" : "小"} · ${correct ? "✅" : "❌"}（真差 ${H} vs ${L}）`);
+    log = log.slice(0, 8);
+    upd();
+  }
+  function upd(){
+    const t = wins + losses;
+    $("#ev-score").textContent = `${wins.toLocaleString()} 胜 ${losses.toLocaleString()} 负`;
+    $("#ev-rate").textContent = t ? (wins / t * 100).toFixed(1) + "%" : "—";
+    $("#ev-theo").textContent = "1/" + (maxN) * 1;
+    $("#ev-theo").textContent = "50% + 1/" + (2 * (maxN + 1));
+    $("#ev-log").innerHTML = log.join("<br>") || "点「偷看并出手」开始。";
+    const fb = $("#ev-log");
+  }
+  $("#ev-play").addEventListener("click", play);
+  $("#ev-auto").addEventListener("click", () => { for (let i = 0; i < 1000; i++) play(); });
+  $("#ev-reset").addEventListener("click", () => { wins = losses = 0; log = []; envA.classList.add("closed"); envB.classList.add("closed"); envA.textContent = "?"; envB.textContent = "?"; upd(); });
+  $("#ev-max-s").addEventListener("input", e => { maxN = +e.target.value; $("#ev-max").textContent = maxN; upd(); });
+  upd();
+})();
+
+/* ---------- 互动② 二项直方图 ---------- */
+(() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = $("#bn-svg");
+  const el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const C = (n, k) => { let r = 1; for (let i = 1; i <= k; i++) r = r * (n - k + i) / i; return Math.round(r); };
+  function draw(){
+    const n = +$("#bn-ns").value, p = +$("#bn-ps").value / 100;
+    $("#bn-n").textContent = n; $("#bn-p").textContent = p.toFixed(2);
+    const pdf = [];
+    for (let k = 0; k <= n; k++) pdf.push(C(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k));
+    const mode = pdf.indexOf(Math.max(...pdf));
+    const tailLo = pdf.slice(0, Math.floor(n * p * 0.5) + 1).reduce((a, b) => a + b, 0);
+    svg.innerHTML = "";
+    const W = 680, H = 250, L = 40, R = 10, T = 16, B = 28;
+    const bw = (W - L - R) / (n + 1);
+    const ymax = Math.max(...pdf) * 1.15;
+    const Y = y => H - B - y / ymax * (H - T - B);
+    // 均值线
+    svg.appendChild(el("line", {x1: L + (n*p+0.5) * bw, y1: T, x2: L + (n*p+0.5) * bw, y2: H - B, stroke: "#b4832a", "stroke-width": 1, "stroke-dasharray": "4 3"}));
+    pdf.forEach((f, k) => {
+      const r = el("rect", {x: L + k * bw + 1, y: Y(f), width: bw - 2, height: H - B - Y(f),
+        fill: k === mode ? "#b4832a" : "#0f4c81", opacity: k === mode ? 1 : .8});
+      svg.appendChild(r);
+      if (n <= 30 && (k % (n > 20 ? 5 : 2) === 0 || k === n)) {
+        const t = el("text", {x: L + k * bw + bw/2, y: H - 10, "text-anchor": "middle", "font-size": 9.5, fill: "#6f6a5e"});
+        t.textContent = k; svg.appendChild(t);
+      }
+    });
+    const yt = el("text", {x: L + 4, y: T + 4, "font-size": 11, fill: "#6f6a5e"});
+    yt.textContent = `f(k)  最可能 k=${mode}（np=${(n*p).toFixed(1)}）  峰值 ${Math.max(...pdf).toFixed(3)}`;
+    svg.appendChild(yt);
+    const fb = $("#bn-fb");
+    fb.className = "fb info";
+    const pLowTail = pdf.slice(0, Math.floor(n/4) + 1).reduce((a,b) => a+b, 0);
+    fb.innerHTML = `主峰在 np 附近（金虚线）。左尾 f ≤ n/4 的合计 ≈ <b>${pLowTail.toExponential(2)}</b>——n 越大塌得越狠，这就是第 21 章"大偏差"要精确化的对象。`;
+  }
+  $("#bn-ns").addEventListener("input", draw);
+  $("#bn-ps").addEventListener("input", draw);
+  draw();
+})();
+
+/* ---------- 互动③ 分池模拟器 ---------- */
+(() => {
+  let profit = 0, games = 0, hist = [];
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = $("#pg-svg");
+  const el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  function play(){
+    const collude = $("#pg-collude").checked;
+    const coin = Math.random() < 0.5;              // 真实结果
+    const you = Math.random() < 0.5;               // 你猜（公平独立）
+    let eric, nick;
+    if (collude) { eric = Math.random() < 0.5; nick = !eric; }
+    else { eric = Math.random() < 0.5; nick = Math.random() < 0.5; }
+    const winners = [you, eric, nick].filter(Boolean).length;
+    let payoff;
+    if (winners === 0) payoff = 0;                 // 全错退池
+    else payoff = (you ? 6 / winners : 0) - 2;
+    profit += payoff; games++;
+    hist.push(profit);
+    draw();
+  }
+  function draw(){
+    svg.innerHTML = "";
+    const W = 680, H = 200, L = 40, R = 10, T = 10, B = 22;
+    svg.appendChild(el("line", {x1: L, y1: T, x2: L, y2: H - B, stroke: "#2b2a26"}));
+    svg.appendChild(el("line", {x1: L, y1: H - B, x2: W - R, y2: H - B, stroke: "#2b2a26"}));
+    if (!games) return;
+    const all = hist.concat([0]);
+    const ymin = Math.min(...all, -5), ymax = Math.max(...all, 5);
+    const X = i => L + i / Math.max(games, 10) * (W - L - R);
+    const Y = v => H - B - (v - ymin) / (ymax - ymin || 1) * (H - T - B);
+    // 零线
+    if (ymin < 0 && ymax > 0) svg.appendChild(el("line", {x1: L, y1: Y(0), x2: W - R, y2: Y(0), stroke: "#c9c2b2", "stroke-dasharray": "4 3"}));
+    let d = `M ${X(0)} ${Y(0)}`;
+    hist.forEach((v, i) => d += ` L ${X(i+1).toFixed(1)} ${Y(v).toFixed(1)}`);
+    svg.appendChild(el("path", {d, fill: "none", stroke: "#0f4c81", "stroke-width": 2}));
+    // 理论斜率：串通 -0.5/局
+    if ($("#pg-collude").checked && games >= 2) {
+      svg.appendChild(el("line", {x1: L, y1: Y(0), x2: X(games), y2: Y(-0.5 * games), stroke: "#b3372e", "stroke-width": 1, "stroke-dasharray": "5 4", opacity: .7}));
+    }
+    const t = el("text", {x: L + 6, y: T + 12, "font-size": 12, fill: "#6f6a5e"});
+    t.textContent = `${games.toLocaleString()} 局 · 累计 $${profit.toFixed(0)} · 每局均值 $${(profit/games).toFixed(3)}${$("#pg-collude").checked ? "（红虚线 = 理论 −0.5/局）" : "（理论 0）"}`;
+    svg.appendChild(t);
+  }
+  $$("[data-pg]").forEach(b => b.addEventListener("click", () => { for (let i = 0; i < +b.dataset.pg; i++) play(); }));
+  $("#pg-reset").addEventListener("click", () => { profit = 0; games = 0; hist = []; draw(); });
+  draw();
+})();
+
+/* ---------- 互动④ 帽子 ---------- */
+(() => {
+  let total = 0, rounds = 0;
+  function round(){
+    const n = +$("#ht-ns").value;
+    const perm = [...Array(n).keys()];
+    for (let i = n - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [perm[i], perm[j]] = [perm[j], perm[i]]; }
+    const hits = perm.filter((p, i) => p === i).length;
+    total += hits; rounds++;
+    return {n, hits};
+  }
+  $("#ht-run").addEventListener("click", () => {
+    const {hits} = round();
+    $("#ht-log").innerHTML = `这一轮：<b>${hits}</b> 人拿到自己的帽子（n=${$("#ht-ns").value}）。累计平均 ${ (total/rounds).toFixed(3) }`;
+    $("#ht-avg").textContent = (total / rounds).toFixed(3);
+  });
+  $("#ht-run100").addEventListener("click", () => {
+    let last;
+    for (let i = 0; i < 100; i++) last = round();
+    $("#ht-log").innerHTML = `100 轮跑完（最近一轮 ${last.hits} 人命中）。累计平均 <b>${(total/rounds).toFixed(3)}</b> —— 正在向 1 收敛，与 n 无关。`;
+    $("#ht-avg").textContent = (total / rounds).toFixed(3);
+  });
+  $("#ht-ns").addEventListener("input", e => $("#ht-n").textContent = e.target.value);
+})();
+
+/* ---------- 互动⑤ 优惠券 ---------- */
+(() => {
+  const H = n => { let s = 0; for (let i = 1; i <= n; i++) s += 1 / i; return s; };
+  function upd(){
+    const n = +$("#cp-ns").value;
+    $("#cp-n").textContent = n;
+    $("#cp-theo").textContent = (n * H(n)).toFixed(1);
+    const segs = [];
+    for (let k = 0; k < n; k++) segs.push(`X${k}:${(n/(n-k)).toFixed(1)}`);
+    $("#cp-segs").textContent = "";
+    $("#cp-segbar").innerHTML = segs.map(s => `<span>${s}</span>`).join("");
+  }
+  $("#cp-run").addEventListener("click", () => {
+    const n = +$("#cp-ns").value;
+    let sum = 0;
+    const R = 500;
+    for (let r = 0; r < R; r++) {
+      const seen = new Set(); let buys = 0;
+      while (seen.size < n) { seen.add(Math.floor(Math.random() * n)); buys++; }
+      sum += buys;
+    }
+    $("#cp-sim").textContent = (sum / R).toFixed(1);
+  });
+  $("#cp-ns").addEventListener("input", upd);
+  upd();
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"信封游戏（对手挑数、非随机）：半整数策略的胜率下界是？",
+     opts:[
+       {t:"恰好 50%——对手可以完美针对", ok:false, fb:"确定性策略才会被针对；这里 x 是随机的。"},
+       {t:"50% + (H−L)/2n ≥ 50% + 1/2n", ok:true, fb:"对（式 19.3 推论）。猜中 x 落在两数之间时稳赢，猜不中不亏。范围 0..10 时高达 55%。"},
+       {t:"100%——策略无敌", ok:false, fb:"x 猜偏时退回 50%。"},
+       {t:"取决于对手用什么分布挑数", ok:false, fb:"这正是策略的美：对任何挑法都成立。"}]},
+    {q:"掷骰子 R：Ex[R] = 7/2。Ex[1/R] = ？",
+     opts:[
+       {t:"2/7（= 1/Ex[R]）", ok:false, fb:"常见错误：期望不能穿过倒数。"},
+       {t:"49/120", ok:true, fb:"对。Σ(1/i)(1/6) = 49/120 ≈ 0.408 ≠ 2/7 ≈ 0.286。线性的是期望，不是任意函数的。"},
+       {t:"1", ok:false, fb:"算一下 Σ 1/i。"},
+       {t:"1/6", ok:false, fb:"那是单个值的倒数概率权重搞混了。"}]},
+    {q:"系统每步独立以概率 p 崩溃。首次崩溃的期望步数是？",
+     opts:[
+       {t:"1/p（几何分布）", ok:true, fb:"对（式 19.8）。自指推导 Ex[C]=1·p+(1+Ex[C])(1−p)。p=1% → 平均 100 小时崩溃。"},
+       {t:"1/(1−p)", ok:false, fb:"那是'活过一步'的期望倒数方向搞反。"},
+       {t:"p", ok:false, fb:"p 是每步概率，不是步数。"},
+       {t:"无期望——可能永不崩溃", ok:false, fb:"几何级数收敛，期望有限。"}]},
+    {q:"三人分池对赌（各押 $2、$6 池猜中平分）：Nick 与 Eric 永远反着猜。你的每局期望回报是？",
+     opts:[
+       {t:"0——硬币是公平的", ok:false, fb:"硬币公平 ≠ 游戏公平：串通改写了 outcome 概率。"},
+       {t:"−$0.50", ok:true, fb:"对（图 19.7 重算）：你全赢 $4 的分支概率归零，输 $2 的分支概率升到 1/2。1000 局正好输 $500。"},
+       {t:"+$0.50", ok:false, fb:"方向反了——被收割的是你。"},
+       {t:"−$2", ok:false, fb:"那是必输时的亏损额，不是期望。"}]},
+    {q:"n 顶帽子随机发还 n 人。拿到自己帽子人数的期望是？",
+     opts:[
+       {t:"1，与 n 无关", ok:true, fb:"对。G = ΣGᵢ，Ex[Gᵢ]=1/n，线性期望（不需要独立性！）：Ex[G]=n·(1/n)=1。"},
+       {t:"随 n 增长（≈ln n）", ok:false, fb:"ln n 是优惠券收集的答案，帽子是常数 1。"},
+       {t:"n/2", ok:false, fb:"直觉陷阱。"},
+       {t:"取决于 n 的奇偶", ok:false, fb:"无关。"}]},
+    {q:"优惠券收集：集齐 n 种的期望购买次数是？",
+     opts:[
+       {t:"n", ok:false, fb:"那只是最后一段的量级。"},
+       {t:"n·Hₙ ~ n ln n", ok:true, fb:"对（式 19.14）：分段 Xₖ = n/(n−k)，线性期望一加就出 n·Hₙ。骰子 6 面 ≈ 14.7 次。"},
+       {t:"n²", ok:false, fb:"过大了——调和数把增长压到 n log n。"},
+       {t:"n ln n 仅当各图案均匀分布且独立", ok:false, fb:"均匀独立是题设；公式不额外需要各段独立——线性的功劳。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["🎩 帽子洗净的期望师", "随机变量、分布、期望、线性性全部入袋。下一章把'偏离期望'量化——马尔可夫与切比雪夫不等式登场。"]
+      : right >= 3 ? ["✉️ 信封练手生", "信封与 1/p 已拿下——回看 19.5 线性期望与优惠券收集的分段法。"]
+      : ["🪙 还在数硬币", "先跑分池模拟器：勾上串通，亲眼看公平变掠夺。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  let i = 0, right = 0;
+  function render(){
+    box.innerHTML = "";
+    if (i >= items.length) { grade(right); return; }
+    const it = items[i];
+    const div = document.createElement("div");
+    div.className = "case";
+    div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+      <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+      <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">${i === items.length-1 ? "看结果 →" : "下一题 →"}</button></div>`;
+    const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+    it.opts.forEach(o => {
+      const b = document.createElement("button");
+      b.className = "opt"; b.innerHTML = o.t;
+      b.addEventListener("click", () => {
+        if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+        if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+        else {
+          b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+          $$(".opt", opts).forEach((bb, k2) => { if (it.opts[k2].ok) bb.classList.add("picked-ok"); });
+        }
+        nxt.style.display = "inline-block";
+      });
+      opts.appendChild(b);
+    });
+    nxt.addEventListener("click", () => { i++; render(); });
+    box.appendChild(div);
+  }
+  $("#quiz-reset").addEventListener("click", () => { i = 0; right = 0; result.classList.remove("show"); render(); });
+  render();
+})();
+</script>
+</body>
+</html>

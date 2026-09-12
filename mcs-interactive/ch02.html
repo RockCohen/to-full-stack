@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>良序原理 · 数学之旅第二章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 2 章的中文交互式解读：良序原理与最小反例法。8 个互动装置 + 终局自测。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.def{border-left:4px solid var(--good)} .box.def .label{background:var(--good-soft);color:var(--good)}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.box.method{border-left:4px solid var(--amber)} .box.method .label{background:var(--amber-soft);color:var(--amber)}
+.box.bogus{border-left:4px solid var(--bad);background:#fdf6f5} .box.bogus .label{background:var(--bad-soft);color:var(--bad)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 3px;line-height:1.3}
+.frac>span:first-child{border-bottom:1.6px solid currentColor;padding:0 5px}
+.frac>span:last-child{padding:0 5px}
+.math{font-family:var(--serif);white-space:nowrap}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.primary:hover{background:#0c3f6c}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.good{border-color:var(--good);color:var(--good)} .btn.good:hover{background:var(--good-soft)}
+.btn.bad{border-color:var(--bad);color:var(--bad)} .btn.bad:hover{background:var(--bad-soft)}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+.score-pill{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;
+  padding:4px 14px;font-size:13.5px;font-weight:600;margin-left:8px}
+
+/* 试金石 */
+.stone{border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:12px 0;background:#fff}
+.stone .stmt{font-family:var(--serif);font-size:16.5px}
+.stone .row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap}
+.stone .verdict{margin-top:8px;font-size:14px;display:none;border-top:1px dashed var(--line);padding-top:8px;line-height:1.7}
+.stone .verdict.show{display:block}
+.stone.done{opacity:.92}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+
+/* 拼图 */
+.puzzle-pool{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.puzzle-slot{border:1.5px dashed var(--line);border-radius:10px;padding:10px 14px;min-height:52px;
+  background:#fff;font-size:14.5px;line-height:1.6;margin:8px 0}
+.puzzle-slot.ok{border-style:solid;border-color:var(--good);background:var(--good-soft)}
+.puzzle-slot .idx{font-family:var(--mono);font-size:11px;color:var(--amber);margin-right:8px}
+.pz-btn{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-size:14px;line-height:1.55;text-align:left;transition:.15s}
+.pz-btn:hover{border-color:var(--accent);color:var(--accent)}
+.pz-btn.used{opacity:.35;pointer-events:none}
+.pz-btn.wrong{border-color:var(--bad);background:var(--bad-soft);animation:shake .3s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* 步进证明 */
+.steps{border:1px solid var(--line);border-radius:12px;background:#fff;padding:8px 0;margin-top:14px}
+.step{display:none;padding:12px 22px;animation:fadein .4s}
+.step.show{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.step .s-math{font-family:var(--serif);font-size:17.5px}
+.step .s-note{font-size:14px;color:var(--muted);margin-top:2px}
+.why-toggle{background:none;border:none;color:var(--amber);font-size:13.5px;padding:0;margin-top:4px;text-decoration:underline dotted}
+.why-body{display:none;font-size:14px;background:var(--amber-soft);border-radius:8px;padding:8px 14px;margin-top:6px}
+.why-body.show{display:block}
+.steps-ctrl{display:flex;gap:12px;margin-top:14px;align-items:center;flex-wrap:wrap}
+.check-q{margin:12px 22px;border:1.5px dashed var(--amber);border-radius:10px;padding:14px 18px;background:#fffdf4}
+.verdict-banner{display:none;text-align:center;font-family:var(--serif);font-size:21px;background:var(--accent);color:#fff;border-radius:12px;padding:18px;margin-top:14px}
+.verdict-banner.show{display:block;animation:fadein .5s}
+
+/* 分解机 */
+.fac-wrap{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+.fac-wrap .panel{flex:1;min-width:260px}
+.fac-chain{font-family:var(--serif);font-size:18px;line-height:2.2;min-height:44px}
+.fac-chain .step-f{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:8px;padding:2px 12px;margin:2px 4px}
+.fac-chain .arrow{color:var(--amber);margin:0 4px}
+.fac-bag{margin-top:10px;font-size:16px}
+.fac-bag .p{display:inline-block;background:var(--accent-soft);color:var(--accent);border:1px solid #b9cfe2;
+  border-radius:8px;padding:2px 10px;margin:2px 4px;font-family:var(--mono);font-size:14px}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+input[type=number]{font-family:var(--mono);font-size:16px;padding:8px 12px;border:1.5px solid var(--line);border-radius:9px;width:130px}
+.num-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px}
+
+/* 下降机 */
+.drop-wrap{display:flex;gap:22px;flex-wrap:wrap}
+.drop-wrap .panel{flex:1;min-width:250px}
+.setpick{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.setpick .btn.on{background:var(--accent);color:#fff}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-family:var(--serif);font-size:18px;
+  min-height:76px;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px;background:#fff}
+.chain .el{background:var(--accent-soft);border:1px solid #b9cfe2;border-radius:8px;padding:2px 12px}
+.chain .gt{color:var(--amber);font-weight:700}
+.chain .stuck{background:var(--good-soft);border-color:#bcd9c6;color:var(--good)}
+.drop-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.drop-msg{margin-top:12px;min-height:52px;font-size:14.5px;border-radius:10px;padding:10px 16px;
+  background:var(--accent-soft);border:1px solid #c4d6e8;line-height:1.7}
+.drop-msg.alarm{background:var(--bad-soft);border-color:#e5c0bb}
+.drop-msg.win{background:var(--good-soft);border-color:#bcd9c6}
+
+/* 假证明诊所 */
+.bug-line{display:block;width:100%;text-align:left;border:1px solid transparent;background:#fff;
+  border-radius:8px;padding:8px 16px;font-family:var(--serif);font-size:16.5px;margin:4px 0;transition:.15s;line-height:1.6}
+.bug-line:hover{border-color:var(--amber);background:#fffdf4}
+.bug-line.accused{border-color:var(--bad);background:var(--bad-soft)}
+.bug-line .ln{font-family:var(--mono);font-size:11px;color:var(--muted);margin-right:10px}
+
+.quiz-item{margin:18px 0}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:14%;left:6%;font-size:50px;--t:15s">min</span>
+  <span class="hero-sym" style="top:62%;left:12%;font-size:40px;--t:19s;animation-delay:-6s">≥</span>
+  <span class="hero-sym" style="top:20%;right:9%;font-size:44px;--t:17s;animation-delay:-3s">⊂</span>
+  <span class="hero-sym" style="top:66%;right:16%;font-size:38px;--t:13s;animation-delay:-9s">⇓</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 02</span>
+    <h1>良序原理</h1>
+    <div class="en">The Well Ordering Principle</div>
+    <p class="lead">"每个<b>非空</b>的<b>非负整数</b>集合，都有一个最小元素。"这句话听着像废话，却是离散数学里最锋利的证明武器：<b>最小反例法</b>。这一章你会开动无限下降机、经营素因数分解流水线，还要亲手拆穿两个假证明。</p>
+    <div class="meta">
+      <span>⏱ 约 35 分钟</span><span>🧩 7 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 29–44 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch01.html">上一章：什么是证明？</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s0"><span class="toc-num">2.0</span>两个紧绷条件</a>
+  <a href="#s1"><span class="toc-num">2.1</span>良序证明</a>
+  <a href="#s2"><span class="toc-num">2.2</span>证明模板</a>
+  <a href="#s3"><span class="toc-num">2.3</span>分解成素数</a>
+  <a href="#s4"><span class="toc-num">2.4</span>良序集</a>
+  <a href="#s5"><span class="toc-num">🐛</span>假证明诊所</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 2.0 ================= -->
+<section class="ch" id="s0">
+  <div class="ch-head reveal"><span class="no">2.0</span><h2>开场：两个"紧绷"的条件</h2><span class="en">Nonempty · Nonnegative integers</span></div>
+  <div class="reveal">
+    <div class="box def">
+      <span class="label">良序原理 WELL ORDERING PRINCIPLE</span>
+      <p style="margin:4px 0">每个<b>非空</b>的<b>非负整数</b>集合，都有一个最小元素。</p>
+    </div>
+    <p>像不像废话？但注意它是绷得有多紧：缺一个词就塌。</p>
+    <p><b>去掉"非空"</b>：空集没有元素，当然没有最小元素——"空集对所有元素都成立"这种空洞的真救不了它。</p>
+    <p><b>把"非负整数"换成别的</b>：负整数全体（…&lt;−2&lt;−1）没有最小元素；正有理数全体也没有（1, 1/2, 1/3, … 一路下滑看不到底）。所以良序原理抓住的是<b>非负整数</b>这个集合的特殊品格。</p>
+    <p>你觉得它显然？很好——原书也承认它显然。但"显然"的命题配不上证明资源，<b>可以当公理用</b>，而它的用处大得惊人。先来试试你的手感：</p>
+  </div>
+
+  <!-- 互动① 良序试金石 -->
+  <div class="widget reveal" id="w-stone">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🪨 良序试金石</h4>
+    <p class="wdesc">六个数字集合，逐一判断：它有最小元素吗？它是良序集吗（每个非空子集都有最小元）？</p>
+    <div id="stone-list"></div>
+    <div style="margin-top:14px;font-size:14.5px">进度 <span class="score-pill" id="stone-score">0 / 6</span>
+      <button class="btn ghost" id="stone-reset" style="margin-left:10px">重来</button></div>
+  </div>
+
+  <div class="reveal">
+    <div class="insight"><span class="ico">💡</span><div>注意第 4 张卡：<b>"有最小元素" ≠ "良序"</b>。有理数 ≥ √2 有最小元素（就是 √2 自己），但它的子集 √2+1, √2+1/2, √2+1/3, … 没有最小元素。良序是对<b>一切非空子集</b>的刚性要求。</div></div>
+  </div>
+</section>
+
+<!-- ================= 2.1 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">2.1</span><h2>良序证明：其实你早就在用</h2><span class="en">Well Ordering Proofs</span></div>
+  <div class="reveal">
+    <p>第一章证 <span class="math">√2</span> 无理时，我们随手写了"设 <span class="math">√2 = n/d</span> 为<b>最简分数</b>"——凭什么分数总能约成最简？原书现在补上这张欠条：反设存在正整数 <span class="math">m, n</span> 使 <span class="math">m/n</span> <b>不能</b>写成最简分数。令 <span class="math">C</span> 为这类分数的<b>分子</b>集合——<span class="math">C</span> 是非负整数的非空集合，由良序原理必有最小分子 <span class="math">m₀</span>。但 <span class="math">m₀/n₀</span> 的分子分母必有公素因子 <span class="math">p</span>，于是 <span class="math">(m₀/p)/(n₀/p) = m₀/n₀</span> 依然不能约成最简——而它的分子 <span class="math">m₀/p &lt; m₀</span>，比"最小"还小，矛盾。</p>
+    <div class="insight"><span class="ico">🔍</span><div>看清这个证明的骨架：想证"没有反例" → 反设反例存在 → 反例集是非空整数集 → <b>揪出最小反例</b> → 由"最小"榨出矛盾。整章就这一招，变化全在"怎么榨"。</div></div>
+  </div>
+</section>
+
+<!-- ================= 2.2 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">2.2</span><h2>良序证明模板</h2><span class="en">Template for Well Ordering Proofs</span></div>
+  <div class="reveal">
+    <p>要证命题 <span class="math">P(n)</span> 对所有非负整数 <span class="math">n</span> 成立，原书给出标准模板。顺序打乱放在下面——<b>你先把证明的骨架搭出来</b>：</p>
+  </div>
+
+  <!-- 互动② 模板拼图 -->
+  <div class="widget reveal" id="w-puzzle">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">🧩 模板拼图：搭出最小反例证明的骨架</h4>
+    <p class="wdesc">按正确顺序点击五个步骤，搭错一步会提示。</p>
+    <div id="pz-slots"></div>
+    <div class="puzzle-pool" id="pz-pool"></div>
+    <div class="fb" id="pz-fb"></div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">2.2.1</span>实战：整数求和公式</h3>
+    <div class="box thm">
+      <span class="label">定理 THEOREM 2.2.1</span>
+      <p style="margin:4px 0" class="math">1 + 2 + 3 + ⋯ + n = n(n+1)/2 &nbsp;&nbsp;对所有非负整数 n</p>
+    </div>
+    <p>动手之前先排雷：<b>三个点的省略号记号会撒谎</b>。n = 1 时左边只有一项（就是 1）；n = 0 时左边<b>一项都没有</b>，按约定空和为 0。换用求和记号 <span class="math">Σ</span> 写就一目了然：<span class="math">Σᵢ₌₁ⁿ i</span>。约定：空和为 0，空积为 1。</p>
+    <p>下面按模板把这证明一步步走出来——两道关卡照例不许跳：</p>
+  </div>
+
+  <!-- 互动③ 良序审判庭 -->
+  <div class="widget reveal" id="w-court2">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">🏛️ 良序审判庭：求和公式案（步进 + 两道关卡）</h4>
+    <div class="steps" id="sum-steps"></div>
+    <div class="steps-ctrl">
+      <button class="btn primary" id="sum-next">开庭：看第一行 ▾</button>
+      <span class="small muted" id="sum-progress"></span>
+    </div>
+    <div class="verdict-banner" id="sum-verdict">矛盾！反例集 C 必为空 —— 定理对所有非负整数 n 成立。∎</div>
+  </div>
+</section>
+
+<!-- ================= 2.3 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">2.3</span><h2>分解成素数</h2><span class="en">Factoring into Primes</span></div>
+  <div class="reveal">
+    <p>小学就背过：每个大于 1 的整数都能唯一分解成素数乘积（算术基本定理）。"唯一"那半句要到后面章节才证；<b>"存在"这半句</b>，良序原理一步拿下：</p>
+    <div class="box thm">
+      <span class="label">定理 THEOREM 2.3.1</span>
+      <p style="margin:4px 0">每个大于 1 的整数都可以分解成素数的乘积。</p>
+    </div>
+    <div class="box method">
+      <span class="label">证明骨架</span>
+      <p style="margin:4px 0">反设 <span class="math">C</span> = "不能分解成素数乘积的整数"非空。取最小元 <span class="math">n</span>：<br>
+      • <span class="math">n</span> 不能是素数——素数自己就是"长度为 1 的素数乘积"；<br>
+      • 所以 <span class="math">n = a × b</span>，其中 <span class="math">1 &lt; a, b &lt; n</span>；<br>
+      • <span class="math">a, b</span> 比<b>最小反例</b>还小，所以都能分解：<span class="math">n = p₁p₂⋯p_k · q₁q₂⋯q_l</span>；<br>
+      • 但这样 <span class="math">n</span> 就能分解了——与 <span class="math">n ∈ C</span> 矛盾。<b>■</b></p>
+    </div>
+    <p>光读不过瘾？开一条分解流水线，随便挑个数扔进去：</p>
+  </div>
+
+  <!-- 互动④ 分解机 -->
+  <div class="widget reveal" id="w-fac">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🏭 素因数分解流水线</h4>
+    <p class="wdesc">输入 2 ~ 99999 之间的整数（或拖滑块）。机器每次揪出最小素因子、把剩下的丢回流水线——因子一路变小，良序原理保证它必然停机。</p>
+    <div class="fac-wrap">
+      <div class="panel" style="flex:1.4">
+        <div class="num-row">
+          <input type="number" id="fac-n" min="2" max="99999" value="360" aria-label="输入要分解的整数" />
+          <button class="btn primary" id="fac-go">分解 ▶</button>
+          <span class="small muted">试试 97（素数）、1024、6469</span>
+        </div>
+        <input type="range" id="fac-slider" min="2" max="9999" value="360" aria-label="或用滑块选数" />
+        <div class="fac-chain" id="fac-chain"></div>
+      </div>
+      <div class="panel">
+        <div class="small muted">成品袋（素因子）</div>
+        <div class="fac-bag" id="fac-bag"><span class="muted small">等待投料……</span></div>
+        <div class="insight" style="margin:14px 0 0"><span class="ico">⚙️</span><div>为什么必然停机？余数序列 360 &gt; 180 &gt; 90 &gt; … 是<b>非负整数的严格递减序列</b>——若机器永不停机，这些余数构成一个没有最小元素的 collection，违反良序。"每步变小 ⇒ 必然结束"这个直觉，正是 2.4 节要形式化的良序杀手锏（第 6 章将用它证明程序终止）。</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2.4 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">2.4</span><h2>良序集</h2><span class="en">Well Ordered Sets</span></div>
+  <div class="reveal">
+    <p>良序不只属于非负整数。称一个数集<span class="term">良序（well ordered）</span>，当它<b>每个非空子集都有最小元素</b>。两个立刻能用的推论：</p>
+    <div class="box thm">
+      <span class="label">推论 2.4.3 / 2.4.4</span>
+      <p style="margin:4px 0">任何<b>有下界</b>的整数集都是良序的；任何<b>有上界</b>的非空整数集都有最大元素。</p>
+    </div>
+    <p>原书还给了一个长得完全不同的良序集：<span class="math">𝔽 = { n/(n+1) }</span>，即 0/1, 1/2, 2/3, 3/4, …——它是良序的（任何非空子集的最小元就是那个分子最小的分数）。再把非负整数逐个加到 𝔽 的数上，得 <span class="math">ℕ + 𝔽</span>，<b>它仍是良序集</b>（引理 2.5）。怪就怪在：𝔽 里每个元素只比有限个数大，但 ℕ+𝔽 中像 1, 1/2, 1/3, 1/4, … 这样的<b>任意长度的递减序列</b>比比皆是——只是永远排不出<b>无限的</b>一条。原书第 43 页的问题 2.22 把这层窗户纸捅破：<b>良序 ⟺ 不存在无限递减序列</b>。</p>
+    <p>这就有了本章的主角级玩具。选一个集合，发动无限下降机，看你能降多深：</p>
+  </div>
+
+  <!-- 互动⑤ 无限下降机 -->
+  <div class="widget reveal" id="w-drop">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">♾️ 无限下降机</h4>
+    <p class="wdesc">目标：在所选集合里造一条严格递减链 r₀ &gt; r₁ &gt; r₂ &gt; …… 链越长越好。有的集合会让你赢（这恰恰说明它不良序），有的必然卡死（这说明它良序）。</p>
+    <div class="drop-wrap">
+      <div class="panel">
+        <div class="setpick" id="drop-sets">
+          <button class="btn on" data-set="n">非负整数 ℕ</button>
+          <button class="btn" data-set="z">整数 ℤ</button>
+          <button class="btn" data-set="q">正有理数 ℚ⁺</button>
+          <button class="btn" data-set="nf">ℕ+𝔽</button>
+        </div>
+        <div class="chain" id="drop-chain" aria-live="polite"></div>
+        <div class="drop-btns" id="drop-btns"></div>
+      </div>
+      <div class="panel">
+        <div class="drop-msg" id="drop-msg">选好集合，从起点开始降。</div>
+        <div class="small muted" style="margin-top:12px">
+          判据（问题 2.22）：<b>良序 ⟺ 不存在无限递减序列</b>。<br>
+          所以"你能不能永远降下去"就是良序与否的<b>可玩判据</b>——这台机器就是良序试金石的动态版。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="insight"><span class="ico">🖥️</span><div>计算机科学视角（原书原话转译）：想证一个计算不会永远跑下去？给计算的每一步赋一个"分值"，让分值每步严格变小、且全体分值落在一个良序集里——若计算永不停止，这些分值就构成一个没有最小元的子集，违反良序。第 6 章将用这招证明各种状态机必然终止。</div></div>
+  </div>
+</section>
+
+<!-- ================= 假证明诊所 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">🐛</span><h2>假证明诊所</h2><span class="en">Bogus Proofs</span></div>
+  <div class="reveal">
+    <p>本章习题自带两桩悬案，都是"WOP 用错了姿势"的典型。照旧：点出<b>第一次犯规</b>的位置。</p>
+  </div>
+
+  <div class="widget reveal" id="w-bug">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🐛 悬案一：每个斐波那契数都是偶数？</h4>
+    <p class="wdesc">F(0)=0, F(1)=1, F(n)=F(n−1)+F(n−2)。下面 12 步"证明"结论显然荒谬（F(1)=1 是奇数），点出第一处出错的步骤。</p>
+    <div id="bug-a" style="text-align:left"></div>
+    <div class="fb" id="bug-a-fb"></div>
+  </div>
+
+  <div class="widget reveal" id="w-bug2">
+    <span class="pill">互动 ⑦</span>
+    <h4 class="wtitle">🐛 悬案二：正有理数都能写成最简分数？</h4>
+    <p class="wdesc">结论明明是对的（第一章证 √2 时还用过），但这个证明偷了懒。三句话里，哪一句<b>第一次</b>做出无根据的推断？</p>
+    <div id="bug-b" style="text-align:left"></div>
+    <div class="fb" id="bug-b-fb"></div>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章。答错不扣分，每题都有讲解。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>邮票问题三连（原书习题 2.7 / 2.13 / 2.18）</summary>
+      <div class="body">
+        <p>良序模板的最佳练手场是"邮票/硬币可凑性"：</p>
+        <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
+          <li><b>2.7</b> 任何 ≥ 8 的整数都能表示成 3 和 5 的非负倍数之和。（基例 8=3+5, 9=3+3+3, 10=5+5；反例 m 最小则 m−3 可凑 ⇒ m 可凑，矛盾。其中 m ≥ 11 的隐含假设正是原书考点 2.12！）</li>
+          <li><b>2.13</b> 用 6¢、14¢、21¢ 邮票能凑出 50¢ 以上任何金额（允许"50¢…100¢ 皆可凑"作免证假设）；并证 49¢ 恰好凑不出。</li>
+          <li><b>2.18</b> 用 6¢ 和 15¢：3 的倍数且 ≥ 12 的金额都可凑。</li>
+        </ul>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>Lehman 方程（原书习题 2.9）—— 欧拉猜想的续集</summary>
+      <div class="body">
+        <p>第一章刚送走过欧拉的四次方猜想（挺了 218 年被一个反例杀死）。这里是他同款思路的"安全版"：证明 <span class="math">8a⁴ + 4b⁴ + 2c⁴ = d⁴</span> 没有正整数解。提示：在所有解里取 <b>a 最小</b>的那个，看等式两边被 2 整除的次数（2-进赋值）——两边奇偶性对不上，"最小 a"立刻掉进更小的反例。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>Mini-Tetris 与 n ≤ 3<sup>n/3</sup>（原书习题 2.11 / 2.10）</summary>
+      <div class="body">
+        <p><b>2.11</b>：用三种积木铺满 2×n 棋盘的铺法数恰为 <span class="math">T_n = (2^{n+1} + (−1)^n)/3</span>——先用 WOP 证 T_n 满足递推 T_n = T_{n−1} + 2T_{n−2}（n > 2，分类讨论最后一列怎么铺），再验证闭式。<br>
+        <b>2.10</b>：证 <span class="math">n ≤ 3^{n/3}</span> 对所有非负整数 n（提示：先手工验证 n ≤ 4，再对最小反例 n ≥ 5 玩"更小反例"把戏：3^{(n)/3} = 3 · 3^{(n−3)/3} ≥ 3(n−3) ≥ n）。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>更深一钓：良序 ⟺ 没有无限递减序列（原书习题 2.22）</summary>
+      <div class="body">
+        <p>互动 ⑤ 的理论底座。一个实数集 R 良序，当且仅当 R 中不存在 <span class="math">r₀ &gt; r₁ &gt; r₂ &gt; ⋯</span> 这样的无限严格递减序列。（⇐ 方向：若有非空子集 S 无最小元，就能从任一元素出发不断挑出更小的，手工"制造"出无限递减序列。）这条等价让"程序每步变小必停机"从直觉升级为定理——第 6 章状态机终止性的地基。</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 2 章 = 第 29–44 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch01.html">上一章：什么是证明？</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s0">2.0 · 两个紧绷条件</a><a href="#s1">2.1 · 良序证明</a><a href="#s2">2.2 · 证明模板</a>
+    <a href="#s3">2.3 · 分解成素数</a><a href="#s4">2.4 · 良序集</a><a href="#s5">🐛 · 假证明诊所</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const click = el => el.dispatchEvent(new MouseEvent("click", {bubbles: true}));
+
+/* 进度条 / TOC spy / reveal */
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s0").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+/* ---------- 互动① 良序试金石 ---------- */
+(() => {
+  const items = [
+    { s:"ℕ = {0, 1, 2, 3, …}（非负整数全体）", min:true, wo:true,
+      why:"这就是良序原理本尊：非空子集必有最小元。没有更基本的问题——它是我们的公理。" },
+    { s:"ℤ = {…, −2, −1, 0, 1, 2, …}（整数全体）", min:false, wo:false,
+      why:"0 &gt; −1 &gt; −2 &gt; … 一路下滑没有底：整个 ℤ 自己就没有最小元，更别提良序了。" },
+    { s:"{ 整数 n | n ≥ −√2 }", min:true, wo:true,
+      why:"最小元是 −1，不是 −√2！−√2 不是整数，而 ≥ −√2 的整数是 −1, 0, 1, …（推论 2.4.3：有下界的整数集良序）。" },
+    { s:"{ 有理数 q | q ≥ √2 }", min:true, wo:false,
+      why:"最小元是 √2，没错；但子集 {√2 + 1/n | n = 1, 2, 3, …} 没有最小元素（习题 2.20b）。'有最小元' ≠ 良序。" },
+    { s:"ℚ⁺ = 正有理数全体", min:false, wo:false,
+      why:"1 &gt; 1/2 &gt; 1/3 &gt; … 没有最小元（你永远还能再除以 2）。整个集合就没有最小元。" },
+    { s:"𝔽 = { n/(n+1) } = 0/1, 1/2, 2/3, 3/4, …", min:true, wo:true,
+      why:"良序（可选节的 2.4.1 节）：任何非空子集的最小元就是分子最小的那个分数。连 1, 1/2, 1/3, 1/4, 1/5 这种'看似无限降'的花活都排不出来——1/3 根本不在 𝔽 里。" },
+  ];
+  const list = $("#stone-list"); let done = 0, right = 0;
+  items.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "stone";
+    div.innerHTML = `<div class="stmt">${i+1}. ${it.s}</div>
+      <div class="row">
+        <span class="small muted" style="align-self:center">有最小元？</span>
+        <button class="btn good" data-q="min" data-v="1">有</button><button class="btn bad" data-q="min" data-v="0">无</button>
+        <span class="small muted" style="align-self:center;margin-left:8px">良序？</span>
+        <button class="btn good" data-q="wo" data-v="1">良序</button><button class="btn bad" data-q="wo" data-v="0">不良序</button>
+      </div><div class="verdict"></div>`;
+    const vd = $(".verdict", div); const answered = {min:null, wo:null};
+    $$(".btn", div).forEach(b => b.addEventListener("click", () => {
+      if (div.classList.contains("done")) return;
+      const q = b.dataset.q, v = b.dataset.v === "1";
+      answered[q] = v;
+      $$(`.btn[data-q="${q}"]`, div).forEach(bb => bb.classList.remove("picked-ok", "picked-no"));
+      const truth = it[q];
+      b.classList.add(v === truth ? "picked-ok" : "picked-no");
+      if (answered.min !== null && answered.wo !== null) {
+        div.classList.add("done"); done++;
+        const ok = answered.min === it.min && answered.wo === it.wo;
+        if (ok) right++;
+        vd.className = "verdict show";
+        vd.innerHTML = (ok ? "✅ " : "❌ 正确答案：") + (it.min ? "有最小元，" : "无最小元，") + (it.wo ? "良序。" : "不良序。") + "<br>" + it.why;
+        $("#stone-score").textContent = done === 6 ? `完成！两组判断全对 ${right} / 6` : `${right} / ${done}`;
+      }
+    }));
+    list.appendChild(div);
+  });
+  $("#stone-reset").addEventListener("click", () => location.reload());
+})();
+
+/* ---------- 互动② 模板拼图 ---------- */
+(() => {
+  const steps = [
+    "定义反例集 C ::= { n ∈ ℕ | NOT(P(n)) 为真 }",
+    "反证：假设 C 非空",
+    "由良序原理，C 中存在最小元素 n",
+    "推出矛盾：或证出 P(n) 其实成立，或找出 C 中比 n 更小的成员",
+    "结论：C 必为空——反例不存在，P(n) 对所有非负整数 n 成立 ■",
+  ];
+  const order = [2, 0, 3, 1, 4]; // 打乱后的按钮顺序（对应 steps 下标）
+  const slots = $("#pz-slots"), pool = $("#pz-pool"), fb = $("#pz-fb");
+  let next = 0;
+  order.forEach(i => {
+    const b = document.createElement("button");
+    b.className = "pz-btn"; b.textContent = steps[i]; b.dataset.i = i;
+    b.addEventListener("click", () => {
+      if (b.classList.contains("used")) return;
+      if (i === next) {
+        b.classList.add("used");
+        const slot = document.createElement("div");
+        slot.className = "puzzle-slot ok";
+        slot.innerHTML = `<span class="idx">第 ${next+1} 步</span>${steps[i]}`;
+        slots.appendChild(slot);
+        next++;
+        fb.className = "fb ok"; fb.textContent = next === 5 ? "🎯 骨架搭完！这就是'最小反例法'的全貌——第 4 步是唯一需要灵感的开放部分。" : `✓ 正确。还差 ${5-next} 步。`;
+      } else {
+        b.classList.add("wrong");
+        fb.className = "fb no";
+        fb.textContent = next === 0 ? "❌ 证明的第一步永远是：把'反例'收集成一个集合（反例集 C）。" :
+          next === 1 ? "❌ 集合定义好了，接下来反设它非空（为得到矛盾）。" :
+          next === 2 ? "❌ 假设了非空，良序原理就能送你一个最小元素。" :
+          "❌ 手里有最小反例了，接下来要么证明它其实成立、要么造出更小的反例——二者皆矛盾。";
+        setTimeout(() => b.classList.remove("wrong"), 450);
+      }
+    });
+    pool.appendChild(b);
+  });
+})();
+
+/* ---------- 通用 MCQ（关卡/自测共用） ---------- */
+function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){
+  let i = 0, right = 0;
+  function render(){
+    bodyEl.innerHTML = "";
+    if (i >= items.length) { onDone && onDone(right); return; }
+    const it = items[i];
+    const div = document.createElement("div");
+    div.className = "case";
+    div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+      ${it.pre ? `<div class="case"><div style="font-size:15px">${it.pre}</div></div>` : ""}
+      <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+      <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">下一题 →</button></div>`;
+    const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+    it.opts.forEach(o => {
+      const b = document.createElement("button");
+      b.className = "opt"; b.innerHTML = o.t;
+      b.addEventListener("click", () => {
+        if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+        if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+        else {
+          b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+          $$(".opt", opts).forEach((bb, k) => { if (it.opts[k].ok) bb.classList.add("picked-ok"); });
+        }
+        nxt.style.display = "inline-block";
+        nxt.textContent = i === items.length - 1 ? "看结果 →" : "下一题 →";
+      });
+      opts.appendChild(b);
+    });
+    nxt.addEventListener("click", () => { i++; render(); });
+    bodyEl.appendChild(div);
+  }
+  if (resetBtn) resetBtn.addEventListener("click", () => { i = 0; right = 0; render(); $("#quiz-result").classList.remove("show"); });
+  render();
+}
+
+/* ---------- 互动③ 求和定理审判庭 ---------- */
+(() => {
+  const box = $("#sum-steps"), btn = $("#sum-next"), prog = $("#sum-progress"), banner = $("#sum-verdict");
+  const steps = [
+    { m:"反设：等式 1+2+⋯+n = n(n+1)/2 并非对所有非负整数成立。",
+      w:"模板第 1、2 步：收集反例 C ::= {n ∈ ℕ | 等式对 n 不成立}，并反设 C 非空。",
+      check:{ q:"关卡 ①：先确认 0 不是反例。n = 0 时左边'1+2+⋯+n'是多少？",
+        opts:[
+          {t:"0（没有项，空和按约定为 0），而 0·1/2 = 0，等式成立", ok:true,
+           fb:"对——省略号在 n=0 时代表'什么都没有'，空和为 0。所以 0 ∉ C，这保证了后面的最小反例 c > 0。"},
+          {t:"未定义，n=0 时这个式子没有意义", ok:false,
+           fb:"省略号确实容易骗人，但约定空和为 0 后它有良定义：等式对 n=0 成立。"},
+          {t:"1，至少有一项吧", ok:false,
+           fb:"这正是省略号的骗局：n=0 时一项都没有。空和为 0。"}]}},
+    { m:"由良序原理，C 有最小元素 c——全体非负整数里'最小'的那个反例。",
+      w:"模板第 3 步。C 非空（反设）+ C ⊆ ℕ ⇒ WOP 送来最小元。" },
+    { m:"c ≠ 0（等式对 0 成立），所以 c > 0，c − 1 是非负整数。",
+      w:"为下一步铺路：c−1 得先是非负整数，才有资格谈'等式对它成立'。" },
+    { m:"c 是最小反例 ⇒ 等式对一切 < c 的非负整数成立，特别地对 c−1 成立：1+2+⋯+(c−1) = (c−1)c/2。",
+      w:"'最小'的全部价值就在这一步：比 c 小的非反例，恰好覆盖了 c−1。",
+      check:{ q:"关卡 ②：为什么敢断言'等式对 c−1 成立'？",
+        opts:[
+          {t:"因为 c−1 < c 而 c 是最小反例：更小的非负整数都不是反例", ok:true,
+           fb:"对——'最小反例'的含义就是：所有更小的非负整数都成立。c−1 恰好是其中之一。"},
+          {t:"因为可以代入 c−1 直接算出来", ok:false,
+           fb:"c 是个抽象符号，代不进去。我们靠的是'最小'这个性质，不是硬算。"},
+          {t:"因为等式对相邻整数交替成立", ok:false,
+           fb:"没有这种规律。唯一用的是 c 的'最小反例'身份。"}]}},
+    { m:"两边加 c：1+2+⋯+(c−1)+c = (c−1)c/2 + c = (c² − c + 2c)/2 = c(c+1)/2。",
+      w:"算术环节：通分合并。右边正是 n = c 时的 n(n+1)/2。" },
+    { m:"于是等式对 c 也成立——与 c ∈ C（c 是反例）矛盾！所以 C 为空，定理对一切非负整数 n 成立。■",
+      w:"模板第 4、5 步：矛盾来自'它明明成立了却自称反例'。收工。" },
+  ];
+  let k = 0, gateOpen = true;
+  function refresh(){
+    btn.disabled = !gateOpen || k >= steps.length;
+    btn.textContent = k === 0 ? "开庭：看第一行 ▾" : k >= steps.length ? "结案 ■" : gateOpen ? "下一行 ▾" : "先过关卡 ↓";
+    prog.textContent = k ? `${Math.min(k, steps.length)} / ${steps.length} 行` : "";
+  }
+  btn.addEventListener("click", () => {
+    if (k >= steps.length || !gateOpen) return;
+    const s = steps[k];
+    const div = document.createElement("div");
+    div.className = "step show";
+    div.innerHTML = `<div class="s-math math">${s.m}</div>
+      <button class="why-toggle">这步为什么成立？▾</button><div class="why-body">${s.w}</div>`;
+    $(".why-toggle", div).addEventListener("click", e => $(".why-body", div).classList.toggle("show"));
+    box.appendChild(div);
+    k++;
+    if (s.check) {
+      gateOpen = false;
+      const cq = document.createElement("div");
+      cq.className = "check-q";
+      cq.innerHTML = `<b>${s.check.q}</b><div class="opts" style="margin-top:8px"></div><div class="fb"></div>`;
+      const opts = $(".opts", cq), fb = $(".fb", cq);
+      s.check.opts.forEach(o => {
+        const b = document.createElement("button");
+        b.className = "opt"; b.innerHTML = o.t;
+        b.addEventListener("click", () => {
+          if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+          b.classList.add(o.ok ? "picked-ok" : "picked-no");
+          fb.className = "fb " + (o.ok ? "ok" : "no");
+          fb.innerHTML = (o.ok ? "✅ " : "❌ ") + o.fb;
+          if (!o.ok) $$(".opt", opts).forEach((bb, i2) => { if (s.check.opts[i2].ok) bb.classList.add("picked-ok"); });
+          gateOpen = true; refresh();
+        });
+        opts.appendChild(b);
+      });
+      box.appendChild(cq);
+    }
+    if (k === steps.length) banner.classList.add("show");
+    refresh();
+    div.scrollIntoView({behavior:"smooth", block:"nearest"});
+  });
+  refresh();
+})();
+
+/* ---------- 互动④ 分解机 ---------- */
+(() => {
+  const chain = $("#fac-chain"), bag = $("#fac-bag"), inp = $("#fac-n"), slider = $("#fac-slider");
+  function smallestFactor(n){
+    if (n % 2 === 0) return 2;
+    for (let d = 3; d * d <= n; d += 2) if (n % d === 0) return d;
+    return n;
+  }
+  function run(n){
+    n = Math.floor(n);
+    if (!(n >= 2 && n <= 99999)) { bag.innerHTML = '<span class="muted small">请输入 2 ~ 99999 的整数。</span>'; chain.textContent = ""; return; }
+    inp.value = n; slider.value = Math.min(n, 9999);
+    const parts = []; let v = n;
+    chain.innerHTML = "";
+    const first = document.createElement("span");
+    first.className = "step-f"; first.textContent = n; chain.appendChild(first);
+    const primes = {};
+    let guard = 0;
+    while (v > 1 && guard++ < 60) {
+      const p = smallestFactor(v);
+      parts.push(p); primes[p] = (primes[p] || 0) + 1;
+      const arrow = document.createElement("span"); arrow.className = "arrow"; arrow.textContent = v === p ? "⇒ 素数，收工" : "⇒"; chain.appendChild(arrow);
+      v = v / p;
+      if (v > 1) {
+        const s = document.createElement("span"); s.className = "step-f"; s.textContent = v; chain.appendChild(s);
+      }
+    }
+    bag.innerHTML = Object.keys(primes).sort((a, b) => a - b)
+      .map(p => `<span class="p">${p}<sup>${primes[p]}</sup></span>`).join("")
+      + `<span class="small muted" style="margin-left:8px">共 ${parts.length} 个素因子 · 走了 ${parts.length} 步流水线</span>`;
+  }
+  $("#fac-go").addEventListener("click", () => run(+inp.value));
+  inp.addEventListener("keydown", e => { if (e.key === "Enter") run(+inp.value); });
+  slider.addEventListener("input", () => run(+slider.value));
+  run(360);
+})();
+
+/* ---------- 互动⑤ 无限下降机 ---------- */
+(() => {
+  const sets = {
+    n: { name:"非负整数 ℕ", start:7,
+      cand: v => v > 0 ? [{t:`${v-1}`, v:v-1}] : [],
+      stuck:"链长 1 就卡住了：非负整数降到 0 便无路可走。这正是良序原理本尊。",
+      win:"不可能赢：ℕ 良序，任何下降链必然触底。你刚才体验的就是 WOP 的'防无限下降'力场。"},
+    z: { name:"整数 ℤ", start:0,
+      cand: v => [{t:`${v-1}`, v:v-1}, {t:`${v-2}`, v:v-2}, {t:`${v-10}`, v:v-10}],
+      stuck:null,
+      win:"你赢了——能永远降，说明 ℤ 不良序。'永远降'和'没有最小元'是一枚硬币的两面（问题 2.22）。"},
+    q: { name:"正有理数 ℚ⁺", start:1, frac:true,
+      cand: v => [{t:fr(v/2), v:v/2}, {t:fr(v/3), v:v/3}, {t:fr(v/4), v:v/4}],
+      stuck:null,
+      win:"1 → 1/2 → 1/3 → 1/4 → …… ÷2 永远合法。正有理数不良序：没有最低点。"},
+    nf:{ name:"ℕ+𝔽（可选节）", start:1, frac:true,
+      cand: v => {
+        const cands = [];
+        // 𝔽 部分元素形如 k/(k+1)；ℕ 部分为整数。生成若干严格小于 v 的成员。
+        const fs = [];
+        for (let k = 0; k < 40; k++) { const f = k/(k+1); if (f < v) fs.push(f); }
+        fs.sort((a, b) => b - a);
+        fs.slice(0, 3).forEach(f => cands.push({t:fr(f), v:f}));
+        for (const w of [Math.floor(v) - 1, Math.floor(v) - 2]) {
+          if (w >= 0 && w < v) cands.push({t:`${w}`, v:w});
+        }
+        return cands.filter(c => c.v < v);
+      },
+      stuck:"卡在 0 了。注意：你可能已经降了很多步（𝔽 里随便多长都行），但只要每步在集合内，就必然触底——引理 2.5：ℕ+𝔽 良序。",
+      win:"不可能赢。𝔽 与 ℕ+𝔽 都良序：递减链可以任意长，但不可能无限——'任意长'与'无限'之间隔着一个良序原理。" },
+  };
+  function fr(x){ // 有理数显示：优先分数形式 k/(k+1)、单位分数、否则小数
+    for (let k = 0; k <= 60; k++) if (Math.abs(k/(k+1) - x) < 1e-9) return k === 0 ? "0" : `${k}/${k+1}`;
+    for (let q = 2; q <= 64; q++) if (Math.abs(1/q - x) < 1e-9) return `1/${q}`;
+    const intPart = Math.floor(x + 1e-9);
+    for (let q = 2; q <= 64; q++) {
+      const r = x - intPart;
+      for (let p = 1; p < q; p++) if (Math.abs(p/q - r) < 1e-9 && r > 1e-9) return `${intPart ? intPart + " + " : ""}${p}/${q}`;
+    }
+    return (+x.toFixed(4)).toString();
+  }
+  const chainEl = $("#drop-chain"), btns = $("#drop-btns"), msg = $("#drop-msg");
+  let cur = null, chain = [], cfg = null, depth = 0;
+  function renderChain(){
+    chainEl.innerHTML = "";
+    chain.forEach((c, i) => {
+      if (i) { const g = document.createElement("span"); g.className = "gt"; g.textContent = "＞"; chainEl.appendChild(g); }
+      const e = document.createElement("span"); e.className = "el"; e.textContent = c; chainEl.appendChild(e);
+    });
+    if (cfg && cfg.stuck && depth >= 1 && btns.children.length === 0) {
+      const s = document.createElement("span"); s.className = "el stuck"; s.textContent = "⇒ 卡死：没有更小的了"; chainEl.appendChild(s);
+    }
+  }
+  function setButtons(){
+    btns.innerHTML = "";
+    if (!cfg) return;
+    const cands = cfg.cand(cur);
+    if (cands.length === 0) {
+      if (cfg.stuck) {
+        msg.className = "drop-msg win";
+        msg.textContent = `链长 ${depth}，卡死。` + cfg.stuck;
+        const s = document.createElement("span"); s.className = "el stuck"; s.textContent = "⇒ 卡死：没有更小的了";
+        chainEl.appendChild(s);
+      }
+      return;
+    }
+    cands.forEach(c => {
+      const b = document.createElement("button");
+      b.className = "btn"; b.textContent = `降到 ${c.t}`;
+      b.addEventListener("click", () => { chain.push(c.t); cur = c.v; depth++; renderChain(); setButtons(); });
+      btns.appendChild(b);
+    });
+    const giveup = document.createElement("button");
+    giveup.className = "btn ghost"; giveup.textContent = "我认输了：宣布胜利";
+    giveup.addEventListener("click", () => {
+      msg.className = "drop-msg alarm";
+      msg.textContent = `链长 ${depth}，你宣布无限下降成功。` + cfg.win;
+    });
+    btns.appendChild(giveup);
+  }
+  function pick(key){
+    cfg = sets[key]; cur = cfg.start; chain = [cfg.fr ? fr(cur) : `${cur}`]; depth = 0;
+    $$("#drop-sets .btn").forEach(b => b.classList.toggle("on", b.dataset.set === key));
+    msg.className = "drop-msg";
+    msg.innerHTML = `集合：<b>${cfg.name}</b>，起点 ${chain[0]}。每次点一个'降到'按钮，构造严格递减链。`;
+    renderChain(); setButtons();
+  }
+  $$("#drop-sets .btn").forEach(b => b.addEventListener("click", () => pick(b.dataset.set)));
+  pick("n");
+})();
+
+/* ---------- 互动⑥⑦ 假证明诊所 ---------- */
+(() => {
+  function clinic(bodyEl, fbEl, lines, guilty, explain, wrongNote){
+    const fb = fbEl; let solved = false;
+    lines.forEach((ln, i) => {
+      const b = document.createElement("button");
+      b.className = "bug-line";
+      b.innerHTML = `<span class="ln">第 ${i+1} 步</span>${ln}`;
+      b.addEventListener("click", () => {
+        if (solved) return;
+        if (i === guilty) {
+          solved = true;
+          b.classList.add("accused");
+          fb.className = "fb ok";
+          fb.innerHTML = `🎯 <b>抓到了！就是第 ${guilty+1} 步。</b><br>${explain}`;
+        } else {
+          fb.className = "fb no";
+          fb.innerHTML = "这一步没毛病。" + wrongNote;
+        }
+      });
+      bodyEl.appendChild(b);
+    });
+  }
+  clinic($("#bug-a"), $("#bug-a-fb"),
+    ["用良序原理证明。", "令 EF(n) 表示'F(n) 是偶数'。",
+     "令 C 为反例集：C ::= { n ∈ ℕ | NOT(EF(n)) }。",
+     "反设 C 非空。", "由 WOP，C 有最小非负整数 m。",
+     "则 m > 0，因为 F(0) = 0 是偶数，0 ∉ C。",
+     "由于 m 是最小反例，对所有 k < m，F(k) 都是偶数。",
+     "特别地，F(m−1) 与 F(m−2) 都是偶数。",
+     "但按定义 F(m) = F(m−1) + F(m−2)，两个偶数之和还是偶数。",
+     "即 EF(m) 为真。", "这与 m ∈ C 的条件 NOT(EF(m)) 矛盾。",
+     "矛盾说明 C 为空。故所有 F(n) 都是偶数。■"],
+    7,
+    "第 8 步引用了 F(m−2)。当 m = 1 时（F(1) = 1 恰是最小反例），m−2 = −1 < 0——斐波那契数列只对 n ≥ 0 定义，F(−1) 根本不存在！'最小反例'只保证<b>更小的非负整数</b>都成立，不保证 m−2 落在定义域内。整个'证明'死于此处：奇偶性论证只在 m ≥ 2 时可用，而真正的最小反例 m = 1 偏偏不在其覆盖范围。（修复思路：老老实实验证 n = 0, 1 两个基例后改用第 5 章的归纳法。）",
+    "提示：错误只有一处，而且和'下标越界/定义域'有关——留意 m 很小时 m−2 是什么。");
+  clinic($("#bug-b"), $("#bug-b-fb"),
+    ["反设：存在不能写成最简分数的正有理数 q。令 C 为这类 q 的集合。",
+     "由良序原理，C 中必有最小的有理数 q₀（q₀/2 < q₀ 也在 C 之前被比较）。",
+     "既然 q₀/2 < q₀，q₀/2 必能写成最简分数 q₀/2 = m/n（m, n 无公素因子）。",
+     "分 n 奇偶两情况都能把 q₀ 自己写成最简分数——矛盾，故 C 为空。■"],
+    1,
+    "第 2 句犯规：<b>良序原理只适用于非负整数的集合</b>，而 C 是<b>正有理数</b>的集合——'必有最小的有理数 q₀'这一步毫无根据（正有理数确实都能写最简分数，但证明它不能靠把 WOP 伸到有理数上）。第 1 句是合法的反证假设，第 3、4 句在其框架内也是好推理——病根只有一个：WOP 越界使用。",
+    "提醒：结论为真不代表证明合法——本案就是'结论对、证明错'的活教材。");
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"良序原理的完整表述里，缺一不可的两个前提是？",
+     opts:[
+       {t:"非空 · 且集合由非负整数组成", ok:true, fb:"对。空集没有最小元；负整数、正有理数这些集合也救不了。"},
+       {t:"有限 · 且元素互不相同", ok:false, fb:"无限集（如 ℕ 本身）照样良序。"},
+       {t:"集合必须包含 0", ok:false, fb:"{5, 8, 100} 不含 0 照样有最小元 5。"},
+       {t:"集合必须是有序排列好的", ok:false, fb:"'有序'是集合自带的次序性质（≤），不需要你排成队列。"}]},
+    {q:"正有理数集 ℚ⁺ 为什么不良序？",
+     opts:[
+       {t:"因为它包含太多元素", ok:false, fb:"𝔽 = {n/(n+1)} 也是无限集，照样良序——问题不在'多'。"},
+       {t:"因为 1 > 1/2 > 1/3 > … 是一条没有尽头的下降链，对应子集没有最小元", ok:true, fb:"对。良序要求每个非空子集有最小元，{1/n} 没有。"},
+       {t:"因为正有理数之间不能比较大小", ok:false, fb:"有理数当然能比较——它们只是'降不到底'。"},
+       {t:"因为最小元应该是 0，而 0 不是正数", ok:false, fb:"0 确实不是正数，但不良序的原因不是'缺 0'，而是 {1/n} 无最小元。"}]},
+    {q:"良序证明模板里，'最小反例 c'一步的最大价值体现在哪？",
+     opts:[
+       {t:"c 本身是反例，直接推翻命题", ok:false, fb:"我们是要证明命题成立，反例本来就是假设出来的，不稀奇。"},
+       {t:"保证比 c 小的整数全部满足命题，常常能推出 c 也满足——制造矛盾", ok:true, fb:"对——'最小'的全部杠杆就是'更小的都成立'，第 2 章所有证明都在榨这一点。"},
+       {t:"保证 c 是唯一的反例", ok:false, fb:"模板不关心反例是否唯一，只关心最小的那个。"},
+       {t:"保证 c 是偶数", ok:false, fb:"无此保证。"}]},
+    {q:"'每个斐波那契数都是偶数'的假证明，第一处犯规在哪？",
+     opts:[
+       {t:"反例集 C 的定义就错了", ok:false, fb:"C ::= {n ∈ ℕ | NOT(EF(n))} 定义完全合法。"},
+       {t:"第 8 步：引用 F(m−2)，但最小反例 m = 1 时 m−2 = −1，F(−1) 不存在", ok:true, fb:"对。'更小的都成立'只覆盖非负整数，m−2 越界了。修复须改用归纳法并先验证基例。"},
+       {t:"第 5 步：WOP 给出最小元 m 这一步", ok:false, fb:"C 非空 + C ⊆ ℕ，WOP 用得没毛病——问题出在后面引用 F(m−2)。"},
+       {t:"结论本身写错了", ok:false, fb:"结论（所有 F(n) 偶）确实是假的——但假结论不会让证明'犯规'，我们找的是推理的第一处断裂。"}]},
+    {q:"素分解存在性证明（定理 2.3.1）中，最小反例 n 为什么不能是素数？",
+     opts:[
+       {t:"素数太大，不在集合 C 里", ok:false, fb:"C 是'不能分解成素数乘积'的整数集，素数当然可能在里面。"},
+       {t:"素数自己就是'长度为 1 的素数乘积'，所以它能够分解，n ∈ C 就矛盾了", ok:true, fb:"对。长度为 1 的乘积也算乘积——于是最小反例只能是合数，才能写成 a×b 往下拆。"},
+       {t:"素数没有因数，写不出 a×b", ok:false, fb:"这说的是同一件事的另一半：正因 n 不是素数，才有 n = a·b 可拆。'不是素数'的理由是第一句。"},
+       {t:"素数只有两个正因数", ok:false, fb:"定义没错，但没回答'为什么 n ∉ C'。"}]},
+    {q:"'集合 A 良序'的等价刻画（问题 2.22）是？",
+     opts:[
+       {t:"A 里没有最大的元素", ok:false, fb:"反了——良序关心的是'最小元'这一侧。"},
+       {t:"A 中不存在无限严格递减序列 r₀ > r₁ > r₂ > …", ok:true, fb:"对。这也是'每步变小必停机'的定理版：无限下降 ⇒ 无最小元的子集，违反良序。"},
+       {t:"A 必须是有限集", ok:false, fb:"ℕ 无限却良序。"},
+       {t:"A 的每个真子集都有限", ok:false, fb:"ℕ 的真子集 {0,1,2,…}（去掉 100）仍无限。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["🪨 良序枪手", "最小反例法已经上膛。下一章逻辑公式给弹药做规格检查，第 5 章归纳法与本章程双剑合璧。"]
+      : right >= 3 ? ["🕵️ 降链学徒", "骨架立住了。回看错题：重点是 2.0 的紧绷条件与模板第 3 步的杠杆。"]
+      : ["🌱 最小反例见习生", "别灰心——把互动②的拼图再搭一遍，重读 2.1 那张'欠条'，你会顺畅很多。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  runQuiz(box, items, {onDone: grade, resetBtn: $("#quiz-reset")});
+})();
+</script>
+</body>
+</html>

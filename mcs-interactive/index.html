@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>数学之旅 · 交互证明讲义 — 格致</title>
+<meta name="description" content="把 MIT《Mathematics for Computer Science》逐章做成可玩的中文交互网页。已上线：良序原理、什么是证明。">
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --ink:#1d1d1f; --sub:#6e6e73; --gray:#86868b;
+  --hair:rgba(0,0,0,.08); --bg:#fbfbfd; --card:#fff;
+  --blue:#0071e3;
+  --paper:#f7f4ee; --accent:#0f4c81; --amber:#b4832a;
+}
+*{box-sizing:border-box}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC",
+    "Hiragino Sans GB","Noto Sans SC","Helvetica Neue",sans-serif;
+  color:var(--ink); background:var(--bg); margin:0;
+  font-size:17px; line-height:1.7; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:68rem;margin:0 auto;padding:0 24px 72px}
+.topbar{display:flex;align-items:center;padding:18px 0 14px;border-bottom:1px solid var(--hair);font-size:13.5px}
+.topbar .brand{font-weight:700;letter-spacing:.06em}
+.topbar .links{margin-left:auto;display:flex;gap:22px}
+.topbar a{color:var(--sub);text-decoration:none}
+.topbar a:hover{color:var(--blue)}
+.hero{padding:58px 0 10px;position:relative;overflow:hidden}
+.kicker{font-size:12.5px;font-weight:600;letter-spacing:.1em;color:var(--gray);text-transform:uppercase;margin-bottom:10px}
+h1{font-family:"Songti SC","Noto Serif SC",serif;font-size:clamp(30px,4.6vw,44px);line-height:1.15;font-weight:700;margin:0 0 12px}
+.lead{max-width:600px;color:#4c4840;font-size:16.5px}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.meta span{font-size:13px;color:var(--sub);background:var(--card);border:1px solid var(--hair);border-radius:999px;padding:4px 13px}
+
+.section-label{margin:52px 0 20px;font-size:13px;font-weight:600;letter-spacing:.08em;
+  color:var(--gray);text-transform:uppercase;display:flex;align-items:center;gap:14px}
+.section-label::after{content:"";flex:1;height:1px;background:var(--hair)}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:22px}
+.grid > .body{grid-column:1/-1}
+.card{grid-column:span 3;position:relative;display:flex;flex-direction:column;text-decoration:none;
+  background:var(--card);border:1px solid rgba(0,0,0,.06);border-radius:18px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(0,0,0,.03);transition:transform .22s ease, box-shadow .22s ease}
+.card:hover{transform:translateY(-4px);box-shadow:0 14px 36px rgba(0,0,0,.10)}
+.card .head{padding:22px 22px 18px;border-bottom:1px solid var(--hair);
+  font-family:"Songti SC","Noto Serif SC",serif;background:var(--paper)}
+.card .head .no{font-size:12px;letter-spacing:.16em;color:var(--amber);font-weight:700;font-family:-apple-system,"PingFang SC",sans-serif}
+.card .head h2{margin:8px 0 2px;font-size:21px;line-height:1.3;color:var(--ink)}
+.card .head .en{font-size:13px;color:var(--sub);font-style:italic}
+.card .body{padding:16px 22px 20px;display:flex;flex-direction:column;flex:1}
+.card p{margin:0 0 14px;font-size:13.5px;line-height:1.68;color:var(--sub);flex:1}
+.card .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{font-size:11.5px;border:1px solid var(--hair);border-radius:999px;padding:2px 10px;color:var(--sub);background:#fff}
+.badge{align-self:flex-start;font-size:11.5px;font-weight:650;border-radius:999px;padding:3px 10px;margin-bottom:10px}
+.badge.new{color:#fff;background:var(--blue);align-self:flex-end;position:absolute;top:14px;right:14px;z-index:2}
+.card.soon{opacity:.62;pointer-events:none}
+.card.soon .head{background:repeating-linear-gradient(-45deg,var(--paper),var(--paper) 9px,#f1ede4 9px,#f1ede4 18px)}
+.go{font-size:13.5px;color:var(--blue);font-weight:600}
+.card:hover .go{text-decoration:underline}
+.note{margin-top:26px;text-align:center;font-size:13px;color:var(--gray)}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid var(--hair);
+  font-size:12.5px;color:var(--gray);display:flex;gap:18px;flex-wrap:wrap}
+footer a{color:var(--gray)} footer a:hover{color:var(--blue)}
+@media (max-width:980px){ .grid{grid-template-columns:1fr} .card{grid-column:auto} }
+@media (max-width:640px){ body{font-size:16px} .card p{font-size:15px} h1{font-size:30px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="topbar">
+    <span class="brand"><a href="/" style="color:inherit;text-decoration:none">格致</a> · 数学之旅</span>
+    <span class="links"><a href="/">← 格致首页</a><a href="https://github.com/RockCohen">GitHub</a></span>
+  </nav>
+
+  <header class="hero">
+    <div class="kicker">数学之旅 · 交互证明讲义 — 源自 MIT 6.042《Mathematics for Computer Science》</div>
+    <h1>证明，可以亲手玩。</h1>
+    <p class="lead">把 MIT 6.042 讲义逐章译写成可玩的中文交互网页：每个装置都是一次"格物"——拖一拖、判一判、审一审，证明就长在你自己手里。</p>
+    <div class="meta">
+      <span>📖 MIT 6.042 全书 22 章</span><span>🧩 100+ 互动装置</span><span>🎬 Manim 短片按适配性嵌入</span><span>⚖️ 每章终局自测</span>
+    </div>
+  </header>
+
+  <div class="section-label">已上线 · Part IV 进行中</div>
+  <div class="grid">
+    <a class="card" href="ch22.html">
+      <span class="badge new">终章</span>
+      <div class="head">
+        <div class="no">CHAPTER 22</div>
+        <h2>递归式</h2>
+        <div class="en">Recurrences · 全书终章</div>
+      </div>
+      <div class="body">
+        <p>Plug-and-Chug 机器（汉诺塔 2ⁿ−1 与 Merge Sort 逐行展开）、归并排序演练台（比较次数 vs n log n − n + 1）、特征方程求解器（爬楼梯爬出 Fibonacci）、Akra-Bazzi 试算器。全书 22 章至此装配完毕。</p>
+        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch21.html">
+      <div class="head">
+        <div class="no">CHAPTER 21</div>
+        <h2>随机游走</h2>
+        <div class="en">Random Walks · Part IV 收官</div>
+      </div>
+      <div class="body">
+        <p>赌徒破产模拟器（n/T 与轮盘 1/37,648 对拍蒙特卡洛）、轮盘胜率阶梯（本钱 50 亿也救不了你）、期望局长 n(T−n)、PageRank 实验台（杀页面、调重启概率、看稳态洗牌）。</p>
+        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch20.html">
+      <div class="head">
+        <div class="no">CHAPTER 20</div>
+        <h2>偏离均值</h2>
+        <div class="en">Deviation from the Mean</div>
+      </div>
+      <div class="body">
+        <p>期望 $1 的两场赌局方差差一百万倍：方差对比器（Game B 拉满看 σ 爆表）、IQ 侦探三条界围捕正态尾巴（1/3 → 1/178）、生日配对分布仪 2000 班对拍、民调样本量 3125 实测验证。</p>
+        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch19.html">
+      <div class="head">
+        <div class="no">CHAPTER 19</div>
+        <h2>随机变量与期望</h2>
+        <div class="en">Random Variables &amp; Great Expectations</div>
+      </div>
+      <div class="body">
+        <p>信封猜数对上赌桌也必胜过半（可玩验证）、二项尾巴观测台、分池对赌串通模拟（公平 → 每局 −$0.50）、帽子问题期望恒为 1、优惠券收集 nHₙ 蒙特卡洛对拍。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch18.html">
+      <div class="head">
+        <div class="no">CHAPTER 18</div>
+        <h2>条件概率</h2>
+        <div class="en">Conditional Probability</div>
+      </div>
+      <div class="body">
+        <p>95% 准确率的检测阳性后只有 15.4% 可信：检测器实验台三参数随便拨、贝叶斯因子更新器连阳翻案（×100 压不过 1:9999）、辛普森悖论实验台亲手凑数、三硬币 pairwise ✓ mutual ✗ 验证器。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 60 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch17.html">
+      <div class="head">
+        <div class="no">CHAPTER 17</div>
+        <h2>事件与概率空间</h2>
+        <div class="en">Events and Probability Spaces · Part IV 开篇</div>
+      </div>
+      <div class="body">
+        <p>四步法处决蒙提霍尔错觉（树表 12 行逐行加权）、换门蒙特卡洛法庭（万局收敛 2/3）、非传递怪骰子对决台（掷一次 5/9 绕圈，掷两次整体翻转）、生日碰撞曲线（27 人过 0.63）、先手优势几何级数 2/3。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch16.html">
+      <div class="head">
+        <div class="no">CHAPTER 16</div>
+        <h2>生成函数</h2>
+        <div class="en">Generating Functions · Part III 收官</div>
+      </div>
+      <div class="body">
+        <p>把数列穿在身上做代数：水果袋约束实验室（四条刁钻约束乘出 n+1 的 "Amazing!" 时刻）、卷积对角线观测台、换零钱实验室（50 美分 50 种）、Binet 公式验证器、斐波那契/河内塔递推步进求解。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch15.html">
+      <div class="head">
+        <div class="no">CHAPTER 15</div>
+        <h2>计数规则</h2>
+        <div class="en">Cardinality Rules</div>
+      </div>
+      <div class="body">
+        <p>六把尺子配齐：牌照 Sum×Product 连击、Bookkeeper 计数器（试试你的名字）、扑克牌型计数器（两对的 2-to-1 陷阱名场面）、五张牌魔术解码台（鸽笼+排列编码，不需要读心）、容斥文氏图。</p>
+        <div class="row"><span class="tag">6 个装置</span><span class="tag">⏱ 约 55 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch14.html">
+      <div class="head">
+        <div class="no">CHAPTER 14</div>
+        <h2>求和与渐近</h2>
+        <div class="en">Sums &amp; Asymptotics · Part III 开篇</div>
+      </div>
+      <div class="body">
+        <p>百万彩票现值只有半百万；227 本书才能悬出桌沿 3 本书长。年金计算器、扰动法步进器（中间项成对湮灭）、积分包围实验台、书堆悬挑 Hₙ/2 模拟、渐近记号快判——算法分析的数学语言开箱。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 45 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch13.html">
+      <div class="head">
+        <div class="no">CHAPTER 13</div>
+        <h2>平面图</h2>
+        <div class="en">Planar Graphs</div>
+      </div>
+      <div class="body">
+        <p>狗屋与 quadrapu 之谜的图论处决：欧拉公式 v−e+f=2 实验室、边数上界 e≤3v−6 检验器、五色定理步进剧场、正多面体只有五种的穷举表。Part II 图论三部曲收官。</p>
+        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch12.html">
+      <div class="head">
+        <div class="no">CHAPTER 12</div>
+        <h2>简单图</h2>
+        <div class="en">Simple Graphs</div>
+      </div>
+      <div class="body">
+        <p>"男性平均伴侣数多 74%"的调查被一行图论判死；握手引理、Hall 定理、考试着色器（χ(G)=3 挑战）——从社会统计到排课算法的简单图之旅。</p>
+        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch11.html">
+      <div class="head">
+        <div class="no">CHAPTER 11</div>
+        <h2>通信网络</h2>
+        <div class="en">Communication Networks</div>
+      </div>
+      <div class="body">
+        <p>直径、开关数、拥塞——三个互相打架的指标。从二叉树网的"拥塞 N"到 Beneš 网的拥塞 1（圣杯），外加约束图 2-着色的归纳证明。对比表拨 N 滑块看 trade-off。</p>
+        <div class="row"><span class="tag">3 个装置</span><span class="tag">⏱ 约 30 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch10.html">
+      <div class="head">
+        <div class="no">CHAPTER 10</div>
+        <h2>有向图与偏序</h2>
+        <div class="en">Directed Graphs &amp; Partial Orders</div>
+      </div>
+      <div class="body">
+        <p>邻接矩阵的幂能数 walk、穿衣服 DAG 的并行调度只要 4 分钟（critical path 定理）、偏序与等价关系全家桶——关系性质鉴定矩阵等你来标。</p>
+        <div class="row"><span class="tag">4 个装置</span><span class="tag">⏱ 约 45 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch09.html">
+      <div class="head">
+        <div class="no">CHAPTER 09</div>
+        <h2>数论</h2>
+        <div class="en">Number Theory · Part II 开篇</div>
+      </div>
+      <div class="body">
+        <p>水壶终审判决、欧几里得算法与 Pulverizer、模算术、欧拉定理，以及完整的 RSA Playground——选素数、发密文、解密还原，亲手走一遍保护着互联网的数学。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 50 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch08.html">
+      <div class="head">
+        <div class="no">CHAPTER 08</div>
+        <h2>无限集</h2>
+        <div class="en">Infinite Sets · 第一部分收官</div>
+      </div>
+      <div class="body">
+        <p>Cantor 对角论证剧场（揪出漏网之串）、无限旅馆、停机悖论五步引爆、Russell 悖论与 ZFC——证明 pow(ℕ) 与 ℝ 不可数，证明完美的程序分析器逻辑上不可能。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
+      </div>
+    </a>
+    <a class="card" href="ch07.html">
+      <div class="head">
+        <div class="no">CHAPTER 07</div>
+        <h2>递归数据类型</h2>
+        <div class="en">Recursive Data Types</div>
+      </div>
+      <div class="body">
+        <p>RecMatch 括号构造器、病态递归定义展览馆（含悬而未决的 Collatz）、Aexp 替换模型 vs 环境模型对赌——编译器按结构归纳过日子，这里给你看底牌。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 35 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch06.html">
+      <div class="head">
+        <div class="no">CHAPTER 06</div>
+        <h2>状态机</h2>
+        <div class="en">State Machines</div>
+      </div>
+      <div class="body">
+        <p>对角机器人永远到不了 (1,0)？9 加仑壶永远量不出 4 加仑？不变量原理一次说清。含 Die Hard 水壶模拟器、快速幂单步机、稳定婚姻 Mating Ritual 单步模拟（男士最优定理亲手验证）。</p>
+        <div class="row"><span class="tag">5 个装置</span><span class="tag">⏱ 约 45 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch05.html">
+      <div class="head">
+        <div class="no">CHAPTER 05</div>
+        <h2>归纳法</h2>
+        <div class="en">Induction</div>
+      </div>
+      <div class="body">
+        <p>糖果多米诺、归纳版模板拼图、同色马悬案（链条断在 P(1)→P(2)）、强/普通归纳选型、堆叠游戏——任意拆法总分恒为 n(n−1)/2，你的策略无关紧要。</p>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch04.html">
+      <div class="head">
+        <div class="no">CHAPTER 04</div>
+        <h2>数学数据类型</h2>
+        <div class="en">Mathematical Data Types</div>
+      </div>
+      <div class="body">
+        <p>集合、序列、函数、关系、基数——程序员的类型系统在数学里的原形。集合运算法官、幂集发电站、亲手连箭头的关系五性质鉴定器、映射规则实验室。</p>
+        <div class="row"><span class="tag">6 个装置</span><span class="tag">⏱ 约 35 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch03.html">
+      <div class="head">
+        <div class="no">CHAPTER 03</div>
+        <h2>逻辑公式</h2>
+        <div class="en">Logical Formulas</div>
+      </div>
+      <div class="body">
+        <p>亲手填出五个连接词的真值表、给代码做等价化简、当 SAT 猎手把四条子句全拨绿、和量词顺序玩换位游戏——还有 P vs. NP 那一百万美元的故事。</p>
+        <div class="row"><span class="tag">8 个装置</span><span class="tag">⏱ 约 40 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch02.html">
+      <div class="head">
+        <div class="no">CHAPTER 02</div>
+        <h2>良序原理</h2>
+        <div class="en">The Well Ordering Principle</div>
+      </div>
+      <div class="body">
+        <p>每个非空的非负整数集合都有最小元素——这句话看着废话，却是离散数学最锋利的证明武器：最小反例法。良序试金石、模板拼图、素因数分解机、无限下降机，外加两个假证明悬案。</p>
+        <div class="row"><span class="tag">7 个装置</span><span class="tag">⏱ 约 35 分钟</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="ch01.html">
+      <div class="head">
+        <div class="no">CHAPTER 01</div>
+        <h2>什么是证明？</h2>
+        <div class="en">What is a Proof?</div>
+      </div>
+      <div class="body">
+        <p>命题判官、反例猎人、推理法庭、六人派对（R(3,3)=6 染色游戏）、√2 审判庭、格点猎手、假证明诊所——命题、演绎、公理三大主角一次认清，终局自测授"逻辑法官"衔。</p>
+        <div class="row"><span class="tag">11 个装置</span><span class="tag">2 段 Manim 短片</span><span class="tag">⏱ 约 40 分钟</span></div>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-label">🎓 全书 22 章 · 全部上线</div>
+  <div class="grid">
+    <div class="body"><p style="margin:0"><b>🎉 《数学之旅》完完整整走完了：Part I 证明八章、Part II 结构五章、Part III 计数三章、Part IV 概率五章、Part V 递归式一章——MIT 6.042 全书 22 章 × 100 余个可玩装置。</b>从"什么是证明"到 Akra-Bazzi，从 √2 审判庭到 PageRank。感谢同行，原书习题就是下一程。</p></div>
+  </div>
+
+  <div class="note">逐章更新中 · 适配性原则：能亲手玩的不拍成视频，Manim 只做电影化叙事。</div>
+
+  <footer>
+    <span>© 2026 cohen</span>
+    <span>格致 · rockcohen.cc</span>
+    <span><a href="https://github.com/RockCohen">GitHub</a></span>
+    <span><a href="/">← 返回首页</a></span>
+  </footer>
+</div>
+</body>
+</html>

@@ -10,3 +10,7 @@ dist/
 
 # Python 产物(不入库)
 __pycache__/
+
+# Manim 虚拟环境与渲染中间产物(不入库)
+manim/.venv/
+mcs-interactive/manim/.venv/

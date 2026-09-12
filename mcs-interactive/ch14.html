@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>求和与渐近 · 数学之旅第十四章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 14 章的中文交互式解读：闭式、扰动法、几何级数、积分包围近似、书堆悬挑与调和数。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+@media (max-width:720px){.eq{white-space:normal;font-size:17px} .eq.math{white-space:normal}}
+.math{font-family:var(--serif);white-space:nowrap}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+
+.num-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+.big{font-family:var(--mono);font-size:22px;color:var(--accent);font-weight:700}
+.statcard{border:1.5px solid var(--line);border-radius:10px;padding:8px 14px;background:#fff;font-size:14px}
+.statcard b{font-family:var(--mono)}
+
+/* 书堆 */
+.books-vis{display:flex;flex-direction:column-reverse;align-items:center;min-height:180px;margin:10px 0}
+.bookrow{height:14px;border:1px solid var(--accent);background:var(--accent-soft);border-radius:2px;margin:1px 0}
+
+/* 扰动法 */
+.pert{font-family:var(--mono);font-size:14px;line-height:2.1;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:10px 18px;margin-top:10px;white-space:pre-wrap}
+.pert .cancel{color:var(--bad);text-decoration:line-through}
+.pert .keep{color:var(--accent);font-weight:700}
+
+/* 快判 */
+.qc-row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:12px;padding:12px 18px;margin:10px 0;background:#fff}
+.qc-row .stmt{font-family:var(--serif);font-size:16px;flex:1;min-width:220px}
+.qc-row .verdict{font-size:14px;display:none;border-top:1px dashed var(--line);padding-top:8px;margin-top:8px;width:100%;line-height:1.7}
+.qc-row .verdict.show{display:block}
+.qc-row.done{opacity:.92}
+
+.quiz-item{margin:18px 0}
+.case{margin:16px 0}
+.case .q{font-family:var(--serif);font-size:17px;font-weight:600;margin:8px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px 16px;font-size:15px;transition:.15s;line-height:1.6}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.picked-ok{border-color:var(--good);background:var(--good-soft)}
+.opt.picked-no{border-color:var(--bad);background:var(--bad-soft)}
+.books-vis{position:relative}
+.books-vis::after{content:"桌沿";position:absolute;left:-10px;bottom:-24px;font-size:12px;color:var(--muted)}
+.bookrow{position:relative}
+.bookrow::before{content:"";position:absolute;left:-22px;top:0;width:22px;height:100%;background:repeating-linear-gradient(45deg,#d9d2c2 0 4px,transparent 4px 8px);opacity:.55}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:16%;left:6%;font-size:44px;--t:15s">Σ</span>
+  <span class="hero-sym" style="top:64%;left:12%;font-size:38px;--t:19s;animation-delay:-6s">~</span>
+  <span class="hero-sym" style="top:22%;right:9%;font-size:42px;--t:17s;animation-delay:-3s">Hₙ</span>
+  <span class="hero-sym" style="top:68%;right:15%;font-size:36px;--t:13s;animation-delay:-9s">O( )</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 14 · Part III 开篇</span>
+    <h1>求和与渐近</h1>
+    <div class="en">Sums and Asymptotics</div>
+    <p class="lead">彩票的"百万大奖"现值其实只有五十几万；一摞书能悬出桌沿任意远，但要 227 本才悬出 3 本长。闭式、扰动法、几何级数、积分包围与 Big-O——算法分析的数学语言从本章开始。</p>
+    <div class="meta">
+      <span>⏱ 约 45 分钟</span><span>🧩 5 个互动装置</span><span>📖 原书第 547–596 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch13.html">上一章：平面图</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s1"><span class="toc-num">14.1</span>年金与几何级数</a>
+  <a href="#s2"><span class="toc-num">14.2</span>幂和与 Gauss</a>
+  <a href="#s3"><span class="toc-num">14.3</span>积分包围近似</a>
+  <a href="#s4"><span class="toc-num">14.4</span>书堆悬挑与调和数</a>
+  <a href="#s5"><span class="toc-num">14.6</span>渐近记号快判</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 14.1 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">14.1</span><h2>年金：今天的百万 vs 每年的五万</h2><span class="en">The Value of an Annuity</span></div>
+  <div class="reveal">
+    <p>彩票给你两个选择：今天拿 100 万，或未来 20 年每年拿 5 万。直觉说后者总数更多？<b>货币有时间价值</b>：利率 p = 8% 时，一年后的 10 元今天只值 10/(1+p) ≈ 9.26 元。n 年 m 元年金的真实价值 V 是一串几何和，用<span class="term">扰动法</span>（S 与 xS 相减，中间大规模抵消）可推出闭式：</p>
+    <div class="eq math">V = m·(1 − xⁿ) / (1 − x)，其中 x = 1/(1+p)　　无限年期：V = m(1+p)/p</div>
+    <p>代入 5 万、20 年、8%：V ≈ <b>$530,180</b>——"百万大奖"现值只有半百万。永不停止的版本也只有 $675,000（银行里躺着 100 万本来就每年能花 8 万到永远）。</p>
+  </div>
+
+  <!-- 互动① 年金计算器 -->
+  <div class="widget reveal" id="w-ann">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🏦 年金现值计算器</h4>
+    <div class="num-row">
+      <label class="small">年付 m = <b id="ann-m" style="font-family:var(--mono)">50,000</b> 元</label>
+      <input type="range" id="ann-ms" min="10" max="200" value="50" style="width:130px" />
+      <label class="small">年数 n = <b id="ann-n" style="font-family:var(--mono)">20</b></label>
+      <input type="range" id="ann-ns" min="1" max="50" value="20" style="width:130px" />
+      <label class="small">利率 p = <b id="ann-p" style="font-family:var(--mono)">8%</b></label>
+      <input type="range" id="ann-ps" min="1" max="17" value="8" style="width:110px" />
+    </div>
+    <div class="num-row">
+      <div class="statcard">n 年年金现值 V = <b id="ann-v">—</b></div>
+      <div class="statcard">永续年金 V<sub>∞</sub> = m(1+p)/p = <b id="ann-inf">—</b></div>
+      <div class="statcard">名义总额 = m·n = <b id="ann-total">—</b></div>
+    </div>
+    <div class="fb info" id="ann-fb" style="display:block">调一调 n 和 p：年数越多、利率越低，年金越接近名义总额——但 8% 利率下"百万彩票"永远追不上现款。</div>
+  </div>
+
+  <!-- 互动② 扰动法步进 -->
+  <div class="widget reveal" id="w-pert">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">🌀 扰动法步进器：看中间项大规模抵消</h4>
+    <div class="wdesc">选一个 x，然后一步步"扰动"S：乘 x、错位、相减——中间项成对湮灭，闭式自己掉出来。</div>
+    <div class="num-row" id="pert-xpick">
+      <button class="btn xpick primary" data-p="1" data-q="2">x = 1/2</button>
+      <button class="btn xpick" data-p="1" data-q="3">x = 1/3</button>
+      <button class="btn xpick" data-p="2" data-q="3">x = 2/3</button>
+      <button class="btn primary" id="pert-step" style="margin-left:auto">下一步 →</button>
+      <button class="btn ghost" id="pert-reset">重来</button>
+    </div>
+    <div class="pert" id="pert-out">S = ？（点"下一步"开始扰动）</div>
+    <div class="fb info" id="pert-fb"></div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">14.1.2</span>扰动法：自己发现闭式</h3>
+    <div class="box method">
+      <span class="label">Perturbation Method</span>
+      <p style="margin:4px 0">对 S = 1 + x + x² + ⋯ + xⁿ：写出 xS = x + x² + ⋯ + xⁿ⁺¹，两式相减——中间所有项<b>大规模抵消</b>，只剩 S − xS = 1 − xⁿ⁺¹，解出 S = (1 − xⁿ⁺¹)/(1 − x)。求导一次还能得到 Σixⁱ 的闭式（定理 14.1.2）。下一章生成函数会再用这招。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 14.2 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">14.2</span><h2>幂和：Gauss 的配对与系数猜法</h2><span class="en">Sums of Powers</span></div>
+  <div class="reveal">
+    <p>高斯小学生的传说：把 1+2+⋯+n 正写一遍反写一遍，相加得 n(n+1)，所以和是 n(n+1)/2。平方和用不了这招，但可以<b>猜它是三次多项式 an³+bn²+cn+d</b>，代 n = 0..3 解线性方程组得 a=1/3, b=1/2, c=1/6——与 14.14 式吻合。原书警告：猜出来必须回头<b>证明</b>（归纳或生成函数），猜错形状就全错。</p>
+  </div>
+</section>
+
+<!-- ================= 14.3 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">14.3</span><h2>积分包围：给没有闭式的和找上下界</h2><span class="en">Approximating Sums</span></div>
+  <div class="reveal">
+    <div class="box thm">
+      <span class="label">定理 14.3.2 · 积分包围</span>
+      <p style="margin:4px 0">f 弱递增时：I + f(1) ≤ S ≤ I + f(n)，其中 I = ∫₁ⁿ f(x)dx（把和看成矩形面积、把积分看成曲线下面积）。f 弱递减时上下界对调。</p>
+    </div>
+    <p>例：Σ√i 被 (2/3)(n^(3/2) − 1) + 1 与 (2/3)(n^(3/2) − 1) + √n 夹住——即 S ≈ (2/3)n^(3/2)。"和 ≈ 最大项的常数倍"是几何递减/递增和的经验法则。</p>
+  </div>
+
+  <!-- 互动③ 积分包围 -->
+  <div class="widget reveal" id="w-int">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">📐 积分包围实验台：矩形与曲线夹住 S</h4>
+    <div class="num-row">
+      <button class="btn fpick primary" data-f="sqrt">f(x) = √x（弱递增）</button>
+      <button class="btn fpick" data-f="inv">f(x) = 1/x（弱递减）</button>
+      <label class="small" style="margin-left:auto">n = <b id="int-n" style="font-family:var(--mono)">10</b></label>
+      <input type="range" id="int-ns" min="2" max="30" value="10" style="width:150px" />
+    </div>
+    <svg id="int-svg" viewBox="0 0 680 250" style="width:100%;background:#fff;border:1px solid var(--line);border-radius:10px"></svg>
+    <div class="fb info" id="int-fb" style="display:block"></div>
+  </div>
+</section>
+
+<!-- ================= 14.4 书堆 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">14.4</span><h2>书堆悬挑：调和数登场</h2><span class="en">Hanging Out Over the Edge</span></div>
+  <div class="reveal">
+    <p>n 本书叠成一摞、每本往桌沿外探，最多能探出多远？物理：第 i 层的质心要坐在下一层的边缘上。解递推得 <b>Bₙ = Hₙ/2</b>——调和数 Hₙ = 1 + 1/2 + ⋯ + 1/n 的一半！调和数没有已知闭式，但积分包围给 ln(n) + 1/2 ≤ Hₙ ≤ ln(n) + 1。结论：<b>书可以悬出桌沿任意远</b>（Hₙ ~ ln n → ∞），但代价指数级——悬出 3 本书长需要 227 本。</p>
+  </div>
+
+  <!-- 互动④ 书堆悬挑 -->
+  <div class="widget reveal" id="w-books">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">📚 书堆悬挑模拟器：Hₙ/2 本长的野心</h4>
+    <input type="range" id="bk-n" min="1" max="100" value="4" />
+    <div class="small muted">书 = <b id="bk-nlabel" style="font-family:var(--mono)">4</b> 本 · 悬挑 = Hₙ/2 ≈ <b id="bk-h" style="font-family:var(--mono)">1.0417</b> 本书长（ln n ≈ <span id="bk-ln">1.386</span>）</div>
+    <div class="books-vis" id="books-vis"></div>
+    <div class="fb info" id="bk-fb" style="display:block">H₄ = 25/12 > 2：四本书就能悬出一整个书长。要悬出 3 本书长？227 本起步。</div>
+  </div>
+</section>
+
+<!-- ================= 渐近快判 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">14.6</span><h2>渐近记号快判</h2><span class="en">Asymptotic Notation</span></div>
+  <div class="reveal">
+    <p><span class="term">渐近相等 f ~ g</span>：lim f(x)/g(x) = 1。Hₙ ~ ln n（欧拉常数 γ 与 ε(n) 都被 ~ 吸收——注意 Hₙ ~ ln n + γ 写法不对，常数被 ~ 的定义吞掉）。Big-O 与家族成员在算法分析中的正式登场。四道快判：</p>
+  </div>
+
+  <!-- 互动⑤ 渐近快判 -->
+  <div class="widget reveal" id="w-asym">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">⚖️ 渐近关系快判：f ~ g 成立吗？</h4>
+    <div id="as-list"></div>
+    <div style="margin-top:14px;font-size:14.5px">进度 <span class="score-pill" id="as-score">0 / 4</span></div>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>0.99999… = 1（原书 14.1.5，式 14.7）</summary>
+      <div class="body">
+        <p>0.9·Σ(1/10)ⁱ = 0.9 · 1/(1−1/10) = 1。几何级数一句顶一万句的"数学辩论终结者"。还有 1 − 1/2 + 1/4 − ⋯ = 2/3（交错级数）、1 + 2 + 4 + ⋯ + 2ⁿ⁻¹ = 2ⁿ − 1（几何递增和 ≈ 最大项的两倍）。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>倒金字塔：书堆的进阶玩法（原书 14.4 末尾）</summary>
+      <div class="body">
+        <p>我们的"每本书只压在一本上"结论其实可以再进化：允许一本压在多本上（倒金字塔结构），n 本书能悬出 <b>∝ n^(1/3)</b> 本书长——比 ln n 快得多（Maximum Overhang, [14]）。所以"调和数一半"也不是极限，是单支撑结构的极限。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>课后挑战（均出自原书习题）</summary>
+      <div class="body">
+        <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
+          <li><b>14.2</b> 用扰动法（而非求导）推导 Σixⁱ 的闭式。</li>
+          <li><b>14.4</b> 闭式推导 1·2 + 2·3 + ⋯ + n(n+1) = n(n+1)(n+2)/3（第 2 章习题 2.17 的闭式来源）。</li>
+          <li><b>14.10</b> 补全弱递减情形的积分包围证明。</li>
+          <li><b>14.21</b> 证明 |Hₙ − ln(n) − γ| ≤ 1/n 的精细版。</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 14 章 = 第 547–596 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch13.html">上一章：平面图</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s1">14.1 · 年金与几何级数</a><a href="#s2">14.2 · 幂和与 Gauss</a><a href="#s3">14.3 · 积分包围近似</a>
+    <a href="#s4">14.4 · 书堆悬挑与调和数</a><a href="#s5">14.6 · 渐近记号快判</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const click = el => el.dispatchEvent(new MouseEvent("click", {bubbles: true}));
+
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s1").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+/* ---------- 互动① 年金 ---------- */
+(() => {
+  function upd(){
+    const m = +$("#ann-ms").value * 1000, n = +$("#ann-ns").value, p = +$("#ann-ps").value / 100;
+    $("#ann-m").textContent = m.toLocaleString();
+    $("#ann-n").textContent = n;
+    $("#ann-p").textContent = $("#ann-ps").value + "%";
+    const x = 1 / (1 + p);
+    const V = m * (1 - Math.pow(x, n)) / (1 - x);
+    const Vinf = m * (1 + p) / p;
+    $("#ann-v").textContent = "$" + Math.round(V).toLocaleString();
+    $("#ann-inf").textContent = "$" + Math.round(Vinf).toLocaleString();
+    $("#ann-total").textContent = "$" + (m * n).toLocaleString();
+  }
+  ["ann-ms","ann-ns","ann-ps"].forEach(id => $("#" + id).addEventListener("input", upd));
+  upd();
+})();
+
+/* ---------- 互动② 扰动法 ---------- */
+(() => {
+  let x = {p:1, q:2}, step = 0, running = false;
+  const out = $("#pert-out"), fb = $("#pert-fb"), btn = $("#pert-step");
+  const pow = (p,q,k) => k === 0 ? "1" : (k === 1 ? `${p}/${q}` : `(${p}/${q})${["⁰","¹","²","³","⁴","⁵"][k]}`);
+  const frac = (a,b) => { const g = (function gcd(a,b){return b?gcd(b,a%b):a})(a,b); const s = b<0?-1:1; return `${s*a/g}/${s*b/g}`; };
+  function render(){
+    const {p,q} = x;
+    const Snum = q**4 + p*q**3 + p*p*q*q + p**3*q + p**4, Sden = q**4;
+    const lines = [];
+    if (step === 0) { out.textContent = "S = ？（点「下一步」开始扰动）"; fb.className="fb info"; fb.textContent=""; return; }
+    lines.push(`设  S   = 1 + ${pow(p,q,1)} + ${pow(p,q,2)} + ${pow(p,q,3)} + ${pow(p,q,4)}`);
+    if (step >= 2) lines.push(`乘 x  xS  = ${pow(p,q,1)} + ${pow(p,q,2)} + ${pow(p,q,3)} + ${pow(p,q,4)} + ${pow(p,q,5)}`);
+    if (step >= 3) {
+      const c = s => `<span class="cancel">${s}</span>`;
+      lines.push(`相减 S−xS = 1 ${c(`+ ${pow(p,q,1)} + ${pow(p,q,2)} + ${pow(p,q,3)} + ${pow(p,q,4)}`)}\n` +
+        `              − ${c(`(${pow(p,q,1)} + ${pow(p,q,2)} + ${pow(p,q,3)} + ${pow(p,q,4)} + ${pow(p,q,5)})`)}\n` +
+        `          = 1 − ${pow(p,q,5)}　　← 中间四项成对湮灭！`);
+    }
+    if (step >= 4) {
+      lines.push(`解出 S = (1 − ${pow(p,q,5)}) / (1 − ${pow(p,q,1)}) = ${frac(q**5 - p**5, q**4*(q-p))}`);
+      const exact = Snum/Sden, closed = (q**5-p**5)/(q**4*(q-p));
+      lines.push(`验算：硬算 S = ${frac(Snum,Sden)} ≈ ${exact.toFixed(6)}，闭式 ≈ ${closed.toFixed(6)} ✓`);
+    }
+    out.innerHTML = lines.join("\n");
+    fb.className = "fb info";
+    fb.textContent = ["",
+      "第 1 步：老老实实写出 S。",
+      "第 2 步：'扰动'——两边同乘 x。看：xS 的项和 S 的项几乎完全一样，只是错开一位。",
+      "第 3 步：两式相减，错开的项成对抵消，只剩两端的 1 和 x⁵。这就是'大规模抵消'。",
+      "第 4 步：S(1−x) = 1 − x⁵，除一下就是闭式。原书定理 14.1.1 的 Σxⁱ = (1−xⁿ⁺¹)/(1−x) 就是这么来的（|x|<1 时令 n→∞ 得 1/(1−x)）。"][step];
+    btn.textContent = step >= 4 ? "完成 ✓ 再来一轮？" : "下一步 →";
+    if (step >= 4) btn.textContent = "再来一轮 →";
+  }
+  btn.addEventListener("click", () => { step = step >= 4 ? 1 : step + 1; render(); });
+  $("#pert-reset").addEventListener("click", () => { step = 0; render(); });
+  $$(".xpick").forEach(b => b.addEventListener("click", () => {
+    $$(".xpick").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary");
+    x = {p:+b.dataset.p, q:+b.dataset.q};
+    step = Math.max(step, 1); render();
+  }));
+  render();
+})();
+
+/* ---------- 互动③ 积分包围 ---------- */
+(() => {
+  let fmode = "sqrt";
+  const svg = $("#int-svg"), NS = "http://www.w3.org/2000/svg";
+  const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const f = x => fmode === "sqrt" ? Math.sqrt(x) : 1/x;
+  const F = x => fmode === "sqrt" ? (2/3)*(Math.pow(x,1.5) - 1) : Math.log(x);  // ∫₁ˣ
+  function draw(){
+    const n = +$("#int-ns").value;
+    $("#int-n").textContent = n;
+    svg.innerHTML = "";
+    const W = 680, H = 250, L = 46, R = 14, T = 16, B = 30;
+    const xmax = n + 1.45;
+    const ymax = fmode === "sqrt" ? f(n)*1.12 : 1.12;
+    const X = x => L + (x - 0.6) / (xmax - 0.6) * (W - L - R);
+    const Y = y => H - B - y / ymax * (H - T - B);
+    // 积分区域（曲线下）
+    let d = `M ${X(1)} ${Y(0)}`;
+    for (let x = 1; x <= n + 1e-9; x += 0.05) d += ` L ${X(x)} ${Y(f(x))}`;
+    d += ` L ${X(n)} ${Y(0)} Z`;
+    svg.appendChild(el("path", {d, fill:"#e7eff7", stroke:"none"}));
+    // 矩形（和项）：高 f(i)，i = 1..n
+    for (let i = 1; i <= n; i++) {
+      const y = f(i);
+      svg.appendChild(el("rect", {x: X(i), y: Y(y), width: X(i+1)-X(i), height: Y(0)-Y(y),
+        fill: i%2 ? "rgba(180,131,42,.28)" : "rgba(180,131,42,.18)", stroke:"#b4832a", "stroke-width": n>20?0.4:0.8}));
+    }
+    // 曲线
+    svg.appendChild(el("path", {d, fill:"none", stroke:"#0f4c81", "stroke-width":2}));
+    // 轴
+    svg.appendChild(el("line", {x1:X(0.6), y1:Y(0), x2:W-R, y2:Y(0), stroke:"#2b2a26", "stroke-width":1}));
+    svg.appendChild(el("line", {x1:L, y1:T, x2:L, y2:Y(0), stroke:"#2b2a26", "stroke-width":1}));
+    const tx = (x, y, s, anchor="middle", size=11, fill="#6f6a5e") => {
+      const t = el("text", {x, y, "text-anchor":anchor, "font-size":size, fill, "font-family":"var(--mono)"}); t.textContent = s; svg.appendChild(t);
+    };
+    tx(X(1), Y(0)+14, "1"); tx(X(n)+ (n>9?12:0), Y(0)+14, "n="+n);
+    tx(X(n/2), Y(f(n/2)) - 8, fmode==="sqrt"?"y=√x":"y=1/x", "middle", 12, "#0f4c81");
+    // 数值与界
+    let S = 0; for (let i = 1; i <= n; i++) S += f(i);
+    const I = F(n);
+    const lo = fmode === "sqrt" ? I + f(1) : I + f(n);
+    const hi = fmode === "sqrt" ? I + f(n) : I + f(1);
+    const fb = $("#int-fb");
+    fb.innerHTML = `硬算 S = <b>${S.toFixed(4)}</b> · 积分 I = ∫₁ⁿ f = <b>${I.toFixed(4)}</b><br>` +
+      `定理 14.3.2（${fmode==="sqrt"?"弱递增":"弱递减"}）：界 <b>${lo.toFixed(4)} ≤ S ≤ ${hi.toFixed(4)}</b> — ${S>=lo-1e-9 && S<=hi+1e-9 ? "✅ S 被夹住了" : "❌ 越界了？"}` +
+      (fmode==="inv" ? `<br><span class="muted small">这就是调和数：S = Hₙ，I = ln n —— 书堆那节的 ln n 界就是这么来的。</span>` : "");
+  }
+  $$(".fpick").forEach(b => b.addEventListener("click", () => {
+    $$(".fpick").forEach(o => o.classList.remove("primary"));
+    b.classList.add("primary"); fmode = b.dataset.f; draw();
+  }));
+  $("#int-ns").addEventListener("input", draw);
+  draw();
+})();
+
+/* ---------- 互动④ 书堆 ---------- */
+(() => {
+  const slider = $("#bk-n");
+  function upd(){
+    const n = +slider.value;
+    $("#bk-nlabel").textContent = n;
+    let H = 0;
+    for (let i = 1; i <= n; i++) H += 1 / i;
+    const over = H / 2;
+    $("#bk-h").textContent = over.toFixed(4);
+    $("#bk-ln").textContent = Math.log(n).toFixed(3);
+    const vis = $("#books-vis");
+    vis.innerHTML = "";
+    // 画至多 30 本：第 i 本（从顶往下数）右移 ∝ 1/(2i)；小屏自动收窄书宽
+    const show = Math.min(n, 30);
+    const W = Math.max(150, Math.min(260, vis.clientWidth - 100));
+    for (let i = show; i >= 1; i--) {
+      const d = document.createElement("div");
+      d.className = "bookrow";
+      d.style.width = W + "px";
+      d.style.marginLeft = ((1 / (2 * i)) * 140) + "px";
+      d.title = `第 ${n - i + 1} 层：右移 1/(2·${n - i + 1})`;
+      vis.appendChild(d);
+    }
+  }
+  slider.addEventListener("input", upd);
+  upd();
+})();
+
+/* ---------- 互动⑤ 渐近快判 ---------- */
+(() => {
+  const items = [
+    { s:"Hₙ ~ ln n（调和数与 ln n 渐近相等）", ans:true,
+      why:"对。Hₙ = ln n + γ + 1/(2n) + ε(n)/120n⁴，比值 (ln n + γ + …)/ln n → 1。γ 是常数，被 ~ 吞掉。" },
+    { s:"Hₙ ~ ln n + γ（把第二项也写进去）", ans:true,
+      why:"（ln n + γ)/(ln n + γ) = 1 ——当然成立。原书提醒：正确表达 γ 是第二项的方法是写 Hₙ = ln n + γ + O(1/n)，~ 无法单独表达第二项。" },
+    { s:"n + 1 ~ n", ans:true,
+      why:"对。(n+1)/n → 1。渐近相等只关心增长率的领先项，+1 被吞掉。" },    { s:"2ⁿ ~ 3ⁿ", ans:false,
+      why:"确实不成立：(3ⁿ/2ⁿ) = (3/2)ⁿ → ∞ ≠ 1。指数之间没有'渐近相等'，除非底相同。" },
+  ];
+  const list = $("#as-list"); let done = 0, right = 0;
+  items.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "qc-row";
+    div.innerHTML = `<div class="stmt math">${i+1}. ${it.s}</div>
+      <div class="opts"><button class="btn good">成立 ✓</button><button class="btn bad">不成立 ✗</button></div><div class="verdict"></div>`;
+    const vd = $(".verdict", div);
+    $$(".btn", div).forEach((b, k) => b.addEventListener("click", () => {
+      if (div.classList.contains("done")) return;
+      div.classList.add("done"); done++;
+      const said = k === 0, okAns = said === it.ans;
+      if (okAns) right++;
+      vd.className = "verdict show";
+      vd.innerHTML = (okAns ? "✅ " : "❌ ") + it.why;
+      $("#as-score").textContent = done === 4 ? `完成！答对 ${right} / 4` : `${right} / ${done}`;
+    }));
+    list.appendChild(div);
+  });
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"彩票'20 年每年 5 万'在 8% 利率下的现值约为？",
+     opts:[
+       {t:"$1,000,000", ok:false, fb:"那是名义总额——货币有时间价值。"},
+       {t:"≈ $530,000", ok:true, fb:"对（式 14.5 代入 m=50,000, n=20, p=0.08）。百万彩票现值只有半百万。"},
+       {t:"≈ $675,000", ok:false, fb:"那是'永远每年 5 万'的永续年金现值 m(1+p)/p。"},
+       {t:"$500,000", ok:false, fb:"很接近（略低）——精确值 $530,180。"}]},
+    {q:"扰动法求 S = 1 + x + ⋯ + xⁿ：S 与 xS 相减后得到？",
+     opts:[
+       {t:"S − xS = 1 − xⁿ⁺¹，解出 S = (1−xⁿ⁺¹)/(1−x)", ok:true, fb:"对——中间项大规模抵消，只留两端。"},
+       {t:"S − xS = xⁿ", ok:false, fb:"抵消后留下的是两端的 1 与 xⁿ⁺¹。"},
+       {t:"两式完全相等，什么也得不到", ok:false, fb:"只差两端——这正是方法的价值。"},
+       {t:"S − xS = xⁿ⁺¹ − 1", ok:false, fb:"符号反了（那是 xS − S）。"}]},
+    {q:"Σ√i（i 从 1 到 n）的渐近行为约是？",
+     opts:[
+       {t:"≈ n/2", ok:false, fb:"偏小——积分包围给出 (2/3)n^(3/2) 量级。"},
+       {t:"≈ (2/3)n^(3/2)", ok:true, fb:"对。∫₁ⁿ √x dx = (2/3)(n^(3/2) − 1)，上下界夹出这个量级。"},
+       {t:"≈ n²", ok:false, fb:"过大了——√i 增长慢于 i。"},
+       {t:"没有 closed form 也没有好的近似", ok:false, fb:"没有闭式 ✓，但积分包围给出了漂亮的量级。"}]},
+    {q:"n 本书叠起来最大悬挑是？",
+     opts:[
+       {t:"1 本书长，不能再多", ok:false, fb:"多数人的直觉，但错了——Hₙ/2 随 n 增长。"},
+       {t:"Hₙ/2 本书长，可任意远（需指数级多的书）", ok:true, fb:"对。Hₙ ~ ln n，悬出 3 本长就要 227 本。"},
+       {t:"n/2 本书长", ok:false, fb:"过大了——是 Hₙ/2 而非 n/2。"},
+       {t:"√n 本书长", ok:false, fb:"√n 是'倒金字塔'多支撑结构的量级（习题延伸）。"}]},
+    {q:"欧拉常数 γ 出现在哪个公式里？",
+     opts:[
+       {t:"Hₙ = ln n + γ + 1/(2n) + ε(n)/120n⁴", ok:true, fb:"对——γ ≈ 0.5772，调和数的精细渐近展开。"},
+       {t:"Hₙ ~ ln n + γ 中用 ~ 连接时 γ 仍然有意义", ok:false, fb:"~ 只保留领先项，γ 被吞掉；表达第二项要用 = 加误差项。"},
+       {t:"γ = ln 2", ok:false, fb:"γ ≈ 0.5772 ≠ ln 2 ≈ 0.693。"},
+       {t:"γ 是 3n+1 问题的峰值常数", ok:false, fb:"混淆了 Collatz（第 7 章）。"}]},
+    {q:"几何递增和 1 + 2 + 4 + ⋯ + 2ⁿ⁻¹ 的经验法则是？",
+     opts:[
+       {t:"约等于最大项的 1.5 倍", ok:false, fb:"那是公比 3 的情形（3ⁿ−1)/2 ≈ 1.5·3ⁿ⁻¹。"},
+       {t:"约等于最大项的两倍：和 = 2ⁿ − 1", ok:true, fb:"对（式 14.9）。公比 2 的几何递增和总约等于最大项的两倍。"},
+       {t:"恰好等于最大项", ok:false, fb:"差一个最大项减一的量。"},
+       {t:"无法计算——没有闭式", ok:false, fb:"几何和的闭式早就有了（式 14.2）。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["📈 渐近分析师", "闭式、扰动、积分包围、调和数、~ 记号——算法分析的数学语言安装完毕。下一章计数规则：组合数学正式登场。"]
+      : right >= 3 ? ["💰 年金精算员", "几何级数已掌握——积分包围与 ~ 的精确定义回看 14.3 与 14.4.3。"]
+      : ["🌱 求和新丁", "先玩扰动法：S 与 xS 相减的'大规模抵消'是本章一切魔法的原型。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){
+    let i = 0, right = 0;
+    function render(){
+      bodyEl.innerHTML = "";
+      if (i >= items.length) { onDone && onDone(right); return; }
+      const it = items[i];
+      const div = document.createElement("div");
+      div.className = "case";
+      div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+        <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+        <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">下一题 →</button></div>`;
+      const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+      it.opts.forEach(o => {
+        const b = document.createElement("button");
+        b.className = "opt"; b.innerHTML = o.t;
+        b.addEventListener("click", () => {
+          if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+          if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+          else {
+            b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+            $$(".opt", opts).forEach((bb, k2) => { if (it.opts[k2].ok) bb.classList.add("picked-ok"); });
+          }
+          nxt.style.display = "inline-block";
+          nxt.textContent = i === items.length - 1 ? "看结果 →" : "下一题 →";
+        });
+        opts.appendChild(b);
+      });
+      nxt.addEventListener("click", () => { i++; render(); });
+      bodyEl.appendChild(div);
+    }
+    if (resetBtn) resetBtn.addEventListener("click", () => { i = 0; right = 0; render(); result.classList.remove("show"); });
+    render();
+  }
+  runQuiz(box, items, {onDone: grade, resetBtn: $("#quiz-reset")});
+})();
+</script>
+</body>
+</html>

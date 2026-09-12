@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>归纳法 · 数学之旅第五章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 5 章的中文交互式解读：普通归纳、强归纳、同色马假证明与堆叠游戏。7 个互动装置 + 终局自测。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.def{border-left:4px solid var(--good)} .box.def .label{background:var(--good-soft);color:var(--good)}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.box.method{border-left:4px solid var(--amber)} .box.method .label{background:var(--amber-soft);color:var(--amber)}
+.box.bogus{border-left:4px solid var(--bad);background:#fdf6f5} .box.bogus .label{background:var(--bad-soft);color:var(--bad)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.math{font-family:var(--serif);white-space:nowrap}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.primary:hover{background:#0c3f6c}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.good{border-color:var(--good);color:var(--good)}
+.btn.bad{border-color:var(--bad);color:var(--bad)}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+.score-pill{display:inline-block;background:var(--accent-soft);color:var(--accent);border-radius:999px;
+  padding:4px 14px;font-size:13.5px;font-weight:600;margin-left:8px}
+.case{border:1px solid var(--line);border-radius:12px;padding:16px 20px;margin:14px 0;background:#fff}
+.case .q{font-weight:600;margin-top:6px}
+.opts{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.opt{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:8px 16px;font-size:14.5px;transition:.15s;text-align:left}
+.opt:hover{border-color:var(--accent);color:var(--accent)}
+.opt.picked-ok{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.picked-no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:600}
+
+/* 多米诺 */
+.dominos{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.domo{width:52px;height:64px;border-radius:10px;border:1.5px solid var(--line);background:#fff;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--mono);
+  font-size:13px;color:var(--muted);transition:.3s}
+.domo .bar{width:70%;height:2px;background:var(--line);margin:4px 0}
+.domo.has{background:var(--amber-soft);border-color:var(--amber);color:var(--amber);font-weight:700;transform:rotate(-4deg)}
+.domo.has .bar{background:var(--amber)}
+
+/* 拼图 */
+.puzzle-pool{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.puzzle-slot{border:1.5px dashed var(--line);border-radius:10px;padding:10px 14px;min-height:52px;
+  background:#fff;font-size:14.5px;line-height:1.6;margin:8px 0}
+.puzzle-slot.ok{border-style:solid;border-color:var(--good);background:var(--good-soft)}
+.puzzle-slot .idx{font-family:var(--mono);font-size:11px;color:var(--amber);margin-right:8px}
+.pz-btn{border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-size:14px;line-height:1.55;text-align:left;transition:.15s}
+.pz-btn:hover{border-color:var(--accent);color:var(--accent)}
+.pz-btn.used{opacity:.35;pointer-events:none}
+.pz-btn.wrong{border-color:var(--bad);background:var(--bad-soft);animation:shake .3s}
+@keyframes shake{0%,100%{transform:none}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* 诊所 */
+.bug-line{display:block;width:100%;text-align:left;border:1px solid transparent;background:#fff;
+  border-radius:8px;padding:8px 16px;font-family:var(--serif);font-size:16.5px;margin:4px 0;transition:.15s;line-height:1.6}
+.bug-line:hover{border-color:var(--amber);background:#fffdf4}
+.bug-line.accused{border-color:var(--bad);background:var(--bad-soft)}
+.bug-line .ln{font-family:var(--mono);font-size:11px;color:var(--muted);margin-right:10px}
+.chain-break{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:center;margin:14px 0;
+  font-family:var(--mono);font-size:13px}
+.chain-break .node{border:1px solid var(--line);border-radius:8px;padding:3px 10px;background:#fff}
+.chain-break .node.dead{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);font-weight:700}
+.chain-break .arr{color:var(--amber)}
+
+/* 堆叠游戏 */
+.stack-wrap{display:flex;gap:22px;flex-wrap:wrap}
+.stack-wrap .panel{flex:1;min-width:250px}
+.stack-row{display:flex;gap:14px;align-items:flex-end;min-height:150px;padding:10px;
+  border:1.5px solid var(--line);border-radius:12px;background:#fff;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column-reverse;gap:2px;cursor:pointer;transition:.15s}
+.stack .box{width:30px;height:14px;background:var(--accent-soft);border:1px solid #b9cfe2;border-radius:3px}
+.stack:hover .box{background:var(--amber-soft);border-color:var(--amber)}
+.stack .lbl{text-align:center;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.stack-score{font-size:17px;font-family:var(--serif)}
+.hist{font-family:var(--mono);font-size:13px;color:var(--muted);margin-top:8px;line-height:1.8}
+
+/* 快判 */
+.qc-row{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+  border:1px solid var(--line);border-radius:12px;padding:12px 18px;margin:10px 0;background:#fff}
+.qc-row .stmt{font-family:var(--serif);font-size:16px;flex:1;min-width:220px}
+.qc-row .verdict{font-size:14px;display:none;border-top:1px dashed var(--line);padding-top:8px;margin-top:8px;width:100%;line-height:1.7}
+.qc-row .verdict.show{display:block}
+.qc-row.done{opacity:.92}
+
+/* 换零钱 */
+.coin-out{display:flex;gap:8px;flex-wrap:wrap;align-items:center;min-height:44px;margin-top:10px}
+.coin{border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-weight:700;font-size:14px}
+.coin.c3{width:44px;height:44px;background:var(--accent-soft);border:2px solid var(--accent);color:var(--accent)}
+.coin.c5{width:52px;height:52px;background:var(--amber-soft);border:2px solid var(--amber);color:var(--amber)}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+
+.quiz-item{margin:18px 0}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:16%;left:6%;font-size:46px;--t:15s">P(0)</span>
+  <span class="hero-sym" style="top:64%;left:12%;font-size:38px;--t:19s;animation-delay:-6s">⇒</span>
+  <span class="hero-sym" style="top:22%;right:9%;font-size:44px;--t:17s;animation-delay:-3s">∀m</span>
+  <span class="hero-sym" style="top:68%;right:15%;font-size:38px;--t:13s;animation-delay:-9s">＋1</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 05</span>
+    <h1>归纳法</h1>
+    <div class="en">Induction</div>
+    <p class="lead">规则一：队首的学生有糖。规则二：有糖的下一人也有糖。两句话，一整条队伍人人有糖——这就是归纳：离散数学的定义性特征。这一章你将推翻"所有马同色"，并在堆叠游戏里发现策略根本不重要。</p>
+    <div class="meta">
+      <span>⏱ 约 40 分钟</span><span>🧩 7 个互动装置</span><span>⚖️ 终局自测 × 6</span><span>📖 原书第 123–158 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch04.html">上一章：数学数据类型</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s1"><span class="toc-num">5.1</span>普通归纳</a>
+  <a href="#s2"><span class="toc-num">5.1.6</span>同色马悬案</a>
+  <a href="#s3"><span class="toc-num">5.2</span>强归纳</a>
+  <a href="#s4"><span class="toc-num">5.2.5</span>堆叠游戏</a>
+  <a href="#s5"><span class="toc-num">5.3</span>三剑客关系</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 5.1 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">5.1</span><h2>普通归纳：一排学生与两条规定</h2><span class="en">Ordinary Induction</span></div>
+  <div class="reveal">
+    <p>教授带着一袋糖进了教室，让学生按 0 号起排队，宣布两条规则：<b>① 队首（0 号）有糖；② 有糖的人，下一个也有糖。</b>你是 17 号——糖归你了：0 号有糖（规则①），于是 1 号有（规则②），于是 2 号有……规则②用了 17 次，糖到你手。而且不管队伍多长，<b>人人都跑不掉</b>。</p>
+    <div class="box def">
+      <span class="label">归纳原理 INDUCTION PRINCIPLE</span>
+      <p style="margin:4px 0">设 P 是非负整数上的谓词。若<br>
+      • P(0) 为真，且<br>
+      • 对所有非负整数 n，P(n) 蕴含 P(n+1)，<br>
+      则对所有非负整数 m，P(m) 为真。</p>
+    </div>
+    <p>它的第一个正式战果是把第 2 章良序版的求和公式<b>再证一遍</b>（定理 5.1.1）——基例 P(0) 是空和约定，归纳步给等式两边同加 (n+1)。同一个定理，两种证明格式。</p>
+  </div>
+
+  <!-- 互动① 糖果多米诺 -->
+  <div class="widget reveal" id="w-dom">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🍬 糖果多米诺：规则②的机械信任</h4>
+    <p class="wdesc">每按一次"传递"，规则②就往前生效一站。按到你手酸——你依然确信 1,000,000 号也有糖。这份"确信"就是归纳的全部心理基础。</p>
+    <div class="dominos" id="dom-row"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+      <button class="btn primary" id="dom-pass">规则②：传递糖 →</button>
+      <button class="btn ghost" id="dom-reset">重排队</button>
+    </div>
+    <div class="fb info" id="dom-fb" style="display:block">0 号有糖（基例，规则①）。规则②待命。</div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">5.1.3</span>五步模板</h3>
+    <div class="box method">
+      <span class="label">归纳证明模板</span>
+      <p style="margin:4px 0">① 宣布"用归纳法"；② 定义谓词 <span class="math">P(n)</span>（归纳假设，最关键的一步）；③ 证基例 P(0)；④ 证归纳步 P(n) ⇒ P(n+1)（假设 P(n) 真，推出 P(n+1) 真，必须对<b>每个</b> n 成立）；⑤ 调用归纳原理收尾。</p>
+    </div>
+    <p>骨架又来了——上一章搭过良序版，这次换归纳版：</p>
+  </div>
+
+  <!-- 互动② 模板拼图 -->
+  <div class="widget reveal" id="w-puzzle">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">🧩 归纳版模板拼图</h4>
+    <p class="wdesc">按正确顺序点击五个步骤。</p>
+    <div id="pz-slots"></div>
+    <div class="puzzle-pool" id="pz-pool"></div>
+    <div class="fb" id="pz-fb"></div>
+  </div>
+
+  <div class="reveal">
+    <div class="insight"><span class="ico">🎭</span><div>5.1.5 节藏了本章最精彩的一课：MIT Stata 中心的 2ⁿ×2ⁿ 庭院要铺 L 形瓦片、正中央留给雕像 Bill。用"Bill 在中央"当归纳假设？<b>归纳步推不下去（doomed attempt）</b>。把假设<b>强化</b>成"Bill 放<b>任意位置</b>都能铺"，归纳步瞬间打通（四个象限各分一个，中央三角补 L 瓦片）。<b>证不动时，换更强的假设</b>——反直觉，但前提是强假设必须为真。</div></div>
+  </div>
+</section>
+
+<!-- ================= 同色马 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">5.1.6</span><h2>同色马悬案：归纳链断在哪一环？</h2><span class="en">A Faulty Induction Proof</span></div>
+  <div class="reveal">
+    <div class="box bogus">
+      <span class="label">假定理 FALSE THEOREM 5.1.3</span>
+      <p style="margin:4px 0">任意 n ≥ 1 匹马，全部同色。</p>
+    </div>
+    <p>归纳假设、基例 P(1) 都规规矩矩——问题藏在归纳步的一句"显然"里。老规矩，亲手指出<b>第一次犯规</b>：</p>
+  </div>
+
+  <!-- 互动③ 同色马诊所 -->
+  <div class="widget reveal" id="w-horse">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">🐎 同色马诊所</h4>
+    <div id="horse-list" style="text-align:left"></div>
+    <div class="fb" id="horse-fb"></div>
+    <div class="chain-break" id="horse-chain" style="display:none">
+      <span class="node">P(1)✓</span><span class="arr">→</span>
+      <span class="node dead">P(2)</span><span class="arr">→</span>
+      <span class="node">P(3)</span><span class="arr">→</span>
+      <span class="node">P(4)</span><span class="arr">→</span>
+      <span class="node">⋯</span>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <div class="insight"><span class="ico">💡</span><div>原书特意提醒一种<b>不得分</b>的错误解释："因为 P(n) 对 n ≥ 2 是假的，归纳步假设了假命题 P(n)。"——归纳步<b>本来就要</b>假设 P(n)（反证式使用），假设假命题不犯规！犯规的是：从 P(1) 推 P(2) 时引用了不存在的"中间马"。链条断在 <b>P(1) → P(2)</b> 这一环，后面的环节再正确也接不回来。</div></div>
+  </div>
+</section>
+
+<!-- ================= 强归纳 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">5.2</span><h2>强归纳</h2><span class="en">Strong Induction</span></div>
+  <div class="reveal">
+    <div class="box def">
+      <span class="label">强归纳原理</span>
+      <p style="margin:4px 0">若 P(0) 为真，且<b> P(0), P(1), …, P(n) 全体</b>蕴含 P(n+1)（对所有 n），则 P(m) 对所有非负整数 m 为真。<br>
+      <span class="small muted">唯一的变化：归纳步允许假设 P(0)…P(n) <b>全部</b>为真，而不只 P(n)。</span></p>
+    </div>
+    <p>什么时候非用强归纳不可？当 P(n+1) 依赖的不只是 P(n)——比如 Fibonacci 数 F(n+1) 依赖 F(n) 和 F(n−2) 两代（原书用它证"F(n) 是偶 ⟺ F(n+3) 是偶"，基例要验证 n=0 和 n=1 两个）；又比如素分解——n+1 拆成哪两个因子事先不知道，只知道它们都比 n+1 小。做完下面四道场景判断，手感就来了：</p>
+  </div>
+
+  <!-- 互动④ 归纳选型快判 -->
+  <div class="widget reveal" id="w-pick">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🎯 普通还是强？场景选型</h4>
+    <p class="wdesc">判断每个证明用普通归纳还是强归纳更顺手。</p>
+    <div id="pick-list"></div>
+    <div style="margin-top:14px;font-size:14.5px">进度 <span class="score-pill" id="pick-score">0 / 4</span></div>
+  </div>
+</section>
+
+<!-- ================= 堆叠游戏 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">5.2.5</span><h2>堆叠游戏：策略无关的得分</h2><span class="en">The Stacking Game</span></div>
+  <div class="reveal">
+    <p>n 个箱子摞成一摞。每一步把一摞拆成<b>两个非空</b>子摞，得分为两摞高度之积 a×b；拆到全为单箱时游戏结束。定理 5.2.1 断言一个惊人的事实：<b>无论你用什么策略，总分恒为 n(n−1)/2</b>。强归纳一步证明（第一步拆成 a+b 块，总分 = ab + a(a−1)/2 + b(b−1)/2 = n(n−1)/2，由归纳假设 P(a)、P(b)）。空口无凭，跑两把试试——换着策略跑：</p>
+  </div>
+
+  <!-- 互动⑤ 堆叠游戏 -->
+  <div class="widget reveal" id="w-stack">
+    <span class="pill">互动 ⑤</span>
+    <h4 class="wtitle">📦 堆叠游戏：你的策略无关紧要</h4>
+    <p class="wdesc">选箱数、选拆法风格，点"拆一步"或"自动拆完"。理论上限（其实也是下限）= n(n−1)/2。</p>
+    <div class="stack-wrap">
+      <div class="panel" style="flex:1.3">
+        <div class="num-row">
+          <label class="small">n = <b id="stk-n" style="font-family:var(--mono)">10</b></label>
+          <input type="range" id="stk-slider" min="2" max="10" value="10" style="width:130px" />
+          <button class="btn ghost" id="stk-mode" style="min-width:150px">拆法：均分</button>
+          <button class="btn primary" id="stk-step">拆一步</button>
+          <button class="btn" id="stk-auto">自动拆完</button>
+        </div>
+        <div class="stack-row" id="stk-row"></div>
+        <div class="hist" id="stk-hist"></div>
+      </div>
+      <div class="panel">
+        <div class="stack-score" id="stk-score">得分 = 0</div>
+        <div class="small muted" id="stk-target"></div>
+        <div class="insight" style="margin:14px 0 0"><span class="ico">🧠</span><div>强归纳的证明妙在<b>把"任意策略"吃进归纳假设</b>：第一步拆出 a、b 后，剩下的得分不管你怎么拆都由 P(a)、P(b) 锁死。归纳假设强到能吞掉策略，结论自然策略无关。</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">5.2.4</span>顺手的实战：Inductia 换零钱</h3>
+    <p>Inductia 国只有 3Sg 和 5Sg 两种硬币，但 ≥ 8Sg 的任何金额都找得开。强归纳：n+1 ≥ 11 时，先找 (n+1)−3 ≥ 8 的零钱（归纳假设），再加一枚 3Sg——只剩基例 8=3+5、9=3+3+3、10=5+5 要手工验证。玩一下验证机：</p>
+  </div>
+
+  <!-- 互动⑥ 换零钱 -->
+  <div class="widget reveal" id="w-coin">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🪙 Inductia 找零机（3Sg / 5Sg）</h4>
+    <input type="range" id="coin-slider" min="1" max="20" value="11" aria-label="金额" />
+    <div class="small muted">金额：<b id="coin-n" style="font-family:var(--mono)">11</b> Sg</div>
+    <div class="coin-out" id="coin-out"></div>
+    <div class="fb" id="coin-fb" style="display:block"></div>
+  </div>
+</section>
+
+<!-- ================= 5.3 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">5.3</span><h2>强归纳 vs. 普通归纳 vs. 良序</h2><span class="en">Three Formats of the Same Reasoning</span></div>
+  <div class="reveal">
+    <p>强归纳看着比普通归纳"强"——能假设的更多嘛。但原书捅破：<b>三者是同一推理的三种排版</b>。任何强归纳证明都能机械改写成普通归纳（给归纳假设套一个全称量词），任何良序证明也能自动改写成归纳证明（和被改回）。第 2 章的求和公式良序版与本章的归纳版，就是同一个数学内容换了字体。</p>
+    <div class="insight"><span class="ico">🧭</span><div>选型经验：归纳证明<b>不用反证法</b>，且常常顺手给出递归程序；良序证明有时更短促。没有万能配方——多写几版比一比。无论选哪种，<b>开头就声明方法</b>，给读者一张地图（这条也是第 1 章九条心法的第一条）。</div></div>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>Fibonacci 的奇偶心跳（原书 5.2.2，式 5.4）</summary>
+      <div class="body">
+        <p>0, 1, 1, 2, 3, 5, 8, 13, 21…… 奇偶模式"偶偶奇？不——偶奇奇"循环，周期恰为 3：F(n) 是偶 ⟺ F(n+3) 是偶。强归纳双基例（n=0、n=1）+ 关键引理"m+k 为偶 ⟺ m、k 同奇偶"。原书还留了课后钩子：F(n−1)·F(n+1) − F(n)² = (−1)ⁿ（习题 5.8，卡西尼恒等式）。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>Geherhy 的邪门瓦片（原书习题 5.2）</summary>
+      <div class="body">
+        <p>建筑师 Ghery 后来又想用一种"错位 L 瓦片"铺庭院，还配了一个看似与正文 5.1.5 一模一样的归纳证明。找出它崩掉的那一步——提示：正文证明里三个临时 Bill 恰好拼成一块 L 瓦片；错位瓦片可没有这么听话。"强化假设"必须是<b>真的</b>假设，否则归纳机器空转。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>又一个 bogus：2+3+4+⋯+n = n(n+1)/2（原书习题 5.7）</summary>
+      <div class="body">
+        <p>这个"证明"连归纳步都挑不出毛病——问题出在<b>基例</b>：P(0) 说"2+3+⋯+0 = 0"。但"从 2 加到 0"根本不是合法的省略号用法（空和约定只救 Σ 从 1 起的和）。省略号的起止语义，第 2 章就警告过你。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>餐巾纸上的归纳（原书 5.1.5 节末尾的故事）</summary>
+      <div class="body">
+        <p>"每个平面图都是 5-可选择的"这个猜想让数学家折腾了二十来年。1994 年 Carsten Thomassen 给出的归纳证明简单到能写在餐巾纸上——关键同样是<b>找到那个绝妙的归纳假设</b>。找假设可以要二十年，写下来只要五分钟：归纳法的力气都花在刀刃上。</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 5 章 = 第 123–158 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch04.html">上一章：数学数据类型</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s1">5.1 · 普通归纳</a><a href="#s2">5.1.6 · 同色马悬案</a><a href="#s3">5.2 · 强归纳</a>
+    <a href="#s4">5.2.5 · 堆叠游戏</a><a href="#s5">5.3 · 三剑客关系</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const click = el => el.dispatchEvent(new MouseEvent("click", {bubbles: true}));
+
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s1").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+/* ---------- 互动① 糖果多米诺 ---------- */
+(() => {
+  const row = $("#dom-row"), fb = $("#dom-fb");
+  let fed = 0;
+  const N = 12;
+  function build(){
+    row.innerHTML = "";
+    for (let i = 0; i < N; i++) {
+      const d = document.createElement("div");
+      d.className = "domo" + (i < fed ? " has" : "");
+      d.innerHTML = `${i}<span class="bar"></span>${i < fed ? "🍬" : "·"}`;
+      row.appendChild(d);
+    }
+  }
+  $("#dom-pass").addEventListener("click", () => {
+    fed++;
+    build();
+    if (fed === 1) fb.innerHTML = "1 号有糖了（规则②第 1 次生效）。继续按——按到 100 万次也只是同一招的重复。";
+    else fb.innerHTML = `已传递 ${fed} 站：第 ${fed} 号有糖。规则②对<b>每一个</b> n 都成立——所以你能确信第 1,000,000 号也有糖，尽管你没按那么多次。`;
+    if (fed >= N) { $("#dom-pass").disabled = true; fb.innerHTML += "（演示行只有 12 人，但论证对整条队伍成立。）"; }
+  });
+  $("#dom-reset").addEventListener("click", () => { fed = 0; $("#dom-pass").disabled = false; build(); fb.innerHTML = "0 号有糖（基例，规则①）。规则②待命。"; });
+  build();
+})();
+
+/* ---------- 互动② 归纳模板拼图 ---------- */
+(() => {
+  const steps = [
+    "宣布：本证明使用（强/普通）归纳法",
+    "定义归纳假设/谓词 P(n)——最关键的一步",
+    "基例：证明 P(0)（或 P(1)）为真",
+    "归纳步：假设 P(n)（或 P(0)…P(n) 全体）为真，推出 P(n+1) 为真",
+    "调用归纳原理：P(m) 对所有非负整数 m 成立 ■",
+  ];
+  const order = [1, 0, 2, 3, 4];
+  const slots = $("#pz-slots"), pool = $("#pz-pool"), fb = $("#pz-fb");
+  let next = 0;
+  order.forEach(i => {
+    const b = document.createElement("button");
+    b.className = "pz-btn"; b.textContent = steps[i]; b.dataset.i = i;
+    b.addEventListener("click", () => {
+      if (b.classList.contains("used")) return;
+      if (i === next) {
+        b.classList.add("used");
+        const slot = document.createElement("div");
+        slot.className = "puzzle-slot ok";
+        slot.innerHTML = `<span class="idx">第 ${next+1} 步</span>${steps[i]}`;
+        slots.appendChild(slot);
+        next++;
+        fb.className = "fb ok";
+        fb.textContent = next === 5 ? "🎯 归纳骨架搭完！和第 2 章的良序模板对比一下：同一种推理，两种排版。" : `✓ 正确。还差 ${5-next} 步。`;
+      } else {
+        b.classList.add("wrong");
+        fb.className = "fb no";
+        fb.textContent = next === 0 ? "❌ 开头先亮方法：宣布用归纳法。" :
+          next === 1 ? "❌ 方法亮完，先定义归纳假设 P(n)——整个证明最重要的决定。" :
+          next === 2 ? "❌ 有了 P(n)，先打下基例 P(0)。" :
+          next === 3 ? "❌ 基例站稳后才是归纳步：假设 P(n)，推出 P(n+1)。" :
+          "❌ 归纳步完成后，才轮到调用归纳原理收尾。";
+        setTimeout(() => b.classList.remove("wrong"), 450);
+      }
+    });
+    pool.appendChild(b);
+  });
+})();
+
+/* ---------- 互动③ 同色马诊所 ---------- */
+(() => {
+  const steps = [
+    "对 n 归纳。归纳假设 P(n)：任意 n 匹马都同色。",
+    "基例 P(1)：一匹马当然与自身同色。✓",
+    "归纳步：假设 P(n) 为真（n ≥ 1），任取 n+1 匹马 h₁, h₂, …, hₙ, hₙ₊₁。",
+    "由归纳假设：前 n 匹 h₁, …, hₙ 同色。✓",
+    "再由归纳假设：后 n 匹 h₂, …, hₙ₊₁ 同色。✓",
+    "于是 h₁ 与 hₙ₊₁ 都与'中间那些马' h₂, …, hₙ 同色，故 n+1 匹全部同色。",
+    "由归纳原理，P(n) 对所有 n ≥ 1 成立。■",
+  ];
+  const guilty = 5;
+  const list = $("#horse-list"); let solved = false;
+  const fbEl = $("#horse-fb");
+  steps.forEach((s, i) => {
+    const b = document.createElement("button");
+    b.className = "bug-line";
+    b.innerHTML = `<span class="ln">第 ${i+1} 步</span>${s}`;
+    b.addEventListener("click", () => {
+      if (solved) return;
+      if (i === guilty) {
+        solved = true;
+        b.classList.add("accused");
+        fbEl.className = "fb ok";
+        fbEl.innerHTML = `🎯 <b>抓到了！第 6 步。</b>当 n = 1 时，h₂, …, hₙ 这个区间是<b>空的</b>——根本没有"中间的马"。h₁ 与 h₂ 的颜色毫无理由相同。省略号在这里制造了"还有剩下的马"的错觉：归纳步证明的是 P(1) ⇒ P(2)，而这一环恰恰<b>没被证到</b>。链条从第二环就断了：P(1)✓，P(1)→P(2)✗，后面 P(2)→P(3)、P(3)→P(4) 即使全对也接不回去。`;
+        $("#horse-chain").style.display = "flex";
+      } else {
+        fbEl.className = "fb no";
+        fbEl.innerHTML = "这一步本身没毛病——注意基例 P(1) 与'假设 P(n) 为真'都是合法姿势。（错误与'下标越界'有关：n = 1 时，h₂ 到 hₙ 还剩下谁？）";
+      }
+    });
+    list.appendChild(b);
+  });
+})();
+
+/* ---------- 互动④ 归纳选型快判 ---------- */
+(() => {
+  const items = [
+    { s:"证明 1+2+⋯+n = n(n+1)/2（同第 2 章良序版）", ans:"o",
+      why:"普通归纳足够：P(n+1) 的和 = P(n) 的和再加 (n+1)，只用到相邻一环。" },
+    { s:"证明 Fibonacci 的 F(n) 是偶 ⟺ F(n+3) 是偶（依赖 F(n) 与 F(n−2) 两代）", ans:"s",
+      why:"强归纳：P(n+1) 要同时调用 P(n) 与 P(n−1)——普通归纳的单一假设不够。基例还要验证 n=0、1 两个。" },
+    { s:"证明每个大于 1 的整数都是素数之积（n+1 拆成的因子事先未知）", ans:"s",
+      why:"强归纳：n+1 = k·m 拆出来的 k、m 各是几不确定，只知道都 ≤ n——'全都已证'的强假设正好罩住。" },
+    { s:"证明堆叠游戏总分 = n(n−1)/2（第一步拆出 a + b = n）", ans:"s",
+      why:"强归纳：要用到 P(a) 与 P(b)，而 a、b 可以是任意更小的值——'任意策略'被归纳假设整体吞掉。" },
+  ];
+  const list = $("#pick-list"); let done = 0, right = 0;
+  items.forEach((it, i) => {
+    const div = document.createElement("div");
+    div.className = "qc-row";
+    div.innerHTML = `<div class="stmt">${i+1}. ${it.s}</div>
+      <div class="opts"><button class="btn" data-v="o">普通归纳</button><button class="btn" data-v="s">强归纳</button></div>
+      <div class="verdict"></div>`;
+    const vd = $(".verdict", div);
+    $$(".btn", div).forEach(b => b.addEventListener("click", () => {
+      if (div.classList.contains("done")) return;
+      div.classList.add("done"); done++;
+      const ok = b.dataset.v === it.ans;
+      if (ok) right++;
+      vd.className = "verdict show";
+      vd.innerHTML = (ok ? "✅ " : "❌ 应选") + (it.ans === "s" ? "强归纳。" : "普通归纳。") + it.why;
+      $("#pick-score").textContent = done === 4 ? `完成！答对 ${right} / 4` : `${right} / ${done}`;
+    }));
+    list.appendChild(div);
+  });
+})();
+
+/* ---------- 互动⑤ 堆叠游戏 ---------- */
+(() => {
+  const row = $("#stk-row"), hist = $("#stk-hist"), scoreEl = $("#stk-score"), tgt = $("#stk-target");
+  const slider = $("#stk-slider");
+  let n = 10, stacks = [10], score = 0, mode = "half", moves = [];
+  function target(){ return n * (n - 1) / 2; }
+  function render(){
+    $("#stk-n").textContent = n;
+    row.innerHTML = "";
+    stacks.forEach((h, i) => {
+      const d = document.createElement("div");
+      d.className = "stack";
+      d.title = h > 1 ? "点击拆这一摞" : "";
+      if (h > 1) d.addEventListener("click", () => split(i));
+      for (let k = 0; k < h; k++) {
+        const b = document.createElement("div");
+        b.className = "box"; d.appendChild(b);
+      }
+      const lbl = document.createElement("div");
+      lbl.className = "lbl"; lbl.textContent = h;
+      d.appendChild(lbl);
+      row.appendChild(d);
+    });
+    scoreEl.textContent = `得分 = ${score}` + (stacks.every(h => h === 1) ? ` —— 终局！理论值 n(n−1)/2 = ${target()} ✓` : `（目标/宿命：${target()}）`);
+    if (stacks.every(h => h === 1)) scoreEl.style.color = "var(--good)"; else scoreEl.style.color = "";
+    hist.innerHTML = moves.length ? "得分流水：̶" + " +̶ ".replace("̶","") + moves.join(" + ") + " = " + score : "尚无拆分。点击高于 1 的摞进行拆分。";
+  }
+  function split(i){
+    const h = stacks[i];
+    if (h <= 1) return;
+    let a, b;
+    if (mode === "half") { a = Math.ceil(h / 2); b = h - a; }
+    else { a = 1; b = h - 1; }
+    score += a * b;
+    moves.push(`${a}×${b}=${a*b}`);
+    stacks.splice(i, 1, a, b);
+    stacks.sort((x, y) => y - x);
+    render();
+  }
+  $("#stk-step").addEventListener("click", () => {
+    const i = stacks.indexOf(Math.max(...stacks));
+    if (stacks[i] > 1) split(i);
+  });
+  $("#stk-auto").addEventListener("click", () => {
+    while (stacks.some(h => h > 1)) {
+      const i = stacks.indexOf(Math.max(...stacks));
+      split(i);
+    }
+  });
+  $("#stk-mode").addEventListener("click", e => {
+    mode = mode === "half" ? "one" : "half";
+    e.target.textContent = mode === "half" ? "拆法：均分" : "拆法：拆 1";
+  });
+  slider.addEventListener("input", () => { n = +slider.value; stacks = [n]; score = 0; moves = []; render(); });
+  tgt.textContent = "定理 5.2.1：无论怎么拆，总分恒为 n(n−1)/2。";
+  render();
+})();
+
+/* ---------- 互动⑥ 换零钱 ---------- */
+(() => {
+  const slider = $("#coin-slider"), out = $("#coin-out"), fb = $("#coin-fb"), label = $("#coin-n");
+  function upd(){
+    let v = +slider.value;
+    label.textContent = v;
+    out.innerHTML = "";
+    if (v < 8) {
+      fb.className = "fb no";
+      fb.textContent = `${v} Sg 找不开——3 和 5 拼不出（4、7 是著名死角）。这正是强归纳要绕开的区域：基例从 8 开始（8=3+5, 9=3+3+3, 10=5+5）。`;
+      return;
+    }
+    let rest = v;
+    const coins = [];
+    while (rest >= 5 && (rest - 5 === 0 || rest - 5 >= 3 || rest - 5 >= 8)) { coins.push(5); rest -= 5; if (rest < 3) break; }
+    while (rest >= 5 && rest !== 4 && rest !== 7) { coins.push(5); rest -= 5; }
+    while (rest >= 3) { coins.push(3); rest -= 3; }
+    coins.sort((a, b) => b - a);
+    coins.forEach(c => {
+      const d = document.createElement("span");
+      d.className = "coin c" + c; d.textContent = c + "Sg";
+      out.appendChild(d);
+    });
+    fb.className = "fb ok";
+    fb.textContent = `${v} Sg = ${coins.map(c => c + "Sg").join(" + ")}。≥ 8 恒可凑（强归纳：n+1 ≥ 11 时先凑 (n+1)−3，再加一枚 3Sg）。`;
+  }
+  slider.addEventListener("input", upd);
+  upd();
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"归纳原理的两个前提是？",
+     opts:[
+       {t:"P(0) 为真，且 P(n) ⇒ P(n+1) 对所有非负整数 n", ok:true, fb:"对。基例 + 归纳步，两块踏脚石。"},
+       {t:"P(0) 与 P(1) 为真", ok:false, fb:"那是强归纳双基例的特例形态；普通归纳的第二个前提是蕴含链。"},
+       {t:"P(n) 对某个 n 为真", ok:false, fb:"'某个'不够——归纳要的是从 0 出发的完整链条。"},
+       {t:"P(n) ⇒ P(n+2)", ok:false, fb:"步长 +2 会漏掉整条奇数/偶数队伍。"}]},
+    {q:"'所有马同色'的假证明，第一处推理断裂在哪？",
+     opts:[
+       {t:"基例 P(1) 是假的", ok:false, fb:"P(1) 为真：一匹马当然与自身同色。"},
+       {t:"归纳步在 n = 1 → 2 时：'中间的马' h₂…hₙ 为空，无 bridges 可用", ok:true, fb:"对。省略号制造了'还有剩下的马'的错觉。P(1) ⇒ P(2) 断裂，链条接不回。"},
+       {t:"归纳步假设了假命题 P(n)", ok:false, fb:"归纳步本来就要假设 P(n)——这是合法姿势，原书明确说这种解释不得分。"},
+       {t:"结论写成了'所有马'而非'所有 n'", ok:false, fb:"重述成 P(n) 形式这一步做得没错。"}]},
+    {q:"下列哪个证明最适合用强归纳？",
+     opts:[
+       {t:"求和公式 1+2+⋯+n = n(n+1)/2", ok:false, fb:"普通归纳一步（加 n+1）就够了。"},
+       {t:"素分解存在性：n+1 拆成的两个因子大小事先未知", ok:true, fb:"对。需要'比 n+1 小的全体都已分解'的强假设——因子具体是几不重要。"},
+       {t:"证明 P(3) 为真", ok:false, fb:"单点命题直接验证，用不着归纳。"},
+       {t:"证明 P(n) ⇒ P(n+1) 本身", ok:false, fb:"那是归纳步内部的活，不是选型问题。"}]},
+    {q:"堆叠游戏定理：n 个箱子任意拆法，总分恒为？",
+     opts:[
+       {t:"n²", ok:false, fb:"偏大。10 箱怎么拆都是 45 分，不是 100。"},
+       {t:"n(n−1)/2", ok:true, fb:"对（定理 5.2.1）——策略无关。强归纳第一步拆 a+b=n 后，ab + a(a−1)/2 + b(b−1)/2 恰好化简回来。"},
+       {t:"2ⁿ", ok:false, fb:"那是子集的数目，不是堆叠得分。"},
+       {t:"取决于策略，均分最优", ok:false, fb:"正是定理要粉碎的直觉：所有策略同分。"}]},
+    {q:"归纳证明'推不动'时，原书给的第一招是？",
+     opts:[
+       {t:"放弃归纳改用实验验证", ok:false, fb:"实验救不了证明——有限样本的老故事。"},
+       {t:"找一个更强的归纳假设（蕴含原假设），让归纳步更有的靠", ok:true, fb:"对——雕像庭院案例：'Bill 在中央'推不动，'Bill 在任意位置'一次打通。前提：强假设必须真。"},
+       {t:"把基例多验证几个", ok:false, fb:"多验基例不补归纳步的缺口。"},
+       {t:"改用双向归纳", ok:false, fb:"方向不是症结；假设的强度才是。"}]},
+    {q:"关于良序、归纳、强归纳三者的关系，原书的结论是？",
+     opts:[
+       {t:"三者强度递增，良序最弱应淘汰", ok:false, fb:"三者互相可机械转换——是同一推理的三种排版，没有强弱之分。"},
+       {t:"它们是同一推理的三种格式：可互相机械改写；选哪种看哪个更清晰", ok:true, fb:"对。归纳免反证、常给递归程序；良序有时更短。开头声明方法即可。"},
+       {t:"只承认良序，归纳只是花哨写法", ok:false, fb:"原书恰恰说'其实没人需要良序原理'的同时强调选择看清晰度——三者地位平等。"},
+       {t:"强归纳需要额外公理，普通归纳不需要", ok:false, fb:"强归纳可改写回普通归纳，无需新公理。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["🍬 归纳链锁匠", "基例、归纳步、断链、选型全部拿捏。下一章状态机：归纳披上'不变量'的外衣去证明程序终止。"]
+      : right >= 3 ? ["🪜 踏脚石搭建员", "主线在握。回看同色马的断裂点与强归纳的适用场景，把最后两块砖补上。"]
+      : ["🌱 排队领糖生", "回到糖果多米诺再按几次'传递'，重读 5.1.3 的五步模板——归纳的全部秘密就两句话。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  function runQuiz(bodyEl, items, {onDone, resetBtn} = {}){
+    let i = 0, right = 0;
+    function render(){
+      bodyEl.innerHTML = "";
+      if (i >= items.length) { onDone && onDone(right); return; }
+      const it = items[i];
+      const div = document.createElement("div");
+      div.className = "case";
+      div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+        <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+        <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">下一题 →</button></div>`;
+      const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+      it.opts.forEach(o => {
+        const b = document.createElement("button");
+        b.className = "opt"; b.innerHTML = o.t;
+        b.addEventListener("click", () => {
+          if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+          if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+          else {
+            b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+            $$(".opt", opts).forEach((bb, k2) => { if (it.opts[k2].ok) bb.classList.add("picked-ok"); });
+          }
+          nxt.style.display = "inline-block";
+          nxt.textContent = i === items.length - 1 ? "看结果 →" : "下一题 →";
+        });
+        opts.appendChild(b);
+      });
+      nxt.addEventListener("click", () => { i++; render(); });
+      bodyEl.appendChild(div);
+    }
+    if (resetBtn) resetBtn.addEventListener("click", () => { i = 0; right = 0; render(); result.classList.remove("show"); });
+    render();
+  }
+  runQuiz(box, items, {onDone: grade, resetBtn: $("#quiz-reset")});
+})();
+</script>
+</body>
+</html>

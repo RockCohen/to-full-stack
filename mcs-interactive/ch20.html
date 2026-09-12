@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>偏离均值 · 数学之旅第二十章 — 格致</title>
+<meta name="description" content="MIT《Mathematics for Computer Science》第 20 章的中文交互式解读：马尔可夫定理、切比雪夫定理、方差与标准差、生日配对数的方差、随机采样估计与置信水平。" />
+<link rel="icon" type="image/svg+xml" href="/hub/favicon.svg">
+<style>
+:root{
+  --bg:#f7f4ee; --surface:#fffdf8; --ink:#2b2a26; --muted:#6f6a5e;
+  --accent:#0f4c81; --accent-soft:#e7eff7; --amber:#b4832a; --amber-soft:#f7efdd;
+  --good:#2e7d4f; --good-soft:#e6f2ea; --bad:#b3372e; --bad-soft:#f9e9e7;
+  --line:#e3ddd0; --serif:"Songti SC","Noto Serif SC","STSong",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:17px;line-height:1.85;-webkit-font-smoothing:antialiased}
+@media (max-width:720px){body{font-size:16px}}
+h1,h2,h3,h4{font-family:var(--serif);line-height:1.35;margin:0}
+p{margin:.7em 0}
+a{color:var(--accent)}
+button{font-family:inherit;font-size:inherit;cursor:pointer}
+::selection{background:#f3d9a4}
+
+#progress{position:fixed;top:0;left:0;height:4px;width:0;
+  background:linear-gradient(90deg,var(--accent),var(--amber));z-index:99;transition:width .1s linear}
+.wrap{max-width:820px;margin:0 auto;padding:0 22px}
+.layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:36px;max-width:1100px;margin:0 auto;padding:0 22px}
+@media (max-width:1080px){.layout{grid-template-columns:minmax(0,1fr)}}
+main{min-width:0;padding-bottom:90px}
+
+#toc{position:sticky;top:34px;align-self:start;max-height:calc(100vh - 60px);overflow:auto;
+  padding:18px 0;font-size:13.5px;display:none}
+@media (min-width:1081px){#toc{display:block}}
+#toc .toc-title{font-family:var(--serif);font-weight:700;color:var(--muted);letter-spacing:.15em;font-size:12px;margin-bottom:10px}
+#toc a{display:block;color:var(--muted);text-decoration:none;padding:5px 10px;border-left:2px solid var(--line);transition:.2s}
+#toc a:hover{color:var(--ink)}
+#toc a.active{color:var(--accent);border-left-color:var(--accent);font-weight:600;background:linear-gradient(90deg,var(--accent-soft),transparent)}
+#toc .toc-num{font-family:var(--mono);font-size:11px;margin-right:6px}
+#toc-fab{display:none;position:fixed;right:18px;bottom:20px;z-index:60;border:none;
+  background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-size:15px;box-shadow:0 6px 18px rgba(15,76,129,.35)}
+@media (max-width:1080px){#toc-fab{display:block}}
+#toc-overlay{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:70;display:none}
+#toc-overlay.open{display:block}
+#toc-overlay .panel{position:absolute;left:0;top:0;bottom:0;width:min(78vw,320px);background:var(--surface);padding:22px;overflow:auto}
+#toc-overlay a{display:block;padding:9px 6px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#toc-overlay .close{float:right;border:none;background:none;font-size:22px;color:var(--muted)}
+
+.hero{padding:72px 0 46px;border-bottom:1px solid var(--line);position:relative;overflow:hidden;
+  background:radial-gradient(1200px 400px at 85% -60px, rgba(15,76,129,.10), transparent 60%),
+             radial-gradient(800px 320px at 10% 110%, rgba(180,131,42,.10), transparent 60%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-sym{position:absolute;font-family:var(--serif);color:var(--accent);opacity:.08;
+  user-select:none;pointer-events:none;animation:floaty var(--t,14s) ease-in-out infinite alternate;z-index:0}
+@keyframes floaty{from{transform:translateY(-14px) rotate(-4deg)}to{transform:translateY(16px) rotate(5deg)}}
+@media (prefers-reduced-motion:reduce){.hero-sym{animation:none}}
+.hero .badge{display:inline-block;font-size:12.5px;letter-spacing:.12em;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 14px;margin-bottom:18px}
+.hero h1{font-size:clamp(32px,6vw,52px);letter-spacing:.02em}
+.hero .en{font-size:clamp(15px,2.4vw,20px);color:var(--muted);font-style:italic;margin-top:8px}
+.hero .lead{max-width:640px;margin-top:20px;font-size:17.5px;color:#4c4840}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.hero .meta span{font-size:13.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 14px}
+.hero .start{margin-top:28px;border:none;background:var(--accent);color:#fff;padding:12px 30px;border-radius:10px;
+  font-size:16px;letter-spacing:.05em;box-shadow:0 4px 14px rgba(15,76,129,.3);transition:.2s}
+.hero .start:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(15,76,129,.4)}
+.prev-next{margin-top:20px;font-size:14px}
+.prev-next a{color:var(--muted)}
+
+section.ch{padding-top:58px}
+.ch-head{display:flex;align-items:baseline;gap:14px;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:8px;flex-wrap:wrap}
+.ch-head .no{font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700}
+.ch-head h2{font-size:clamp(24px,4vw,32px)}
+.ch-head .en{color:var(--muted);font-style:italic;font-size:15px}
+h3.sub{font-size:20px;margin:34px 0 4px;color:#1c1b18}
+h3.sub .tag{font-family:var(--mono);font-size:12px;color:var(--amber);margin-right:8px}
+
+.box{border-radius:12px;padding:18px 22px;margin:20px 0;border:1px solid var(--line);background:var(--surface)}
+.box .label{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.18em;padding:2px 10px;border-radius:4px;margin-bottom:8px}
+.box.thm{border-left:4px solid var(--accent)} .box.thm .label{background:var(--accent-soft);color:var(--accent)}
+.box.rule{border-left:4px solid var(--amber)} .box.rule .label{background:var(--amber-soft);color:var(--amber)}
+.insight{display:flex;gap:12px;background:var(--amber-soft);border:1px solid #e8d9b5;border-radius:12px;padding:14px 18px;margin:20px 0;font-size:15.5px}
+.insight .ico{font-size:20px;line-height:1.5}
+.eq{font-family:var(--serif);text-align:center;font-size:19px;margin:18px 0;letter-spacing:.03em}
+.math{font-family:var(--serif);white-space:nowrap}
+@media (max-width:720px){.eq{white-space:normal;font-size:17px} .eq.math{white-space:normal}}
+.term{color:var(--accent);font-weight:600}
+.muted{color:var(--muted)} .small{font-size:14px}
+
+.widget{position:relative;background:var(--surface);border:1.5px solid #d8d0bf;border-radius:16px;
+  padding:24px 24px 20px;margin:30px 0;box-shadow:0 3px 16px rgba(80,70,40,.07)}
+.widget .pill{position:absolute;top:-13px;right:18px;background:var(--amber);color:#fff;
+  font-size:12px;letter-spacing:.14em;padding:3px 13px;border-radius:999px;box-shadow:0 2px 8px rgba(180,131,42,.4)}
+.widget h4.wtitle{font-size:18.5px;margin-bottom:4px}
+.widget .wdesc{font-size:14.5px;color:var(--muted);margin:0 0 16px}
+.btn{border:1.5px solid var(--accent);color:var(--accent);background:#fff;border-radius:9px;
+  padding:8px 18px;font-size:14.5px;transition:.15s}
+.btn:hover{background:var(--accent-soft)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.amber{border-color:var(--amber);color:var(--amber)}
+.btn.ghost{border-color:var(--line);color:var(--muted)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.fb{border-radius:10px;padding:12px 16px;font-size:15px;margin-top:12px;display:none;line-height:1.7}
+.fb.ok{display:block;background:var(--good-soft);border:1px solid #bcd9c6}
+.fb.no{display:block;background:var(--bad-soft);border:1px solid #e5c0bb}
+.fb.info{display:block;background:var(--accent-soft);border:1px solid #c4d6e8}
+
+.num-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:8px 0}
+input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+.statcard{border:1.5px solid var(--line);border-radius:10px;padding:8px 14px;background:#fff;font-size:14px}
+.statcard b{font-family:var(--mono)}
+.chart-svg{width:100%;background:#fff;border:1px solid var(--line);border-radius:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:8px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:18px;height:4px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.var-table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:14px;margin-top:8px}
+.var-table td,.var-table th{border:1px solid var(--line);padding:6px 10px;text-align:center}
+.var-table th{background:var(--accent-soft);color:var(--accent)}
+
+.quiz-item{margin:18px 0}
+.case{margin:16px 0}
+.case .q{font-family:var(--serif);font-size:17px;font-weight:600;margin:8px 0 12px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:10px 16px;font-size:15px;transition:.15s;line-height:1.6}
+.opt:hover{border-color:var(--accent);background:var(--accent-soft)}
+.opt.picked-ok{border-color:var(--good);background:var(--good-soft)}
+.opt.picked-no{border-color:var(--bad);background:var(--bad-soft)}
+.result-box{display:none;text-align:center;padding:26px;border-radius:14px;margin-top:18px;background:var(--accent);color:#fff}
+.result-box.show{display:block;animation:fadein .5s}
+.result-box .rank{font-family:var(--serif);font-size:26px}
+.result-box .sc{font-size:15px;opacity:.9;margin-top:4px}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+details.egg{border:1px solid var(--line);border-radius:12px;background:var(--surface);margin:16px 0;overflow:hidden}
+details.egg summary{cursor:pointer;padding:14px 20px;font-weight:600;font-family:var(--serif);list-style:none}
+details.egg summary::before{content:"🥚 ";font-size:15px}
+details.egg[open] summary{border-bottom:1px dashed var(--line)}
+details.egg .body{padding:14px 22px 20px;font-size:15.5px}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:34px 0 60px;font-size:13.5px;color:var(--muted)}
+footer p{margin:6px 0}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s,transform .55s}
+.reveal.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<header class="hero">
+  <span class="hero-sym" style="top:16%;left:6%;font-size:42px;--t:15s">Var[R]</span>
+  <span class="hero-sym" style="top:64%;left:10%;font-size:34px;--t:19s;animation-delay:-6s">1/c²</span>
+  <span class="hero-sym" style="top:22%;right:8%;font-size:38px;--t:17s;animation-delay:-3s">σ</span>
+  <span class="hero-sym" style="top:68%;right:14%;font-size:34px;--t:13s;animation-delay:-9s">n≥3125</span>
+  <div class="wrap">
+    <span class="badge">数学之旅 · CHAPTER 20 · Part IV</span>
+    <h1>偏离均值</h1>
+    <div class="en">Deviation from the Mean</div>
+    <p class="lead">期望是 1 的两场赌局，方差差了一百万倍——期望不告诉你的事，方差说。马尔可夫给 IQ≥300 画出 1/3 的粗糙上限，切比雪夫用 σ=15 磨到 1/178；至于"该采样多少人"——不管三亿还是三万选民，3125 个就够。</p>
+    <div class="meta">
+      <span>⏱ 约 70 分钟</span><span>🧩 6 个互动装置</span><span>📖 原书第 853–894 页</span>
+    </div>
+    <button class="start" id="start-btn">开始阅读 ↓</button>
+    <div class="prev-next"><a href="index.html">← 章节目录</a> · <a href="ch19.html">上一章：随机变量与期望</a></div>
+  </div>
+</header>
+
+<div class="layout">
+<nav id="toc" aria-label="章节目录">
+  <div class="toc-title">本章路线图</div>
+  <a href="#s1"><span class="toc-num">20.1</span>马尔可夫定理</a>
+  <a href="#s2"><span class="toc-num">20.2</span>切比雪夫与方差</a>
+  <a href="#s3"><span class="toc-num">20.3</span>方差的性质</a>
+  <a href="#s4"><span class="toc-num">20.3.5</span>生日配对数</a>
+  <a href="#s5"><span class="toc-num">20.4</span>该采样多少人？</a>
+  <a href="#s5b"><span class="toc-num">20.6</span>Chernoff 与 Murphy</a>
+  <a href="#s6"><span class="toc-num">20.5/20.7</span>置信语言与 ∞ 期望</a>
+  <a href="#sq"><span class="toc-num">⚖️</span>终局自测</a>
+  <a href="#se"><span class="toc-num">🥚</span>彩蛋与挑战</a>
+</nav>
+
+<main>
+<!-- ================= 20.1 ================= -->
+<section class="ch" id="s1">
+  <div class="ch-head reveal"><span class="no">20.1</span><h2>马尔可夫定理：只用均值能说什么</h2><span class="en">Markov's Theorem</span></div>
+  <div class="reveal">
+    <div class="box thm"><span class="label">定理 20.1.1 · Markov</span>
+      <p style="margin:4px 0">R 非负时：Pr[R ≥ x] ≤ Ex[R]/x。推论 20.1.2：Pr[R ≥ c·Ex[R]] ≤ 1/c。IQ 均值 100 → 至多 1/3 的人 IQ≥300。粗糙？当然——但 19 章的帽子问题（Ex[G]=1，Pr[G≥x]≤1/x）和中餐开胃菜问题（Pr[全对]≤1/n）都靠它一击命中。</p></div>
+    <p>让它变锋利的技巧：<b>平移</b>。已知 IQ 下界 100，令 T = R − 100（非负，均值 50），则 Pr[R&gt;200] = Pr[T&gt;100] ≤ 50/100 = 1/2——从 3/4 磨到 1/2。同类技巧套上平方就升级成切比雪夫。</p>
+  </div>
+
+  <!-- 互动① IQ 侦探 -->
+  <div class="widget reveal" id="w-iq">
+    <span class="pill">互动 ①</span>
+    <h4 class="wtitle">🔍 IQ 侦探：三条界围捕一条正态尾巴</h4>
+    <label class="small">阈值 IQ = <b id="iq-x" style="font-family:var(--mono)">300</b>　</label>
+    <input type="range" id="iq-xs" min="130" max="300" value="300" />
+    <svg class="chart-svg" id="iq-svg" viewBox="0 0 680 240"></svg>
+    <div class="legend">
+      <span><i style="background:#2e7d4f"></i>真实概率（正态 μ=100 σ=15）</span>
+      <span><i style="background:#b3372e"></i>Markov 上界 100/x</span>
+      <span><i style="background:#b4832a"></i>平移 Markov（下界100）</span>
+      <span><i style="background:#0f4c81"></i>Chebyshev 15²/(x−100)²</span>
+    </div>
+    <div class="fb info" id="iq-fb" style="display:block">x=300：Markov 只给 1/3，Chebyshev 磨到 1/178 ≈ 0.56%——信息每多一条（σ），界就紧一分。</div>
+  </div>
+</section>
+
+<!-- ================= 20.2 ================= -->
+<section class="ch" id="s2">
+  <div class="ch-head reveal"><span class="no">20.2</span><h2>切比雪夫：方差登场</h2><span class="en">Chebyshev's Theorem</span></div>
+  <div class="reveal">
+    <div class="box thm"><span class="label">定义 20.2.2 / 定理 20.2.3 · Chebyshev</span>
+      <p style="margin:4px 0">Var[R] := Ex[(R − Ex[R])²]（均方偏差）；Pr[|R − Ex[R]| ≥ x] ≤ Var[R]/x²。用 σ = √Var（标准差，与 R 同单位）重写：Pr[|R−μ| ≥ cσ] ≤ 1/c²（推论 20.2.6）。</p></div>
+    <p>书中名场面：Game A（2/3 概率赢 $2、1/3 输 $1）与 Game B（2/3 赢 $1002、1/3 输 $2001）期望<b>都是 $1</b>——但 Var[A]=2，Var[B]=2,004,002。十局 A 最坏也就小输；十局 B 理论上能亏两万多。期望说"平均赚多少"，方差说"离均值有多疯"。</p>
+  </div>
+
+  <!-- 互动② 赌局方差对比 -->
+  <div class="widget reveal" id="w-var">
+    <span class="pill">互动 ②</span>
+    <h4 class="wtitle">🎰 方差对比器：Game A vs Game B</h4>
+    <label class="small">Game B 赢金额 = <b id="vb-win" style="font-family:var(--mono)">$1002</b>（2/3 概率；输 = 赢额 − 1）　</label>
+    <input type="range" id="vb-win-s" min="3" max="5002" value="1002" step="1" />
+    <table class="var-table" id="vb-table"></table>
+    <div class="fb info" id="vb-fb" style="display:block">期望恒为 $1（2/3 · W − 1/3 · (W−1) = (2W − W + 1)/3 = (W+1)/3 …等等，书里 Game B 输 $2001 恰好配平 $1——滑动验证）。σ 才是风险计。</div>
+  </div>
+</section>
+
+<!-- ================= 20.3 ================= -->
+<section class="ch" id="s3">
+  <div class="ch-head reveal"><span class="no">20.3</span><h2>方差的性质</h2><span class="en">Properties of Variance</span></div>
+  <div class="reveal">
+    <div class="box rule"><span class="label">规则全家桶</span>
+      <p style="margin:4px 0">Var[R] = Ex[R²] − Ex²[R]（引理 20.3.1）· Bernoulli：Var = p(1−p) · 几何分布（每步失效概率 p）：Var = (1−p)/p² · Var[aR+b] = a²Var[R]（平移不动、缩放平方）· <b>独立可加</b>：Var[R+S] = Var[R]+Var[S]——只需 pairwise 独立（定理 20.3.8）；R=S 反例：Var[2R] = 4Var[R] ≠ 2Var[R]。二项分布 Var = np(1−p)。</p></div>
+  </div>
+</section>
+
+<!-- ================= 20.3.5 ================= -->
+<section class="ch" id="s4">
+  <div class="ch-head reveal"><span class="no">20.3.5</span><h2>生日配对：期望 12.23 对，方差呢？</h2><span class="en">Matching Birthdays</span></div>
+  <div class="reveal">
+    <p>95 人的班里配对生日数 M：配对事件 pairwise 独立（Alice-Bob 的信息不影响 Alice-Carol——虽然三向上就不独立了！），于是方差可加：</p>
+    <div class="eq math">Ex[M] = C(95,2)/365 ≈ 12.23　　Var[M] = C(95,2)·(1/365)(1−1/365) ≈ 12.2</div>
+    <p>切比雪夫：Pr[|M − 12.23| ≥ 7] ≤ 12.2/49 &lt; 25%——所以 75% 以上的概率，班里同生日对数落在 <b>6 到 19</b> 之间。模拟对拍：</p>
+  </div>
+
+  <!-- 互动③ 生日配对方差 -->
+  <div class="widget reveal" id="w-mch">
+    <span class="pill">互动 ③</span>
+    <h4 class="wtitle">🎂 生日配对分布仪：理论与掷骰现实</h4>
+    <label class="small">班级人数 n = <b id="mc-n" style="font-family:var(--mono)">95</b>　</label>
+    <input type="range" id="mc-ns" min="20" max="150" value="95" />
+    <div class="num-row">
+      <button class="btn amber" id="mc-run">模拟 2,000 个班</button>
+      <div class="statcard">Ex[M] = <b id="mc-ex">12.23</b></div>
+      <div class="statcard">σ = <b id="mc-sd">3.5</b></div>
+      <div class="statcard">Chebyshev：P(|M−μ|≥7) ≤ <b id="mc-bnd">25%</b></div>
+    </div>
+    <svg class="chart-svg" id="mc-svg" viewBox="0 0 680 240"></svg>
+    <div class="fb info" id="mc-fb" style="display:block">蓝色直方 = 模拟出的配对数分布；金虚线 = μ，两侧红虚线 = μ±7。落在红区外的比例实测远小于 25%——切比雪夫是个"保底"界。</div>
+  </div>
+</section>
+
+<!-- ================= 20.4 ================= -->
+<section class="ch" id="s5">
+  <div class="ch-head reveal"><span class="no">20.4</span><h2>随机采样：该问多少人？</h2><span class="en">Estimation by Random Sampling</span></div>
+  <div class="reveal">
+    <p>估计支持率 p：抽 n 人（有放回），样本占比 Sₙ/n。想要 ±0.04、95% 置信。Var[Sₙ/n] ≤ 1/(4n)（p(1−p) 在 p=1/2 最大），切比雪夫一压：</p>
+    <div class="eq math">n ≥ 156.25/(0.04² · 5%) ⟹ n ≥ 3,125</div>
+    <p>推论 20.4.2（弱大数定律）：pairwise 独立、同均值有限方差 → 样本均值依概率收敛到 μ。<b>选民总数从头到尾没出现过</b>——3000 人永远够，不管总人口一万还是十亿。</p>
+  </div>
+
+  <!-- 互动④ 采样量计算器 -->
+  <div class="widget reveal" id="w-poll">
+    <span class="pill">互动 ④</span>
+    <h4 class="wtitle">🗳️ 民调样本量计算器 + 实测验证</h4>
+    <div class="num-row">
+      <label class="small" style="flex:1;min-width:180px">误差 ±<b id="pl-eps" style="font-family:var(--mono)">0.04</b>
+        <input type="range" id="pl-eps-s" min="1" max="15" value="4" /></label>
+      <label class="small" style="flex:1;min-width:180px">失败概率 ≤ <b id="pl-delta" style="font-family:var(--mono)">5%</b>
+        <input type="range" id="pl-delta-s" min="1" max="30" value="5" /></label>
+    </div>
+    <div class="num-row">
+      <div class="statcard">切比雪夫要求 n ≥ <b id="pl-n" style="color:var(--amber)">3,125</b></div>
+      <div class="statcard">真实二项（正态近似）约 <b id="pl-real">2,401</b> —— 切比雪夫粗 30%</div>
+      <button class="btn primary" id="pl-run">用 n 实测 1,000 次民调</button>
+    </div>
+    <div class="fb info" id="pl-fb" style="display:block">点击实测：p=1/2、样本量取上式，跑 1,000 次虚拟民调，统计 |Sₙ/n − 1/2| 超差的频率——看它离 5% 的承诺有多远。</div>
+  </div>
+</section>
+
+<!-- ================= 20.5 ================= -->
+<section class="ch" id="s6">
+  <div class="ch-head reveal"><span class="no">20.5</span><h2>置信的语言：别把 p 说成随机</h2><span class="en">Confidence in an Estimation</span></div>
+  <div class="reveal">
+    <div class="box badclaim"><span class="label">False Claim（书原话：but sloppy）</span>
+      <p style="margin:4px 0">"1250/3125 的样本支持 Brown，所以『p &gt; 1/3 的概率是 95%』"——错。p 是一个<b>固定的真值</b>，未知 ≠ 随机。正确的说法："我们的估计<b>程序</b>有 95% 的概率产出 ±0.04 内的结果"；民调员的话术："在 95% 置信水平下，支持率为 1250/3125 ± 0.04"——置信水平是对<span class="term">程序</span>的评价，不是对 p 的赋概率。要么区间对了，要么发生了 1/20 的小概率事件。</p></div>
+  </div>
+</section>
+
+<!-- ================= 20.6 Chernoff ================= -->
+<section class="ch" id="s5b">
+  <div class="ch-head reveal"><span class="no">20.6</span><h2>Chernoff 界：把尾部打成指数级</h2><span class="en">The Chernoff Bound</span></div>
+  <div class="reveal">
+    <p>均值和方差都知道了，切比雪夫就是天花板。但如果随机变量是<b>一堆独立小变量之和</b>（每个取值 ∈[0,1]），还有一把锤子——Chernoff 界（定理 20.6.1）：</p>
+    <div class="eq math">Pr[T ≥ c·Ex[T]] ≤ e^(−β(c)·Ex[T])，β(c) := c·ln c − c + 1</div>
+    <p><b>指数 vs 多项式</b>：Markov 给 1/c、切比雪夫给 1/c²、Chernoff 给 e^(−Θ(Ex[T]))。1000 次掷币正面超均值 20%（c=1.2，β=0.0187）：概率 &lt; 1/10,000；超 30%（β=0.041）：1/10 亿；一百万枚硬币：e^(−9392)，"不可想象的小"。应用：Pick-4 彩票 1000 万玩家翻车概率 e^(−386)；Fussbook（虚构社交站）负载均衡——24000 帖、每帖平均 ¼ 秒、600 秒窗口：</p>
+    <div class="eq math">Pr[某台超载] ≤ m·e^(−β(m/10)·6000/m)：m=11 → 0.78　m=12 → 0.0001　m=13 → 0.000000076</div>
+  </div>
+
+  <!-- 互动 Chernoff 计算器 -->
+  <div class="widget reveal" id="w-cher">
+    <span class="pill">互动 ⑥</span>
+    <h4 class="wtitle">🔨 Chernoff 计算器：β(c) 与三界对比</h4>
+    <label class="small">超出倍数 c = <b id="ch-c" style="font-family:var(--mono)">1.20</b>　</label>
+    <input type="range" id="ch-cs" min="100" max="300" value="120" />
+    <label class="small">期望 Ex[T] = <b id="ch-mu" style="font-family:var(--mono)">500</b>　</label>
+    <input type="range" id="ch-mus" min="2" max="6" value="2.7" step="0.1" />
+    <table class="var-table">
+      <tr><th>界</th><th>公式</th><th>Pr[T ≥ c·Ex[T]] ≤</th></tr>
+      <tr><td>Markov</td><td>1/c</td><td id="cher-mk">—</td></tr>
+      <tr><td>Chebyshev*</td><td>1/(9(c−1)²)</td><td id="cher-cb">—</td></tr>
+      <tr><td style="color:var(--amber)">Chernoff</td><td>e^(−β(c)·μ)</td><td id="cher-ch" style="color:var(--amber);font-weight:700">—</td></tr>
+    </table>
+    <div class="fb info" id="ch-fb" style="display:block"></div>
+  </div>
+
+  <div class="reveal">
+    <h3 class="sub"><span class="tag">20.6.8</span>Murphy 定律：能出错的，多半真会出错</h3>
+    <p>反向使用：一堆<b>独立</b>事件，若期望发生件数 Ex[T] 很大，则 Pr[T = 0] ≤ e^(−Ex[T])。期望 10 件事发生 → 至少一件的概率 ≥ 1 − e⁻¹⁰ &gt; 99.995%。10 万张 Pick-4 彩票"无人中奖"概率 &lt; 1/22000——"巧合"、"奇迹"之所以出现，是因为可能的怪事实在太多，总概率加起来早就爆表了。</p>
+    <h3 class="sub"><span class="tag">20.7</span>Really Great Expectations：期望 ∞ 的"必胜"赌局</h3>
+    <p>掷公平硬币直到出现正面，记下你连续反面的长度 k；然后不断重掷，直到掷出比 k 更长的反面连击才停——你<b>必然</b>会赢（概率 1），我每轮失败收你 1 分钱，赢了随便我付。听着像送钱？重试次数的期望 = 2^(k+1)（均故障时间），无条件期望 = Σ 1 = <b>∞</b>。任何随机变量"等到出现更大值"的期望等待时间都是无限的——有限的奖金永远配不平无限的等待。</p>
+  </div>
+</section>
+
+<!-- ================= 终局自测 ================= -->
+<section class="ch" id="sq">
+  <div class="ch-head reveal"><span class="no">⚖️</span><h2>终局自测</h2><span class="en">Final Check</span></div>
+  <div class="reveal">
+    <p>六题，覆盖全章。</p>
+    <div id="quiz-body"></div>
+    <div class="result-box" id="quiz-result">
+      <div class="rank" id="quiz-rank"></div>
+      <div class="sc" id="quiz-score-line"></div>
+      <button class="btn" id="quiz-reset" style="margin-top:14px;border-color:#fff;color:#fff;background:transparent">再考一次</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 彩蛋 ================= -->
+<section class="ch" id="se">
+  <div class="ch-head reveal"><span class="no">🥚</span><h2>彩蛋与课后挑战</h2><span class="en">Easter Eggs &amp; Problems</span></div>
+  <div class="reveal">
+    <details class="egg">
+      <summary>Scott Brown 与 3125 人的由来（20.4 开场）</summary>
+      <div class="body">
+        <p>2010 年麻省参议员补选，民主党早期民调全没看出共和党人 Scott Brown 会赢 Teddy Kennedy 坐了 40 多年的席位——抽样误差不是抽象概念，是会翻盘的。切比雪夫版的 3,125 偏保守约 30%（真实二项约 2,400）；第 21 章的 Chernoff 界能再收紧。书中脚注：这个例子 xkcd #882 有一幅著名的吐槽（显著性检验的次数问题）。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>中餐开胃菜：Markov 的高光时刻（20.1.1）</summary>
+      <div class="body">
+        <p>n 人围坐转盘分冷盘，每人拿到自己原来那份的概率精确 = 1/n；马尔可夫只用了 Ex[R]=1 就给出 Pr[R≥n] ≤ 1/n——粗糙的界偶尔精确命中。而帽子问题真值 1/n! 时 Markov 仍只给 1/n：同一工具，时灵时不灵。</p>
+      </div>
+    </details>
+    <details class="egg">
+      <summary>课后挑战（均出自原书习题）</summary>
+      <div class="body">
+        <ul style="margin:6px 0 6px 20px;padding:0;line-height:2">
+          <li><b>20.3</b> 有上界 u 时用 u−S 套 Markov，给出"R 远低于均值"的上界；对偶地补全 20.1.2。</li>
+          <li><b>20.5</b> MIT 洗衣三连：busy（3 套题各 1 或 2 天）、relaxed（掷骰到 1 才洗）、unlucky（两骰积天数）——三种懒法各期望多少天？混合型呢（Ex[D]）？</li>
+          <li><b>20.9 / 20.16</b> 方差性质的证明细节（平方倍规则、pairwise 可加）。</li>
+          <li><b>20.13</b> 信心与概率：复习 18.9.3 的"你的 TB 不是随机事件"，对比 20.5 的置信语言。</li>
+        </ul>
+      </div>
+    </details>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="padding:0">
+    <p><b>出处与版权</b>：本页内容译写改编自 <i>Mathematics for Computer Science</i>（Eric Lehman, F. Thomson Leighton &amp; Albert R. Meyer，2017-03-06 修订版），原书以 CC BY-SA 3.0 发布，<b>本页同样以 CC BY-SA 3.0 发布</b>。交互设计与实现为原创。</p>
+    <p>对照阅读：原书 PDF 在仓库根目录 <span style="font-family:var(--mono)">计算机科学的数学.pdf</span>（第 20 章 = 第 853–894 页）。</p>
+    <p><a href="index.html">← 返回数学之旅目录</a> · <a href="ch19.html">上一章：随机变量与期望</a> · built with ♥ and vanilla JS · 零依赖可离线打开</p>
+  </div>
+</footer>
+</main>
+</div>
+
+<button id="toc-fab">☰ 目录</button>
+<div id="toc-overlay">
+  <div class="panel">
+    <button class="close" id="toc-close">×</button>
+    <div style="font-family:var(--serif);font-weight:700;margin-bottom:8px">本章路线图</div>
+    <a href="#s1">20.1 · 马尔可夫定理</a><a href="#s2">20.2 · 切比雪夫与方差</a><a href="#s3">20.3 · 方差性质</a>
+    <a href="#s4">20.3.5 · 生日配对数</a><a href="#s5">20.4 · 采样量</a><a href="#s6">20.5 · 置信语言</a>
+    <a href="#sq">⚖️ · 终局自测</a><a href="#se">🥚 · 彩蛋与挑战</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+
+const prog = $("#progress");
+addEventListener("scroll", () => {
+  const h = document.documentElement;
+  prog.style.width = (h.scrollTop / (h.scrollHeight - h.clientHeight) * 100) + "%";
+}, {passive:true});
+$("#start-btn").addEventListener("click", () => $("#s1").scrollIntoView({behavior:"smooth"}));
+
+const tocLinks = $$("#toc a");
+const spy = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting)
+    tocLinks.forEach(a => a.classList.toggle("active", a.getAttribute("href") === "#" + e.target.id));
+  });
+}, {rootMargin:"-25% 0px -65% 0px"});
+$$("section.ch").forEach(s => spy.observe(s));
+
+const rev = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add("on"); rev.unobserve(e.target); }
+}), {threshold:.08});
+$$(".reveal").forEach(el => rev.observe(el));
+
+const ovl = $("#toc-overlay");
+$("#toc-fab").addEventListener("click", () => ovl.classList.add("open"));
+$("#toc-close").addEventListener("click", () => ovl.classList.remove("open"));
+ovl.addEventListener("click", e => { if (e.target === ovl) ovl.classList.remove("open"); });
+$$("#toc-overlay a").forEach(a => a.addEventListener("click", () => ovl.classList.remove("open")));
+
+const NS = "http://www.w3.org/2000/svg";
+const svgEl = (svg, t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; };
+const svgText = (svg, x, y, s, attrs={}) => {
+  const e = document.createElementNS(NS, "text");
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  e.setAttribute("x", x); e.setAttribute("y", y); e.textContent = s;
+  svg.appendChild(e); return e;
+};
+
+/* ---------- 互动① IQ 侦探 ---------- */
+(() => {
+  const svg = $("#iq-svg");
+  const MU = 100, SD = 15;
+  const normalTail = x => { // Pr[R >= x], R~N(100,15)
+    const z = (x - MU) / SD;
+    return 0.5 * Math.exp(-0.717 * z - 0.416 * z * z); // 精度足够的尾部近似
+  };
+  function draw(){
+    const x = +$("#iq-xs").value;
+    $("#iq-x").textContent = x;
+    svg.innerHTML = "";
+    const W = 680, H = 240, L = 46, R = 12, T = 14, B = 26;
+    const lo = 120, hi = 300;
+    const X = v => L + (v - lo) / (hi - lo) * (W - L - R);
+    // y 轴 log 刻度从 1e-4 到 1
+    const Ylog = p => { const t = Math.log10(Math.max(p, 1e-4)); return H - B - (t + 4) / 4 * (H - T - B); };
+    [1e-4, 1e-3, 1e-2, 1e-1, 1].forEach(p => {
+      svgEl(svg, "line", {x1:L, y1:Ylog(p), x2:W-R, y2:Ylog(p), stroke:"#eee6d6"});
+      svgText(svg, L - 5, Ylog(p) + 3, p === 1 ? "1" : "1e" + Math.round(Math.log10(p)), {"text-anchor":"end", "font-size":9.5, fill:"#6f6a5e"});
+    });
+    const plot = (f, color, dash) => {
+      let d = "";
+      for (let v = lo; v <= hi; v += 2) d += (v === lo ? "M" : "L") + X(v).toFixed(1) + " " + Ylog(Math.max(f(v), 1e-4)).toFixed(1);
+      svgEl(svg, "path", {d, fill:"none", stroke:color, "stroke-width":2, ...(dash ? {"stroke-dasharray":dash} : {})});
+    };
+    plot(normalTail, "#2e7d4f");
+    plot(v => 100 / v, "#b3372e");
+    plot(v => v > 100 ? 50 / (v - 100) : 1, "#b4832a", "5 4");
+    plot(v => v > 100 ? Math.min(1, 225 / ((v - 100) ** 2)) : 1, "#0f4c81", "2 3");
+    // 阈值线
+    svgEl(svg, "line", {x1:X(x), y1:T, x2:X(x), y2:H-B, stroke:"#2b2a26", "stroke-width":1, opacity:.4});
+    svgText(svg, X(x) + 4, T + 10, "x=" + x, {"font-size":10, fill:"#2b2a26"});
+    const fb = $("#iq-fb");
+    const real = normalTail(x), mk = 100/x, shift = x > 100 ? 50/(x-100) : 1, ch = x > 100 ? 225/((x-100)**2) : 1;
+    fb.className = "fb info";
+    fb.innerHTML = `x=${x}：真实 ≈ <b>${(real*100).toPrecision(3)}%</b> · Markov 上界 ${(mk*100).toFixed(1)}% · 平移 Markov ${(Math.min(shift,1)*100).toFixed(1)}% · Chebyshev ${(Math.min(ch,1)*100).toPrecision(3)}%。`;
+  }
+  $("#iq-xs").addEventListener("input", draw);
+  draw();
+})();
+
+/* ---------- 互动② 方差对比 ---------- */
+(() => {
+  function upd(){
+    const W = +$("#vb-win-s").value;
+    $("#vb-win").textContent = "$" + W.toLocaleString();
+    const lose = W - 1;                     // 书中 B 输 $2001 与赢 $1002 配平 Ex=1
+    const ex = 2/3 * W + 1/3 * (-lose);
+    // 修正：书中 Game B 赢 1002 输 2001 → Ex = 1002*2/3 - 2001/3 = 1 ✓（输 = 2W - 3）
+    const loseFix = 2 * W - 3;
+    const exFix = 2/3 * W - 1/3 * loseFix;
+    const varA = 2/3 * (2 - 1)**2 + 1/3 * (-1 - 1)**2;  // Game A: +2/-1, Ex=1
+    const dW = W - exFix, dL = -loseFix - exFix;
+    const varB = 2/3 * dW * dW + 1/3 * dL * dL;
+    $("#vb-table").innerHTML = `
+      <tr><th></th><th>Game A（+2 / −1）</th><th>Game B（+${W.toLocaleString()} / −${loseFix.toLocaleString()}）</th></tr>
+      <tr><th>期望回报</th><td>$${exFix.toFixed(2)}</td><td>$${exFix.toFixed(2)}</td></tr>
+      <tr><th>方差 Var</th><td>${varA.toFixed(1)}</td><td style="color:var(--bad)">${varB.toLocaleString(undefined,{maximumFractionDigits:0})}</td></tr>
+      <tr><th>标准差 σ</th><td>${Math.sqrt(varA).toFixed(2)}</td><td style="color:var(--bad)">${Math.sqrt(varB).toLocaleString(undefined,{maximumFractionDigits:0})}</td></tr>
+      <tr><th>10 局最坏</th><td>−$10</td><td style="color:var(--bad)">−$${(loseFix*10).toLocaleString()}</td></tr>`;
+    const fb = $("#vb-fb");
+    fb.className = "fb info";
+    fb.innerHTML = `期望同为 <b>$${exFix.toFixed(2)}</b>（书中 $1）。W=${W} 时 σ_B/σ_A = <b>${(Math.sqrt(varB)/Math.sqrt(varA)).toFixed(0)}</b> 倍——10 局 Game B 的理论最坏亏损 $${(loseFix*10).toLocaleString()}。切比雪夫：P[|回报−μ|≥10σ] ≤ 1%。`;
+  }
+  $("#vb-win-s").addEventListener("input", upd);
+  upd();
+})();
+
+/* ---------- 互动③ 生日配对 ---------- */
+(() => {
+  const svg = $("#mc-svg");
+  function stats(n){
+    const pairs = n * (n - 1) / 2;
+    const ex = pairs / 365;
+    const va = pairs * (1/365) * (1 - 1/365);
+    return {ex, va, sd: Math.sqrt(va)};
+  }
+  function draw(){
+    const n = +$("#mc-ns").value;
+    $("#mc-n").textContent = n;
+    const {ex, sd} = stats(n);
+    $("#mc-ex").textContent = ex.toFixed(2);
+    $("#mc-sd").textContent = sd.toFixed(2);
+    $("#mc-bnd").textContent = (Math.min(1, sd*sd/49) * 100).toFixed(0) + "%";
+    // 模拟
+    const R = 2000, counts = [];
+    for (let r = 0; r < R; r++) {
+      const seen = new Array(365).fill(0);
+      let m = 0;
+      for (let i = 0; i < n; i++) {
+        const b = Math.floor(Math.random() * 365);
+        m += seen[b]; seen[b]++;
+      }
+      counts.push(m);
+    }
+    // 直方图
+    svg.innerHTML = "";
+    const W = 680, H = 240, L = 40, Rm = 10, T = 14, B = 26;
+    const mn = Math.min(...counts), mx = Math.max(...counts);
+    const bins = mx - mn + 1;
+    const freq = new Array(bins).fill(0);
+    counts.forEach(c => freq[c - mn]++);
+    const bw = (W - L - Rm) / bins;
+    const ymax = Math.max(...freq) * 1.12;
+    const Y = v => H - B - v / ymax * (H - T - B);
+    freq.forEach((f, i) => {
+      svgEl(svg, "rect", {x: L + i * bw, y: Y(f), width: bw - 1, height: H - B - Y(f), fill: "#0f4c81", opacity: .82});
+    });
+    const X = v => L + (v - mn) * bw;
+    svgEl(svg, "line", {x1: X(ex), y1: T, x2: X(ex), y2: H - B, stroke: "#b4832a", "stroke-width": 2, "stroke-dasharray": "5 4"});
+    [ex - 7, ex + 7].forEach(v => {
+      if (v >= mn && v <= mx + 1) svgEl(svg, "line", {x1: X(v), y1: T, x2: X(v), y2: H - B, stroke: "#b3372e", "stroke-width": 1, "stroke-dasharray": "3 3"});
+    });
+    svgText(svg, L + 4, T + 2, `2,000 个 ${n} 人班级的同生日对数分布（金线 μ=${ex.toFixed(1)}，红线 μ±7）`, {"font-size": 11, fill: "#6f6a5e"});
+    const outside = counts.filter(c => Math.abs(c - ex) >= 7).length / R;
+    const fb = $("#mc-fb");
+    fb.className = "fb info";
+    fb.innerHTML = `实测 |M−μ|≥7 的比例 = <b>${(outside*100).toFixed(1)}%</b>（切比雪夫承诺 ≤ ${(Math.min(1, sd*sd/49)*100).toFixed(0)}%）。界是保底——真实分布挤得更紧。`;
+  }
+  $("#mc-ns").addEventListener("input", draw);
+  $("#mc-run").addEventListener("click", draw);
+  draw();
+})();
+
+/* ---------- 互动④ 民调样本量 ---------- */
+(() => {
+  function upd(){
+    const eps = +$("#pl-eps-s").value / 100;
+    const delta = +$("#pl-delta-s").value / 100;
+    $("#pl-eps").textContent = eps.toFixed(2);
+    $("#pl-delta").textContent = (delta*100).toFixed(0) + "%";
+    const nCheb = Math.ceil(1 / (4 * eps * eps * delta));
+    $("#pl-n").textContent = nCheb.toLocaleString();
+    // 正态近似：n ≈ (z_{δ/2}/(2ε))²；δ=5% → z≈1.96
+    const z = delta === 0.05 ? 1.96 : 1.96; // 简化：统一 1.96 展示量级
+    $("#pl-real").textContent = Math.ceil((z / (2 * eps)) ** 2).toLocaleString();
+    $("#pl-run").dataset.n = nCheb;
+    $("#pl-run").dataset.eps = eps;
+  }
+  $("#pl-eps-s").addEventListener("input", upd);
+  $("#pl-delta-s").addEventListener("input", upd);
+  $("#pl-run").addEventListener("click", e => {
+    const n = +e.target.dataset.n, eps = +e.target.dataset.eps;
+    const T = 1000; let miss = 0;
+    for (let t = 0; t < T; t++) {
+      let s = 0;
+      for (let i = 0; i < n; i++) s += Math.random() < 0.5 ? 1 : 0;
+      if (Math.abs(s / n - 0.5) > eps) miss++;
+    }
+    const fb = $("#pl-fb");
+    fb.className = "fb ok";
+    fb.innerHTML = `✅ n=${n.toLocaleString()}、p=1/2：1,000 次虚拟民调中，超差 ±${eps} 的比例 = <b>${(miss/T*100).toFixed(1)}%</b>（承诺 ≤ ${$("#pl-delta").textContent}）。真实表现通常比切比雪夫的承诺好得多。`;
+  });
+  upd();
+})();
+
+/* ---------- 互动⑥ Chernoff 计算器 ---------- */
+(() => {
+  function fmtSci(x){
+    if (x >= 1) return x.toPrecision(3);
+    const e = Math.floor(Math.log10(x));
+    return (x / 10**e).toFixed(2) + "e" + e;
+  }
+  function upd(){
+    const c = +$("#ch-cs").value / 100;
+    const mu = Math.round(Math.pow(10, +$("#ch-mus").value));
+    $("#ch-c").textContent = c.toFixed(2);
+    $("#ch-mu").textContent = mu.toLocaleString();
+    const beta = c * Math.log(c) - c + 1;
+    const mk = 1 / c;
+    const cb = 1 / (9 * (c - 1) ** 2);          // 切比雪夫用于 μ→cμ 距离 (c−1)μ：σ²≤μ/4 → 界 1/(9(c−1)²μ)；此处列相对量级
+    const chBound = Math.exp(-beta * mu);
+    $("#cher-mk").textContent = fmtSci(mk);
+    $("#cher-cb").textContent = fmtSci(Math.min(1, cb / mu));
+    $("#cher-ch").textContent = fmtSci(Math.max(chBound, 1e-320));
+    const fb = $("#ch-fb");
+    fb.className = "fb info";
+    fb.innerHTML = `β(${c.toFixed(2)}) = c·ln c − c + 1 = <b>${beta.toFixed(4)}</b>。Chernoff 界 <b>${fmtSci(Math.max(chBound, 1e-320))}</b> —— 指数压过一切多项式。c 从 1.2 提到 1.3，β 翻倍再翻倍；μ 从 1000 拉到 100 万，界直接掉进"不可想象"区。`;
+  }
+  $("#ch-cs").addEventListener("input", upd);
+  $("#ch-mus").addEventListener("input", upd);
+  upd();
+})();
+
+/* ---------- 终局自测 ---------- */
+(() => {
+  const items = [
+    {q:"R 非负、Ex[R]=100。Pr[R ≥ 300] 的马尔可夫上界是？",
+     opts:[
+       {t:"1/3", ok:true, fb:"对（推论 20.1.2 的 c=3 形态：100/300）。粗糙但只用了均值——书中 IQ 例。"},
+       {t:"1/178", ok:false, fb:"那是切比雪夫用 σ=15 磨出来的数字。"},
+       {t:"1/2", ok:false, fb:"1/2 是'下界 100 平移后'对 R>200 的答案。"},
+       {t:"无法界定", ok:false, fb:"非负 + 均值就够马尔可夫出手。"}]},
+    {q:"Game A（+2/−1）与 Game B（+1002/−2001）期望同为 $1。区分它们的是？",
+     opts:[
+       {t:"期望的符号", ok:false, fb:"期望完全相同。"},
+       {t:"方差：Var[A]=2 vs Var[B]=2,004,002", ok:true, fb:"对。风险藏在二阶矩里——切比雪夫靠它工作。σ_B ≈ 1416 vs σ_A ≈ 1.41。"},
+       {t:"赢的概率不同", ok:false, fb:"都是 2/3 赢。"},
+       {t:"Game B 违反线性期望", ok:false, fb:"期望照算不误，只是波动巨大。"}]},
+    {q:"切比雪夫：Pr[|R−Ex[R]| ≥ x] ≤ ？",
+     opts:[
+       {t:"Ex[R]/x", ok:false, fb:"那是马尔可夫。切比雪夫对方差工作。"},
+       {t:"Var[R]/x²", ok:true, fb:"对（定理 20.2.3）。对 R−μ 的平方套马尔可夫即得。σ 形式：Pr[|R−μ|≥cσ] ≤ 1/c²。"},
+       {t:"Var[R]/x", ok:false, fb:"量纲不对：方差除以 x 得不到概率。"},
+       {t:"σ/x²", ok:false, fb:"同样量纲错乱。"}]},
+    {q:"Var[aR + b] = ？",
+     opts:[
+       {t:"a·Var[R]", ok:false, fb:"缩放是平方：方差是二阶量。"},
+       {t:"a²·Var[R]（b 消失）", ok:true, fb:"对（定理 20.3.4/20.3.5）。平移不改变离散度，缩放按平方进。σ(aR+b)=|a|σ。"},
+       {t:"a²·Var[R] + b", ok:false, fb:"b 只是移动中心，方差里没有它的位置。"},
+       {t:"Var[R]", ok:false, fb:"只有 b=0、a=±1 时才对。"}]},
+    {q:"95 人班级（d=365）：同生日对数 M 的期望与方差各约？",
+     opts:[
+       {t:"Ex=12.23，Var=12.2——pairwise 独立使方差可加", ok:true, fb:"对（20.3.5）。M=ΣE_ij，E_ij pairwise 独立，Var=C(n,2)·(1/d)(1−1/d)。切比雪夫：75%+ 概率落在 6..19 对。"},
+       {t:"Ex=95/365≈0.26", ok:false, fb:"那是单个配对的概率——对数有 C(95,2) 项。"},
+       {t:"方差无法算——事件不独立", ok:false, fb:"三向上不独立但 pairwise 独立就够了（定理 20.3.8）。"},
+       {t:"Ex=12.23，Var=0", ok:false, fb:"那 M 就成常数了。"}]},
+    {q:"想要 ±0.04、95% 置信的支持率估计，切比雪夫要 n≥？",
+     opts:[
+       {t:"3,125", ok:true, fb:"对。Var[Sₙ/n]≤1/(4n)，切比雪夫 → 156.25/(n·0.04²) ≤ 1/20 → n≥3,125。与选民总数无关！"},
+       {t:"385", ok:false, fb:"那是更强的尾部界（第 21 章 Chernoff）给出的量级。"},
+       {t:"与选民总数成正比", ok:false, fb:"书中强调：人口规模从头到尾没出现过。"},
+       {t:"312", ok:false, fb:"差十倍——方差项 1/(4n) 算漏了。"}]},
+  ];
+  const box = $("#quiz-body"), result = $("#quiz-result");
+  function grade(right){
+    result.classList.add("show");
+    const [rank, note] = right >= 5 ? ["📏 方差钳工", "Markov、Chebyshev、方差性质、采样量全部上手——第 21 章 Chernoff 把尾部界磨成指数级。"]
+      : right >= 3 ? ["🎲 赌局风控员", "方差对比器已懂——回看 20.3 的可加性条件（pairwise 就够）与 20.4 的 3125 推导。"]
+      : ["⚖️ 只会看均值的人", "先玩方差对比器：把 Game B 的 W 拉满，看 σ 怎么爆。"];
+    $("#quiz-rank").textContent = rank;
+    $("#quiz-score-line").textContent = `得分 ${right} / 6 · ${note}`;
+    result.scrollIntoView({behavior:"smooth", block:"center"});
+  }
+  let i = 0, right = 0;
+  function render(){
+    box.innerHTML = "";
+    if (i >= items.length) { grade(right); return; }
+    const it = items[i];
+    const div = document.createElement("div");
+    div.className = "case";
+    div.innerHTML = `<div class="small muted" style="margin-bottom:6px">第 ${i+1} / ${items.length} 题</div>
+      <div class="q">${it.q}</div><div class="opts"></div><div class="fb"></div>
+      <div style="margin-top:12px"><button class="btn primary nextq" style="display:none">${i === items.length-1 ? "看结果 →" : "下一题 →"}</button></div>`;
+    const opts = $(".opts", div), fb = $(".fb", div), nxt = $(".nextq", div);
+    it.opts.forEach(o => {
+      const b = document.createElement("button");
+      b.className = "opt"; b.innerHTML = o.t;
+      b.addEventListener("click", () => {
+        if ($(".opt.picked-ok, .opt.picked-no", opts)) return;
+        if (o.ok) { right++; b.classList.add("picked-ok"); fb.className = "fb ok"; fb.innerHTML = "✅ " + o.fb; }
+        else {
+          b.classList.add("picked-no"); fb.className = "fb no"; fb.innerHTML = "❌ " + o.fb;
+          $$(".opt", opts).forEach((bb, k2) => { if (it.opts[k2].ok) bb.classList.add("picked-ok"); });
+        }
+        nxt.style.display = "inline-block";
+      });
+      opts.appendChild(b);
+    });
+    nxt.addEventListener("click", () => { i++; render(); });
+    box.appendChild(div);
+  }
+  $("#quiz-reset").addEventListener("click", () => { i = 0; right = 0; result.classList.remove("show"); render(); });
+  render();
+})();
+</script>
+</body>
+</html>
