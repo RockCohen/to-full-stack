@@ -1,0 +1,127 @@
+/* ============================================================
+   rockcohen.cc 设计系统 · 共享主题
+   版本: 1.0（2026-09-12）
+   门禁文档: STYLE-GATE.md（改动本文件必须同步更新门禁文档与版本号）
+   用法: <link rel="stylesheet" href="theme.css">
+   ============================================================ */
+
+:root{
+  /* ── 墨色阶梯 ── */
+  --ink:#23272e;        /* 主文字 */
+  --ink-2:#5d646d;      /* 次文字 */
+  --ink-3:#9aa1ab;      /* 弱文字 / 时间戳 */
+
+  /* ── 底色与玻璃材质 ── */
+  --bg:#fafbfc;
+  --glass:rgba(255,255,255,.55);
+  --glass-strong:rgba(255,255,255,.72);
+  --glass-border:rgba(255,255,255,.8);
+  --line:rgba(35,39,46,.08);
+
+  /* ── 唯一强调色 ── */
+  --accent:#2f6fdb;
+
+  /* ── 形状与布局 ── */
+  --radius:20px;
+  --maxw:1080px;
+
+  /* ── 玻璃投影（统一配方，禁止自造阴影） ── */
+  --shadow-glass:0 8px 28px rgba(31,38,45,.05), inset 0 1px 0 rgba(255,255,255,.6);
+  --shadow-glass-hover:0 16px 40px rgba(31,38,45,.1);
+}
+
+/* ── 字体栈 ── */
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--ink);
+  line-height:1.7;-webkit-font-smoothing:antialiased;
+}
+.serif, .brand .motto{
+  font-family:"Songti SC","STSong",serif;
+}
+
+/* ── 页面背景：柔和渐变色晕（固定于视口，不可再叠加别的背景图） ── */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(52% 42% at 12% 0%, rgba(191,219,254,.5), transparent 70%),
+    radial-gradient(46% 38% at 88% 6%, rgba(254,215,170,.42), transparent 70%),
+    radial-gradient(56% 46% at 50% 105%, rgba(221,214,254,.38), transparent 70%);
+}
+
+/* ── 玻璃卡片（.glass）与玻璃强卡（.glass-strong） ── */
+.glass{
+  background:var(--glass);
+  backdrop-filter:blur(20px) saturate(1.5);
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-glass);
+}
+.glass-strong{
+  background:var(--glass-strong);
+  backdrop-filter:blur(20px) saturate(1.5);
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-glass);
+}
+
+/* ── 品牌导航条（全站统一） ── */
+.nav-brand{font-weight:700;font-size:15px;letter-spacing:.02em;color:var(--ink);text-decoration:none}
+.nav-brand .domain{color:var(--ink-3);font-weight:400}
+.nav-brand .motto{
+  font-style:normal;font-size:13px;letter-spacing:.12em;color:var(--ink-3);
+  margin-left:14px;padding-left:14px;border-left:1px solid var(--line);
+}
+
+/* ── 极光头图（卡片头图 / 页面 hero 唯一指定风格） ──
+   用法: <div class="aurora"><div class="aurora-title">标题<small>副标题</small></div></div>
+   色相偏移: 在 .aurora 上加 .h2/.h3/.h4/.h5/.h6                       */
+.aurora{
+  position:relative;overflow:hidden;background:#f4f6fb;
+  display:flex;align-items:center;justify-content:center;
+}
+.aurora::before{
+  content:"";position:absolute;inset:-40%;
+  background:
+    radial-gradient(42% 55% at 18% 22%, rgba(165,200,255,.95), transparent 70%),
+    radial-gradient(46% 58% at 82% 18%, rgba(228,190,255,.9), transparent 70%),
+    radial-gradient(50% 62% at 62% 88%, rgba(255,212,178,.85), transparent 70%),
+    radial-gradient(42% 52% at 28% 92%, rgba(186,228,255,.75), transparent 70%),
+    radial-gradient(38% 48% at 50% 40%, rgba(255,255,255,.6), transparent 70%);
+  filter:blur(28px);
+}
+.aurora.h2::before{filter:blur(28px) hue-rotate(28deg)}
+.aurora.h3::before{filter:blur(28px) hue-rotate(-32deg)}
+.aurora.h4::before{filter:blur(28px) hue-rotate(55deg)}
+.aurora.h5::before{filter:blur(28px) hue-rotate(-60deg)}
+.aurora.h6::before{filter:blur(28px) hue-rotate(90deg)}
+.aurora-title{
+  position:relative;z-index:1;
+  font-size:23px;font-weight:800;color:#20242f;
+  letter-spacing:.02em;text-align:center;line-height:1.35;padding:0 24px;
+}
+.aurora-title small{
+  display:block;font-size:12px;font-weight:500;
+  letter-spacing:.14em;color:rgba(32,36,47,.55);margin-top:9px;
+}
+
+/* ── 状态徽章（唯一指定体系，禁止自创颜色） ── */
+.badge{
+  font-size:12px;font-weight:600;padding:2px 10px;border-radius:99px;
+}
+.badge-live{background:rgba(47,111,219,.09);color:var(--accent)}        /* 持续更新 / 在线可学 */
+.badge-info{background:rgba(35,39,46,.06);color:var(--ink-2)}           /* 已上线 N 章 / 作品属性 */
+.badge-new{background:var(--accent);color:#fff;box-shadow:0 2px 10px rgba(47,111,219,.35)} /* 仅 30 天内的新项目 */
+
+/* ── 分区编号胶囊 ── */
+.sec-num{
+  font-size:12.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  padding:2px 11px;border-radius:99px;color:var(--accent);
+  background:rgba(47,111,219,.08);border:1px solid rgba(47,111,219,.12);
+}
+
+/* ── 链接与 CTA ── */
+a{color:inherit}
+.cta{color:var(--accent);font-weight:600}
